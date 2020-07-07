@@ -1,6 +1,5 @@
 package takeaway.itf;
 
-
 import takeaway.model.BeanControl;
 import takeaway.util.BaseException;
 
@@ -36,5 +35,4 @@ public interface IControlManager {
 	 * @param newPwd2 重复输入的新密码
 	 */
 	public void changePwd(BeanControl user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
-
 }

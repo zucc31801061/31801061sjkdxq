@@ -15,19 +15,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import takeaway.takeawayUtil;
-import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
 
 public class FrmUserInfo extends JDialog implements ActionListener {
-	
 	private JPanel toolBar = new JPanel();
-	private JPanel workPane1 = new JPanel();
+	/*private JPanel workPane1 = new JPanel();*/
 	private JPanel workPane2 = new JPanel();
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
-	
-	private JLabel OldInfo = new JLabel("<html>原用户名：<br/>原性别：<br/>原电话号：<br/>原邮箱地址：<br/>原城市：</html>");
 	
 	private JLabel NewName = new JLabel("新用户名：");
 	private JLabel NewSex = new JLabel("新性别：");
@@ -48,9 +44,9 @@ public class FrmUserInfo extends JDialog implements ActionListener {
 		toolBar.add(btnCancel);
 		//按键居下
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		workPane1.add(OldInfo);
+		/*workPane1.add(OldInfo);
 		//原信息居上
-		this.getContentPane().add(workPane1, BorderLayout.NORTH);
+		this.getContentPane().add(workPane1, BorderLayout.NORTH);*/
 		workPane2.add(NewName);
 		workPane2.add(Name);
 		workPane2.add(NewSex);
@@ -63,7 +59,7 @@ public class FrmUserInfo extends JDialog implements ActionListener {
 		workPane2.add(City);
 		//新信息居中
 		this.getContentPane().add(workPane2, BorderLayout.CENTER);
-		this.setSize(320, 320);
+		this.setSize(320, 210);
 		// 窗口居中
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

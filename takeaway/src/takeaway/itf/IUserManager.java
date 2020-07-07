@@ -44,4 +44,10 @@ public interface IUserManager {
 	 * @param city   新城市
 	 */
 	public void updateinfo(String name,String sex,String phnum,String email,String city) throws BaseException;
+	/**
+	 * 显示当前用户信息
+	 * @return
+	 * @throws BaseException
+	 */
+	/*public String getinfo() throws BaseException;*/
 }

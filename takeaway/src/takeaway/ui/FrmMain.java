@@ -24,7 +24,6 @@ import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
 import takeaway.model.BeanStore;
-import takeaway.model.BeanUser;
 import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
@@ -44,7 +43,7 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_myorder=new JMenu("我的订单");
     private JMenu menu_function=new JMenu("我的功能");
     private JMenu menu_more=new JMenu("更多");
-    //创建菜单项
+  //创建菜单项
     private JMenuItem  menuItem_car=new JMenuItem("购物车");
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");
@@ -52,7 +51,7 @@ public class FrmMain extends JFrame implements ActionListener {
     
     private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");
     private JMenuItem  menuItem_reception=new JMenuItem("我的评价");
-    private JMenuItem  menuItem_info=new JMenuItem("我的信息");
+    private JMenuItem  menuItem_info=new JMenuItem("修改信息");
     private JMenuItem  menuItem_address=new JMenuItem("我的地址");
     
     private JMenuItem  menuItem_vip=new JMenuItem("我的会员");
@@ -60,78 +59,79 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_rider=new JMenuItem("成为骑手");
     private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");
     private JMenuItem  menuItem_logout=new JMenuItem("注销用户");
-
-	private FrmLogin dlgLogin=null;
+    
+    private FrmLogin dlgLogin=null;
 	//创建一个面板
 	private JPanel statusBar = new JPanel();
 	//商家列表
 	//表项标题
-	private Object tblStoreTitle[]=BeanStore.tableTitles;
+	private Object tblPlanTitle[]=BeanStore.tableTitles;
 	//二维表存储
-	private Object tblStoreData[][];
+	private Object tblPlanData[][];
 	//创建表格模型
-	DefaultTableModel tabStoreModel=new DefaultTableModel();
+	DefaultTableModel tabPlanModel=new DefaultTableModel();
 	//用tabProductModel为模型构造表格
-	private JTable dataTableStore=new JTable(tabStoreModel);
-	//商品列表
-	private Object tblProductTitle[]=BeanProduct.tblProductTitle;
-	private Object tblProductData[][];
-	DefaultTableModel tabProductModel=new DefaultTableModel();
-	private JTable dataTableProduct=new JTable(tabProductModel);
+	private JTable dataTablePlan=new JTable(tabPlanModel);
 	
-	private BeanStore curStore=null;
-	List<BeanStore> allStore=null;
-	List<BeanProduct> Products=null;
-	private void reloadStoreTable(){//这是测试数据，需要用实际数替换
+	//商品列表
+	private Object tblStepTitle[]=BeanProduct.tblStepTitle;
+	private Object tblStepData[][];
+	DefaultTableModel tabStepModel=new DefaultTableModel();
+	private JTable dataTableStep=new JTable(tabStepModel);
+	
+	private BeanStore curPlan=null;
+	List<BeanStore> allPlan=null;
+	List<BeanProduct> planSteps=null;
+	private void reloadPlanTable(){//这是测试数据，需要用实际数替换
 		try {
 			//加载所有的Store列表项
-			allStore=takeawayUtil.storeManager.loadAll();
+			allPlan=takeawayUtil.planManager.loadAll();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		tblStoreData =  new Object[allStore.size()][BeanStore.tableTitles.length];
-		for(int i=0;i<allStore.size();i++){
+		tblPlanData =  new Object[allPlan.size()][BeanStore.tableTitles.length];
+		for(int i=0;i<allPlan.size();i++){
 			for(int j=0;j<BeanStore.tableTitles.length;j++)
-				tblStoreData[i][j]=allStore.get(i).getCell(j);
+				tblPlanData[i][j]=allPlan.get(i).getCell(j);
 		}
-		tabStoreModel.setDataVector(tblStoreData,tblStoreTitle);
+		tabPlanModel.setDataVector(tblPlanData,tblPlanTitle);
+		this.dataTablePlan.validate();
 		//验证容器及其子组件
-		this.dataTableStore.validate();
+		this.dataTablePlan.repaint();
 		//重绘该组件
-		this.dataTableStore.repaint();
 	}
-	private void reloadProductTabel(int storeIdx){
-		if(storeIdx<0) return;
+	private void reloadPlanStepTabel(int planIdx){
+		if(planIdx<0) return;
 		//返回Store列表中该索引位置的Store
-		curStore=allStore.get(storeIdx);
+		curPlan=allPlan.get(planIdx);
 		try {
 			//加载该商家的商品列表
-			Products=takeawayUtil.productManager.loadProducts(curStore);
+			planSteps=takeawayUtil.stepManager.loadSteps(curPlan);
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		//定义一个二维对象，行大小为Products.size()，列大小为BeanProduct.tblProductTitle.length
-		tblProductData =new Object[Products.size()][BeanProduct.tblProductTitle.length];
-		for(int i=0;i<Products.size();i++){
-			for(int j=0;j<BeanProduct.tblProductTitle.length;j++)
+		tblStepData =new Object[planSteps.size()][BeanProduct.tblStepTitle.length];
+		for(int i=0;i<planSteps.size();i++){
+			for(int j=0;j<BeanProduct.tblStepTitle.length;j++)
 				//遍历输出每项
-				tblProductData[i][j]=Products.get(i).getCell(j);
+				tblStepData[i][j]=planSteps.get(i).getCell(j);
 		}
 		//将实例中的值替换为数组中的值，行索引为tblProductData，列索引为tblProductTitle
-		tabProductModel.setDataVector(tblProductData,tblProductTitle);
-		this.dataTableProduct.validate();
-		this.dataTableProduct.repaint();
+		tabStepModel.setDataVector(tblStepData,tblStepTitle);
+		this.dataTableStep.validate();
+		this.dataTableStep.repaint();
 	}
 	public FrmMain(){
 		//设置窗口最大化
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		//设置窗口标题
-		this.setTitle("外卖助手");
+		this.setTitle("个人计划管理系统");
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
-	    //将菜单项添加到菜单
+		//将菜单项添加到菜单
 		this.menu_myorder.add(this.menuItem_car); this.menuItem_car.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_history); this.menuItem_history.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_ing); this.menuItem_ing.addActionListener(this);
@@ -155,27 +155,27 @@ public class FrmMain extends JFrame implements ActionListener {
 	    //将创建的菜单栏加入主窗口
 	    this.setJMenuBar(menubar);
 	    //加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableStore), BorderLayout.WEST);
-	    //添加鼠标监听器组件
-	    this.dataTableStore.addMouseListener(new MouseAdapter (){
+	    this.getContentPane().add(new JScrollPane(this.dataTablePlan), BorderLayout.WEST);
+	  //添加鼠标监听器组件
+	    this.dataTablePlan.addMouseListener(new MouseAdapter (){
 			@Override
-			//在组件上单击鼠标按钮时调用函数
+	    	//在组件上单击鼠标按钮时调用函数
 			public void mouseClicked(MouseEvent e) {
 				//返回所选第一行的索引
-				int i=FrmMain.this.dataTableStore.getSelectedRow();
+				int i=FrmMain.this.dataTablePlan.getSelectedRow();
 				//若没有选择行则返回-1
 				if(i<0) {
 					return;
 				}
 				//加载对应商品列表
-				FrmMain.this.reloadProductTabel(i);
+				FrmMain.this.reloadPlanStepTabel(i);
 			}
 	    	
 	    });
 	    //加入一个显示dataTableProduct的滚动条到页面的中间
-	    this.getContentPane().add(new JScrollPane(this.dataTableProduct), BorderLayout.CENTER);
+	    this.getContentPane().add(new JScrollPane(this.dataTableStep), BorderLayout.CENTER);
 	    
-	    this.reloadStoreTable();
+	    this.reloadPlanTable();
 	    //创建一个状态栏在页面左端
 	    statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 	    JLabel label=new JLabel("您好!");//修改成   您好！+登陆用户名
@@ -191,7 +191,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_info){
-			FrmUserInfo dlg=new FrmUserInfo(this,"我的信息",true);
+			FrmUserInfo dlg=new FrmUserInfo(this,"请输入新信息",true);
 			dlg.setVisible(true);
 		}
 		/*else if(e.getSource()==this.menuItem_DeletePlan){
@@ -278,10 +278,6 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		else if(e.getSource()==this.menuItem_static1){
 			
-		}
-		else if(e.getSource()==this.menuItem_info){
-			FrmModifyPwd dlg=new FrmModifyPwd(this,"我的信息",true);
-			dlg.setVisible(true);
 		}*/
 		else if(e.getSource()==this.menuItem_modifyPwd){
 			FrmModifyPwd dlg=new FrmModifyPwd(this,"修改密码",true);

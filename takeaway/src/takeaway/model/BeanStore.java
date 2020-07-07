@@ -3,9 +3,9 @@ package takeaway.model;
 import java.util.Date;
 
 public class BeanStore {
-	public static final String[] tableTitles={"商品","商家","分类","价格","优惠价"};
-	/*
-	 *请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
+	public static final String[] tableTitles={"序号","名称","步骤数","已完成数"};
+	/**
+	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
 	 */
 	private int planid;
 	private String userid;

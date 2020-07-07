@@ -75,4 +75,5 @@ public class BeanUser {
 		this.createDate = createDate;
 	}
 	public static BeanUser currentLoginUser=null;
+
 }

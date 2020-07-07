@@ -50,7 +50,7 @@ public class UserManager implements IUserManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
+		}
 		return user;
 	}
 	
@@ -136,5 +136,73 @@ public class UserManager implements IUserManager {
 	@Override
 	public void updateinfo(String name,String sex,String phnum,String email,String city) throws BaseException {
 		// TODO Auto-generated method stub
+		if(!sex.equals("男")&&!sex.equals("女"))
+			throw new BaseException("请在性别栏输入“男”或“女”");
+		Connection conn = null;
+	    String userid = BeanUser.currentLoginUser.getUserid();
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "update user_info set user_name=?,user_sex=?,user_phnum=?,user_email=?,user_city=? where user_no=?";
+	    	java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, name);
+	    	pst.setString(2, sex);
+	    	pst.setString(3, phnum);
+	    	pst.setString(4, email);
+	    	pst.setString(5, city);
+	    	pst.setString(6, userid);
+	    	if (pst.executeUpdate() == 1) {
+	    		System.out.println("修改成功");
+	    	} else {
+	    		throw new RuntimeException("修改失败");
+	    	}
+	    	pst.close();
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+	    		throw new DbException(e);
+	    	} finally {
+	    		if (conn != null)
+	    			try {
+	    				conn.close();
+	    			} catch (SQLException e) {
+	    				e.printStackTrace();
+	    			}
+	    	}
 	}
+	
+	/*public String getinfo() throws BaseException {
+		Connection conn = null;
+		String userid = BeanUser.currentLoginUser.getUserid();
+		String name=null,sex=null,phnum=null,email=null,city=null;
+		String result;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select user_name,user_sex,user_phnum,user_email,user_city from user_info where user_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userid);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if (rs.next()) {
+		        name = rs.getString(1);
+		        sex = rs.getString(2);
+		        phnum = rs.getString(3);
+		        email = rs.getString(4);
+		        city = rs.getString(5);
+		    }
+		    result ="原用户名："+name+"\n原性别："+sex+"\n原电话号："+phnum+"\n原邮箱地址："+email+"\n原城市："+city;
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}*/
+
 }

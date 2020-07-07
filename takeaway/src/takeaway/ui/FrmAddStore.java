@@ -15,24 +15,19 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import takeaway.takeawayUtil;
-import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
 
 
-public class FrmAddProduct extends JDialog implements ActionListener {
-	public BeanStore plan=null;
+public class FrmAddStore extends JDialog implements ActionListener {
+	
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
-	private JLabel labelName = new JLabel("计划步骤名称：");
-	private JLabel labelPlanStartDate = new JLabel("计划开始日期：");
-	private JLabel labelPlanFinishDate = new JLabel("计划完成日期：");
+	private JLabel labelName = new JLabel("名称：");
 	
-	private JTextField edtPlanStartDate = new JTextField(20);
-	private JTextField edtPlanFinishDate = new JTextField(20);
 	private JTextField edtName = new JTextField(20);
-	public FrmAddProduct(JFrame f, String s, boolean b) {
+	public FrmAddStore(JFrame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnOk);
@@ -40,12 +35,8 @@ public class FrmAddProduct extends JDialog implements ActionListener {
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 		workPane.add(labelName);
 		workPane.add(edtName);
-		workPane.add(labelPlanStartDate);
-		workPane.add(edtPlanStartDate);
-		workPane.add(labelPlanFinishDate);
-		workPane.add(edtPlanFinishDate);
 		this.getContentPane().add(workPane, BorderLayout.CENTER);
-		this.setSize(380, 180);
+		this.setSize(320, 180);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -65,16 +56,13 @@ public class FrmAddProduct extends JDialog implements ActionListener {
 		}
 		else if(e.getSource()==this.btnOk){
 			String name=this.edtName.getText();
-			String sd=this.edtPlanStartDate.getText();
-			String fd=this.edtPlanFinishDate.getText();
 			try {
-				takeawayUtil.stepManager.add(plan,name,sd,fd);
+				takeawayUtil.planManager.addPlan(name);
 				this.setVisible(false);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-		
 		}
 		
 	}

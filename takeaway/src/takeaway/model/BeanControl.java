@@ -1,7 +1,5 @@
 package takeaway.model;
 
-import java.util.Date;
-
 public class BeanControl {
 	private String ygno;
 	private String pwd;

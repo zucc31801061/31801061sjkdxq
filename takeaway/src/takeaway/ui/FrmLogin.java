@@ -56,7 +56,8 @@ public class FrmLogin extends JDialog implements ActionListener {
 		// ∆¡ƒªæ”÷–œ‘ æ
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		this.setLocation((int) (width - this.getWidth()) / 2,(int) (height - this.getHeight()) / 2);
+		this.setLocation((int) (width - this.getWidth()) / 2,
+				(int) (height - this.getHeight()) / 2);
 
 		this.validate();
 

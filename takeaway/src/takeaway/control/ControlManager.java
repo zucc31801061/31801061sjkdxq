@@ -2,8 +2,6 @@ package takeaway.control;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import takeaway.itf.IControlManager;
 import takeaway.model.BeanControl;
@@ -12,7 +10,7 @@ import takeaway.util.BusinessException;
 import takeaway.util.DBUtil;
 import takeaway.util.DbException;
 
-public class ControlManager implements IControlManager {
+public class ControlManager implements IControlManager{
 	@Override
 	public BeanControl reg(String userid, String pwd,String pwd2) throws BaseException {
 		// TODO Auto-generated method stub

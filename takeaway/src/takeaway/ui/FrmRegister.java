@@ -52,8 +52,7 @@ public class FrmRegister extends JDialog implements ActionListener {
 		this.setSize(300, 180);
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		this.setLocation((int) (width - this.getWidth()) / 2+20,
-				(int) (height - this.getHeight()) / 2+30);
+		this.setLocation((int) (width - this.getWidth()) / 2+20,(int) (height - this.getHeight()) / 2+30);
 		this.validate();
 		
 		this.btnCancel.addActionListener(this);
@@ -72,7 +71,7 @@ public class FrmRegister extends JDialog implements ActionListener {
 			if(control1.equals(command)) {
 				try {
 					BeanControl control=takeawayUtil.controlManager.reg(userid,pwd1,pwd2);
-						this.setVisible(false);
+					this.setVisible(false);
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"´íÎó",JOptionPane.ERROR_MESSAGE);
 					return;
@@ -81,16 +80,12 @@ public class FrmRegister extends JDialog implements ActionListener {
 			else {
 				try {
 					BeanUser user=takeawayUtil.userManager.reg(userid,pwd1,pwd2);
-						this.setVisible(false);
+					this.setVisible(false);
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(),"´íÎó",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-			}
-		}
-			
-		
+			}	
+		}	
 	}
-
-
 }

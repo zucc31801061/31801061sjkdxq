@@ -7,7 +7,7 @@ import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
 public interface IProductManager {
-	public List<BeanProduct> loadProducts(BeanStore plan)throws BaseException;
+	public List<BeanProduct> loadSteps(BeanStore plan)throws BaseException;
 	
 	/**
 	 * 添加步骤
@@ -29,7 +29,7 @@ public interface IProductManager {
 	 * @param step
 	 * @throws BaseException
 	 */
-	public void deleteProduct(BeanProduct step)throws BaseException;
+	public void deleteStep(BeanProduct step)throws BaseException;
 
 	/**
 	 * 设置当前步骤的实际开始时间，及对应的计划表中已开始步骤数量
@@ -37,13 +37,13 @@ public interface IProductManager {
 	 * @param step
 	 * @throws BaseException
 	 */
-	public void startProduct(BeanProduct step)throws BaseException;
+	public void startStep(BeanProduct step)throws BaseException;
 	/**
 	 * 设置当前步骤的实际完成时间，及对应的计划表中已完成步骤数量
 	 * @param step
 	 * @throws BaseException
 	 */
-	public void finishProduct(BeanProduct step)throws BaseException;
+	public void finishStep(BeanProduct step)throws BaseException;
 	/**
 	 * 调整当前步骤的顺序号
 	 * 注意：数据库表中，plan_id,step_order上建立了唯一索引，调整当前步骤的序号值和上一步骤的序号值时不能出现序号值一样的情况
