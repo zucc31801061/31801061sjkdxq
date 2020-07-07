@@ -80,7 +80,7 @@ public class ProductManager implements IProductManager {
 	}
 
 	@Override
-	public List<BeanProduct> loadSteps(BeanStore plan) throws BaseException {
+	public List<BeanProduct> loadProducts(BeanStore plan) throws BaseException {
 		List<BeanProduct> result = new ArrayList<BeanProduct>();
 		/*Connection conn = null;
 	    try {

@@ -43,7 +43,7 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_myorder=new JMenu("我的订单");
     private JMenu menu_function=new JMenu("我的功能");
     private JMenu menu_more=new JMenu("更多");
-  //创建菜单项
+    //创建菜单项
     private JMenuItem  menuItem_car=new JMenuItem("购物车");
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");
@@ -64,70 +64,70 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JPanel statusBar = new JPanel();
 	//商家列表
 	//表项标题
-	private Object tblPlanTitle[]=BeanStore.tableTitles;
+	private Object tblStoreTitle[]=BeanStore.tableTitles;
 	//二维表存储
-	private Object tblPlanData[][];
+	private Object tblStoreData[][];
 	//创建表格模型
-	DefaultTableModel tabPlanModel=new DefaultTableModel();
+	DefaultTableModel tabStoreModel=new DefaultTableModel();
 	//用tabProductModel为模型构造表格
-	private JTable dataTablePlan=new JTable(tabPlanModel);
+	private JTable dataTableStore=new JTable(tabStoreModel);
 	
 	//商品列表
-	private Object tblStepTitle[]=BeanProduct.tblStepTitle;
-	private Object tblStepData[][];
-	DefaultTableModel tabStepModel=new DefaultTableModel();
-	private JTable dataTableStep=new JTable(tabStepModel);
+	private Object tblProductTitle[]=BeanProduct.tblProductTitle;
+	private Object tblProductData[][];
+	DefaultTableModel tabProductModel=new DefaultTableModel();
+	private JTable dataTableProduct=new JTable(tabProductModel);
 	
-	private BeanStore curPlan=null;
-	List<BeanStore> allPlan=null;
-	List<BeanProduct> planSteps=null;
-	private void reloadPlanTable(){//这是测试数据，需要用实际数替换
+	private BeanStore curStore=null;
+	List<BeanStore> allStore=null;
+	List<BeanProduct> Product=null;
+	private void reloadStoreTable(){//这是测试数据，需要用实际数替换
 		try {
 			//加载所有的Store列表项
-			allPlan=takeawayUtil.planManager.loadAll();
+			allStore=takeawayUtil.storeManager.loadAll();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		tblPlanData =  new Object[allPlan.size()][BeanStore.tableTitles.length];
-		for(int i=0;i<allPlan.size();i++){
+		tblStoreData =  new Object[allStore.size()][BeanStore.tableTitles.length];
+		for(int i=0;i<allStore.size();i++){
 			for(int j=0;j<BeanStore.tableTitles.length;j++)
-				tblPlanData[i][j]=allPlan.get(i).getCell(j);
+				tblStoreData[i][j]=allStore.get(i).getCell(j);
 		}
-		tabPlanModel.setDataVector(tblPlanData,tblPlanTitle);
-		this.dataTablePlan.validate();
+		tabStoreModel.setDataVector(tblStoreData,tblStoreTitle);
+		this.dataTableStore.validate();
 		//验证容器及其子组件
-		this.dataTablePlan.repaint();
+		this.dataTableStore.repaint();
 		//重绘该组件
 	}
-	private void reloadPlanStepTabel(int planIdx){
-		if(planIdx<0) return;
+	private void reloadProductTabel(int StoreIdx){
+		if(StoreIdx<0) return;
 		//返回Store列表中该索引位置的Store
-		curPlan=allPlan.get(planIdx);
+		curStore=allStore.get(StoreIdx);
 		try {
 			//加载该商家的商品列表
-			planSteps=takeawayUtil.stepManager.loadSteps(curPlan);
+			Product=takeawayUtil.productManager.loadProducts(curStore);
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		//定义一个二维对象，行大小为Products.size()，列大小为BeanProduct.tblProductTitle.length
-		tblStepData =new Object[planSteps.size()][BeanProduct.tblStepTitle.length];
-		for(int i=0;i<planSteps.size();i++){
-			for(int j=0;j<BeanProduct.tblStepTitle.length;j++)
+		tblProductData =new Object[Product.size()][BeanProduct.tblProductTitle.length];
+		for(int i=0;i<Product.size();i++){
+			for(int j=0;j<BeanProduct.tblProductTitle.length;j++)
 				//遍历输出每项
-				tblStepData[i][j]=planSteps.get(i).getCell(j);
+				tblProductData[i][j]=Product.get(i).getCell(j);
 		}
 		//将实例中的值替换为数组中的值，行索引为tblProductData，列索引为tblProductTitle
-		tabStepModel.setDataVector(tblStepData,tblStepTitle);
-		this.dataTableStep.validate();
-		this.dataTableStep.repaint();
+		tabProductModel.setDataVector(tblProductData,tblProductTitle);
+		this.dataTableProduct.validate();
+		this.dataTableProduct.repaint();
 	}
 	public FrmMain(){
 		//设置窗口最大化
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		//设置窗口标题
-		this.setTitle("个人计划管理系统");
+		this.setTitle("外卖助手");
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
 		//将菜单项添加到菜单
@@ -153,27 +153,27 @@ public class FrmMain extends JFrame implements ActionListener {
 	    //将创建的菜单栏加入主窗口
 	    this.setJMenuBar(menubar);
 	    //加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTablePlan), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTableStore), BorderLayout.WEST);
 	  //添加鼠标监听器组件
-	    this.dataTablePlan.addMouseListener(new MouseAdapter (){
+	    this.dataTableStore.addMouseListener(new MouseAdapter (){
 			@Override
 	    	//在组件上单击鼠标按钮时调用函数
 			public void mouseClicked(MouseEvent e) {
 				//返回所选第一行的索引
-				int i=FrmMain.this.dataTablePlan.getSelectedRow();
+				int i=FrmMain.this.dataTableStore.getSelectedRow();
 				//若没有选择行则返回-1
 				if(i<0) {
 					return;
 				}
 				//加载对应商品列表
-				FrmMain.this.reloadPlanStepTabel(i);
+				FrmMain.this.reloadProductTabel(i);
 			}
 	    	
 	    });
 	    //加入一个显示dataTableProduct的滚动条到页面的中间
-	    this.getContentPane().add(new JScrollPane(this.dataTableStep), BorderLayout.CENTER);
+	    this.getContentPane().add(new JScrollPane(this.dataTableProduct), BorderLayout.CENTER);
 	    
-	    this.reloadPlanTable();
+	    this.reloadStoreTable();
 	    //创建一个状态栏在页面左端
 	    statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 	    JLabel label=new JLabel("您好!");//修改成   您好！+登陆用户名
@@ -192,83 +192,82 @@ public class FrmMain extends JFrame implements ActionListener {
 			FrmUserInfo dlg=new FrmUserInfo(this,"请输入新信息",true);
 			dlg.setVisible(true);
 		}
-		/*else if(e.getSource()==this.menuItem_DeletePlan){
-			if(this.curPlan==null) {
+		/*else if(e.getSource()==this.menuItem_DeleteStore){
+			if(this.curStore==null) {
 				JOptionPane.showMessageDialog(null, "请选择计划", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.planManager.deletePlan(this.curPlan);
+				takeawayUtil.StoreManager.deleteStore(this.curStore);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-		}
-		else if(e.getSource()==this.menuItem_AddStep){
-			FrmAddProduct dlg=new FrmAddProduct(this,"添加步骤",true);
-			dlg.plan=curPlan;
+		}*/
+		else if(e.getSource()==this.menuItem_store){
+			FrmAddStore dlg=new FrmAddStore(this,"成为商家",true);
 			dlg.setVisible(true);
-		}
-		else if(e.getSource()==this.menuItem_DeleteStep){
-			int i=FrmMain.this.dataTableStep.getSelectedRow();
+		}/*
+		else if(e.getSource()==this.menuItem_DeleteProduct){
+			int i=FrmMain.this.dataTableProduct.getSelectedRow();
 			if(i<0) {
 				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.stepManager.deleteStep(this.planSteps.get(i));
+				takeawayUtil.ProductManager.deleteProduct(this.Product.get(i));
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
-		else if(e.getSource()==this.menuItem_startStep){
-			int i=FrmMain.this.dataTableStep.getSelectedRow();
+		else if(e.getSource()==this.menuItem_startProduct){
+			int i=FrmMain.this.dataTableProduct.getSelectedRow();
 			if(i<0) {
 				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.stepManager.startStep(this.planSteps.get(i));
+				takeawayUtil.ProductManager.startProduct(this.Product.get(i));
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
-		else if(e.getSource()==this.menuItem_finishStep){
-			int i=FrmMain.this.dataTableStep.getSelectedRow();
+		else if(e.getSource()==this.menuItem_finishProduct){
+			int i=FrmMain.this.dataTableProduct.getSelectedRow();
 			if(i<0) {
 				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.stepManager.finishStep(this.planSteps.get(i));
+				takeawayUtil.ProductManager.finishProduct(this.Product.get(i));
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
-		else if(e.getSource()==this.menuItem_moveUpStep){
-			int i=FrmMain.this.dataTableStep.getSelectedRow();
+		else if(e.getSource()==this.menuItem_moveUpProduct){
+			int i=FrmMain.this.dataTableProduct.getSelectedRow();
 			if(i<0) {
 				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.stepManager.moveUp(this.planSteps.get(i));
+				takeawayUtil.ProductManager.moveUp(this.Product.get(i));
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
-		else if(e.getSource()==this.menuItem_moveDownStep){
-			int i=FrmMain.this.dataTableStep.getSelectedRow();
+		else if(e.getSource()==this.menuItem_moveDownProduct){
+			int i=FrmMain.this.dataTableProduct.getSelectedRow();
 			if(i<0) {
 				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
-				takeawayUtil.stepManager.moveDown(this.planSteps.get(i));
+				takeawayUtil.ProductManager.moveDown(this.Product.get(i));
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;

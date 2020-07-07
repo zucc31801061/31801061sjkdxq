@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import takeaway.takeawayUtil;
+import takeaway.model.BeanControl;
+import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
 
 
@@ -22,21 +24,23 @@ public class FrmAddStore extends JDialog implements ActionListener {
 	
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
-	private Button btnOk = new Button("确定");
-	private Button btnCancel = new Button("取消");
-	private JLabel labelName = new JLabel("名称：");
+	private Button becomesj = new Button("成为商家");
+	private Button alreadysj = new Button("已是商家");
+	private Button cancel = new Button("取消");
+	private JLabel sjname = new JLabel("请输入商家名：");
+	private JTextField edtsjname = new JTextField(20);
 	
-	private JTextField edtName = new JTextField(20);
 	public FrmAddStore(JFrame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		toolBar.add(btnOk);
-		toolBar.add(btnCancel);
+		toolBar.add(becomesj);
+		toolBar.add(alreadysj);
+		toolBar.add(cancel);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		workPane.add(labelName);
-		workPane.add(edtName);
+		workPane.add(sjname);
+		workPane.add(edtsjname);
 		this.getContentPane().add(workPane, BorderLayout.CENTER);
-		this.setSize(320, 180);
+		this.setSize(320, 150);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -44,25 +48,36 @@ public class FrmAddStore extends JDialog implements ActionListener {
 				(int) (height - this.getHeight()) / 2);
 
 		this.validate();
-		this.btnOk.addActionListener(this);
-		this.btnCancel.addActionListener(this);
+		this.becomesj.addActionListener(this);
+		this.alreadysj.addActionListener(this);
+		this.cancel.addActionListener(this);
 		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==this.btnCancel) {
+		if(e.getSource()==this.cancel) {
 			this.setVisible(false);
 			return;
 		}
-		else if(e.getSource()==this.btnOk){
-			String name=this.edtName.getText();
+		else if(e.getSource()==this.becomesj){
+			String name=this.edtsjname.getText();
 			try {
-				takeawayUtil.planManager.addPlan(name);
-				this.setVisible(false);
+				takeawayUtil.storeManager.addStore(name);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+		}
+		else if(e.getSource()==this.alreadysj){
+			try {
+				BeanStore.currentLoginstore= takeawayUtil.storeManager.login();
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
+			FrmStoreMain sm=new FrmStoreMain();
+			sm.setVisible(true);
 		}
 		
 	}

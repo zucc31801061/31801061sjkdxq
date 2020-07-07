@@ -18,15 +18,15 @@ public class UserManager implements IUserManager {
 		// TODO Auto-generated method stub
 		BeanUser user = new BeanUser();
 		if(userid.isEmpty())
-			throw new BaseException("用户名为空");
+			throw new BusinessException("用户名为空");
 		if(!pwd.equals(pwd2)||pwd.isEmpty()||pwd2.isEmpty())
-			throw new BaseException("请输入相同的密码");
+			throw new BusinessException("请输入相同的密码");
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
 			String sql = "select * from user_info where user_no = ?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,user.getUserid());
+			pst.setString(1,userid);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(rs.next()) throw new BusinessException("用户已存在");
 			rs.close();
@@ -150,11 +150,6 @@ public class UserManager implements IUserManager {
 	    	pst.setString(4, email);
 	    	pst.setString(5, city);
 	    	pst.setString(6, userid);
-	    	if (pst.executeUpdate() == 1) {
-	    		System.out.println("修改成功");
-	    	} else {
-	    		throw new RuntimeException("修改失败");
-	    	}
 	    	pst.close();
 	    	} catch (SQLException e) {
 	    		e.printStackTrace();

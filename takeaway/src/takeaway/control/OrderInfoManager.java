@@ -1,25 +1,21 @@
 package takeaway.control;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import takeaway.itf.IStoreManager;
+import takeaway.itf.IOrderInfoManager;
+import takeaway.model.BeanOrder;
+import takeaway.model.BeanOrderInfo;
 import takeaway.model.BeanStore;
-import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
-import takeaway.util.BusinessException;
-import takeaway.util.DBUtil;
-import takeaway.util.DbException;
 
-public class StoreManager implements IStoreManager {
+public class OrderInfoManager implements IOrderInfoManager{
 	@Override
-	public BeanStore addStore(String name) throws BaseException {
+	public BeanOrderInfo addOrderInfo(String name) throws BaseException {
 		// TODO Auto-generated method stub
-		if(name.isEmpty()) 
+		/*if(name.isEmpty()) 
 			throw new BusinessException("商家名为空");
-		BeanStore store=new BeanStore();
+		BeanOrder store=new BeanOrder();
 		String userno = BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
@@ -50,50 +46,21 @@ public class StoreManager implements IStoreManager {
 					e.printStackTrace();
 				}
 		}
-		return store;
+		return store;*/
+		return null; 
 	}
 
 	@Override
-	public BeanStore login() throws BaseException {
-		BeanStore store=new BeanStore();
-		String userno = BeanUser.currentLoginUser.getUserid();
-		Connection conn=null;
-		try {
-			conn=DBUtil.getConnection();
-			String sql="select sj_no from sj_info where sj_no=?";
-			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,userno);
-			java.sql.ResultSet rs=pst.executeQuery();
-			if(!rs.next()) throw new BusinessException("您还不是商家");
-			store.setsjno(rs.getString(1));
-			rs.close();
-			pst.close();
-			return store;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new DbException(e);
-		}
-		finally{
-			if(conn!=null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-	}
-	@Override
-	public List<BeanStore> loadAll() throws BaseException {
-		List<BeanStore> result=new ArrayList<BeanStore>();
-		Connection conn = null;
+	public List<BeanOrderInfo> loadOrderInfo(BeanOrder order) throws BaseException {
+		List<BeanOrderInfo> result=new ArrayList<BeanOrderInfo>();
+		/*Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
 			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info order by sj_star DESC,sj_avgxf";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
-		    	BeanStore p=new BeanStore();
+		    	BeanOrder p=new BeanOrder();
 		        p.setsjname(rs.getString(1));
 		        p.setsjstar(rs.getInt(2));
 		        p.setsjavgxf(rs.getFloat(3));
@@ -113,12 +80,12 @@ public class StoreManager implements IStoreManager {
 		        } catch (SQLException e) {
 		        	e.printStackTrace();
 		        }
-		}
+		}*/
 		return result;
 	}
 
 	@Override
-	public void deleteStore(BeanStore plan) throws BaseException {
+	public void deleteOrderInfo(BeanOrderInfo plan) throws BaseException {
 		/*Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
@@ -151,5 +118,4 @@ public class StoreManager implements IStoreManager {
 				}
 		}*/
 	}
-
 }

@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import takeaway.itf.IStoreManager;
+import takeaway.itf.IOrderManager;
+import takeaway.model.BeanOrder;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -13,13 +14,13 @@ import takeaway.util.BusinessException;
 import takeaway.util.DBUtil;
 import takeaway.util.DbException;
 
-public class StoreManager implements IStoreManager {
+public class OrderManager implements IOrderManager{
 	@Override
-	public BeanStore addStore(String name) throws BaseException {
+	public BeanOrder addOrder(String name) throws BaseException {
 		// TODO Auto-generated method stub
-		if(name.isEmpty()) 
+		/*if(name.isEmpty()) 
 			throw new BusinessException("商家名为空");
-		BeanStore store=new BeanStore();
+		BeanOrder store=new BeanOrder();
 		String userno = BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
@@ -50,54 +51,30 @@ public class StoreManager implements IStoreManager {
 					e.printStackTrace();
 				}
 		}
-		return store;
+		return store;*/
+		return null; 
 	}
 
 	@Override
-	public BeanStore login() throws BaseException {
-		BeanStore store=new BeanStore();
-		String userno = BeanUser.currentLoginUser.getUserid();
-		Connection conn=null;
-		try {
-			conn=DBUtil.getConnection();
-			String sql="select sj_no from sj_info where sj_no=?";
-			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,userno);
-			java.sql.ResultSet rs=pst.executeQuery();
-			if(!rs.next()) throw new BusinessException("您还不是商家");
-			store.setsjno(rs.getString(1));
-			rs.close();
-			pst.close();
-			return store;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new DbException(e);
-		}
-		finally{
-			if(conn!=null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-	}
-	@Override
-	public List<BeanStore> loadAll() throws BaseException {
-		List<BeanStore> result=new ArrayList<BeanStore>();
+	public List<BeanOrder> loadAll() throws BaseException {
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String sjno = BeanStore.currentLoginstore.getsjno();
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info order by sj_star DESC,sj_avgxf";
+			String sql = "select user_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where sj_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, sjno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
-		    	BeanStore p=new BeanStore();
-		        p.setsjname(rs.getString(1));
-		        p.setsjstar(rs.getInt(2));
-		        p.setsjavgxf(rs.getFloat(3));
-		        p.setsjsumxl(rs.getFloat(4));
+		    	BeanOrder p=new BeanOrder();
+		        p.setuserno(rs.getString(1));
+		        p.setqsno(rs.getString(2));
+		        p.setddzt(rs.getString(3));
+		        p.setmjno(rs.getString(4));
+		        p.setyhno(rs.getString(5));
+		        p.setddstartmoney(rs.getFloat(6));
+		        p.setddendmoney(rs.getFloat(7));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -118,7 +95,7 @@ public class StoreManager implements IStoreManager {
 	}
 
 	@Override
-	public void deleteStore(BeanStore plan) throws BaseException {
+	public void deleteOrder(BeanOrder plan) throws BaseException {
 		/*Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
@@ -151,5 +128,4 @@ public class StoreManager implements IStoreManager {
 				}
 		}*/
 	}
-
 }

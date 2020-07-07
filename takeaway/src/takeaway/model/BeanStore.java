@@ -54,5 +54,6 @@ public class BeanStore {
 		else
 		    return "";
 	}
+	public static BeanStore currentLoginstore=null;
 
 }

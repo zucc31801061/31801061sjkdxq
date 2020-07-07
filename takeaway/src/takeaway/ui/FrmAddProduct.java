@@ -68,7 +68,7 @@ public class FrmAddProduct extends JDialog implements ActionListener {
 			String sd=this.edtPlanStartDate.getText();
 			String fd=this.edtPlanFinishDate.getText();
 			try {
-				takeawayUtil.stepManager.add(plan,name,sd,fd);
+				takeawayUtil.productManager.add(plan,name,sd,fd);
 				this.setVisible(false);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);

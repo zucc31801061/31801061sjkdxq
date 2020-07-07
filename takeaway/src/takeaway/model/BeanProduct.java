@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BeanProduct {
-	public static final String[] tblStepTitle={"序号","名称","计划开始时间","计划完成时间","实际开始时间","实际完成时间"};
+	public static final String[] tblProductTitle={"序号","名称","计划开始时间","计划完成时间","实际开始时间","实际完成时间"};
 	/**
 	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
 	 */
