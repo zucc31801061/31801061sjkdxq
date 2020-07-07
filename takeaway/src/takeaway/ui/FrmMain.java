@@ -51,14 +51,13 @@ public class FrmMain extends JFrame implements ActionListener {
     
     private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");
     private JMenuItem  menuItem_reception=new JMenuItem("我的评价");
-    private JMenuItem  menuItem_info=new JMenuItem("修改信息");
+    private JMenuItem  menuItem_info=new JMenuItem("修改信息");//已完成
     private JMenuItem  menuItem_address=new JMenuItem("我的地址");
     
     private JMenuItem  menuItem_vip=new JMenuItem("我的会员");
     private JMenuItem  menuItem_store=new JMenuItem("成为商家");
     private JMenuItem  menuItem_rider=new JMenuItem("成为骑手");
-    private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");
-    private JMenuItem  menuItem_logout=new JMenuItem("注销用户");
+    private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");//已完成
     
     private FrmLogin dlgLogin=null;
 	//创建一个面板
@@ -146,7 +145,6 @@ public class FrmMain extends JFrame implements ActionListener {
 	    this.menu_more.add(this.menuItem_store); this.menuItem_store.addActionListener(this);
 	    this.menu_more.add(this.menuItem_rider); this.menuItem_rider.addActionListener(this);
 	    this.menu_more.add(this.menuItem_modifyPwd); this.menuItem_modifyPwd.addActionListener(this);
-	    this.menu_more.add(this.menuItem_logout); this.menuItem_logout.addActionListener(this);
 	    //将菜单添加到菜单栏
 	    menubar.add(menu_order);
 	    menubar.add(menu_myorder);

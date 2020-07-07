@@ -18,7 +18,7 @@ public class StoreManager implements IStoreManager {
 	@Override
 	public BeanStore addPlan(String name) throws BaseException {
 		// TODO Auto-generated method stub
-		if(name.isEmpty()) throw new BusinessException("计划名为空");
+		/*if(name.isEmpty()) throw new BusinessException("计划名为空");
 		BeanStore result=new BeanStore();
 		String userid = BeanUser.currentLoginUser.getUserid();
 		int planorder;
@@ -68,27 +68,25 @@ public class StoreManager implements IStoreManager {
 					e.printStackTrace();
 				}
 		}
-		return result;
+		return result;*/
+		return null;
 	}
 
 	@Override
 	public List<BeanStore> loadAll() throws BaseException {
 		List<BeanStore> result=new ArrayList<BeanStore>();
-		BeanStore p=new BeanStore();
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select plan_name,plan_order,step_count,finished_step_count,plan_id from tbl_plan where user_id=?";
+			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
-		        p.setplanname(rs.getString(1));
-		        p.setplanorder(rs.getInt(2));
-		        p.setstepcount(rs.getInt(3));
-		        p.setfinishstep(rs.getInt(4));
-		        p.setplanid(rs.getInt(5));
-		        p.setuserid(BeanUser.currentLoginUser.getUserid());
+		    	BeanStore p=new BeanStore();
+		        p.setsjname(rs.getString(1));
+		        p.setsjstar(rs.getInt(2));
+		        p.setsjavgxf(rs.getFloat(3));
+		        p.setsjsumxl(rs.getFloat(4));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -110,7 +108,7 @@ public class StoreManager implements IStoreManager {
 
 	@Override
 	public void deletePlan(BeanStore plan) throws BaseException {
-		Connection conn=null;
+		/*Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
 		    String sql = "select finished_step_count,step_count from tbl_plan where user_id=? and plan_order=?";
@@ -140,7 +138,7 @@ public class StoreManager implements IStoreManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		}
+		}*/
 	}
 
 }

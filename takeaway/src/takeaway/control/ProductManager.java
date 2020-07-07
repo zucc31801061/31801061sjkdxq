@@ -23,7 +23,7 @@ public class ProductManager implements IProductManager {
 	@Override
 	public void add(BeanStore plan, String name, String planstartdate,
 			String planfinishdate) throws BaseException {
-		if(name.isEmpty()) throw new BusinessException("计划名为空");
+		/*if(name.isEmpty()) throw new BusinessException("计划名为空");
 		try {
 			sdf.parse(planstartdate);
 		    sdf.parse(planfinishdate);
@@ -76,13 +76,13 @@ public class ProductManager implements IProductManager {
 		        } catch (SQLException e) {
 		          e.printStackTrace();
 		        }
-		}
+		}*/
 	}
 
 	@Override
 	public List<BeanProduct> loadSteps(BeanStore plan) throws BaseException {
 		List<BeanProduct> result = new ArrayList<BeanProduct>();
-		Connection conn = null;
+		/*Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
 	    	String sql = "SELECT step_order, step_name, plan_begin_time, plan_end_time,real_begin_time, real_end_time, step_id "
@@ -117,14 +117,14 @@ public class ProductManager implements IProductManager {
 	    		} catch (SQLException e) {
 	    			e.printStackTrace();
 	    		}
-	    }
+	    }*/
 	    return result;
 	}
 
 	@Override
 	public void deleteStep(BeanProduct step) throws BaseException {
 		// TODO Auto-generated method stub
-		Connection conn = null;
+		/*Connection conn = null;
 	    try {
 	      conn = DBUtil.getConnection();
 	      String sql = "DELETE from tbl_step WHERE step_id=?";
@@ -183,13 +183,13 @@ public class ProductManager implements IProductManager {
 	        } catch (SQLException e) {
 	          e.printStackTrace();
 	        }
-	    }
+	    }*/
 	}
 
 	@Override
 	public void startStep(BeanProduct step) throws BaseException {
 		// TODO Auto-generated method stub
-		Connection conn = null;
+		/*Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
 	    	String sql = "UPDATE tbl_step SET real_begin_time=? WHERE step_id=?";
@@ -228,13 +228,13 @@ public class ProductManager implements IProductManager {
 	    			} catch (SQLException e) {
 	    				e.printStackTrace();
 	    			}
-	    	}
+	    	}*/
 	}
 
 	@Override
 	public void finishStep(BeanProduct step) throws BaseException {
 		// TODO Auto-generated method stub
-		Connection conn = null;
+		/*Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
 	    	String sql = "UPDATE tbl_step SET real_end_time=? WHERE step_id=?";
@@ -273,13 +273,13 @@ public class ProductManager implements IProductManager {
 	    		} catch (SQLException e) {
 	    			e.printStackTrace();
 	    		}
-	    }
+	    }*/
 	}
 
 	@Override
 	public void moveUp(BeanProduct step) throws BaseException {
 		// TODO Auto-generated method stub
-		int oldorder = step.getSteporder();
+		/*int oldorder = step.getSteporder();
 	    if (oldorder < 2) {
 	    	throw new BusinessException("步骤过少无法移动");
 	    }
@@ -318,12 +318,12 @@ public class ProductManager implements IProductManager {
 	        } catch (SQLException e) {
 	        	e.printStackTrace();
 	        }
-	    }
+	    }*/
 	}
 
 	@Override
 	public void moveDown(BeanProduct step) throws BaseException {
-		// TODO Auto-generated method stub
+		/*// TODO Auto-generated method stub
 		int oldorder = step.getSteporder();
 	    int targetorder = oldorder + 1;
 	    Connection conn = null;
@@ -374,7 +374,7 @@ public class ProductManager implements IProductManager {
 	    		} catch (SQLException e) {
 	    			e.printStackTrace();
 	    		}
-	    }
+	    }*/
 	}
 
 }
