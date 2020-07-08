@@ -118,7 +118,7 @@ public class StoreManager implements IStoreManager {
 	}
 
 	@Override
-	public void deleteStore(BeanStore plan) throws BaseException {
+	public void deleteStore(BeanStore store) throws BaseException {
 		/*Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();

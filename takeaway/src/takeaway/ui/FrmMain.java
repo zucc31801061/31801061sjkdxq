@@ -24,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
 import takeaway.model.BeanStore;
+import takeaway.model.BeanUser;
 import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
@@ -44,18 +45,16 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_function=new JMenu("我的功能");
     private JMenu menu_more=new JMenu("更多");
     //创建菜单项
-    private JMenuItem  menuItem_car=new JMenuItem("购物车");
-    private JMenuItem  menuItem_history=new JMenuItem("历史订单");
-    private JMenuItem  menuItem_ing=new JMenuItem("正在配送");
-    private JMenuItem  menuItem_unpaid=new JMenuItem("还未支付");
+    private JMenuItem  menuItem_history=new JMenuItem("历史订单");//已完成
+    private JMenuItem  menuItem_ing=new JMenuItem("正在配送");//已完成
     
     private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");
     private JMenuItem  menuItem_reception=new JMenuItem("我的评价");
-    private JMenuItem  menuItem_info=new JMenuItem("修改信息");//已完成
-    private JMenuItem  menuItem_address=new JMenuItem("我的地址");
+    private JMenuItem  menuItem_info=new JMenuItem("我的信息");//已完成
+    private JMenuItem  menuItem_address=new JMenuItem("我的地址");//已完成
     
     private JMenuItem  menuItem_vip=new JMenuItem("我的会员");
-    private JMenuItem  menuItem_store=new JMenuItem("成为商家");
+    private JMenuItem  menuItem_store=new JMenuItem("成为商家");//已完成
     private JMenuItem  menuItem_rider=new JMenuItem("成为骑手");
     private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");//已完成
     
@@ -69,7 +68,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	private Object tblStoreData[][];
 	//创建表格模型
 	DefaultTableModel tabStoreModel=new DefaultTableModel();
-	//用tabProductModel为模型构造表格
+	//用tabStoreModel为模型构造表格
 	private JTable dataTableStore=new JTable(tabStoreModel);
 	
 	//商品列表
@@ -131,10 +130,8 @@ public class FrmMain extends JFrame implements ActionListener {
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
 		//将菜单项添加到菜单
-		this.menu_myorder.add(this.menuItem_car); this.menuItem_car.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_history); this.menuItem_history.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_ing); this.menuItem_ing.addActionListener(this);
-	    this.menu_myorder.add(this.menuItem_unpaid); this.menuItem_unpaid.addActionListener(this);
 	    
 	    this.menu_function.add(this.menuItem_discount); this.menuItem_discount.addActionListener(this);
 	    this.menu_function.add(this.menuItem_reception); this.menuItem_reception.addActionListener(this);
@@ -154,7 +151,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	    this.setJMenuBar(menubar);
 	    //加入一个显示dataTableStore的滚动条到页面的左边
 	    this.getContentPane().add(new JScrollPane(this.dataTableStore), BorderLayout.WEST);
-	  //添加鼠标监听器组件
+	    //添加鼠标监听器组件
 	    this.dataTableStore.addMouseListener(new MouseAdapter (){
 			@Override
 	    	//在组件上单击鼠标按钮时调用函数
@@ -189,8 +186,20 @@ public class FrmMain extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_info){
-			FrmUserInfo dlg=new FrmUserInfo(this,"请输入新信息",true);
-			dlg.setVisible(true);
+			FrmUserInfo ui=new FrmUserInfo(this,"我的信息",true);
+			ui.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_address){
+			FrmMyAddress ma=new FrmMyAddress(this,"我的地址",true);
+			ma.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_history){
+			FrmHisOrder ho=new FrmHisOrder(this,"历史订单",true);
+			ho.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_ing){
+			FrmIngOrder io=new FrmIngOrder(this,"正在配送",true);
+			io.setVisible(true);
 		}
 		/*else if(e.getSource()==this.menuItem_DeleteStore){
 			if(this.curStore==null) {
@@ -205,8 +214,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 		}*/
 		else if(e.getSource()==this.menuItem_store){
-			FrmAddStore dlg=new FrmAddStore(this,"成为商家",true);
-			dlg.setVisible(true);
+			FrmStore st=new FrmStore(this,"成为商家",true);
+			st.setVisible(true);
 		}/*
 		else if(e.getSource()==this.menuItem_DeleteProduct){
 			int i=FrmMain.this.dataTableProduct.getSelectedRow();
@@ -277,8 +286,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			
 		}*/
 		else if(e.getSource()==this.menuItem_modifyPwd){
-			FrmModifyPwd dlg=new FrmModifyPwd(this,"修改密码",true);
-			dlg.setVisible(true);
+			FrmModifyPwd mp=new FrmModifyPwd(this,"修改密码",true);
+			mp.setVisible(true);
 		}
 	}
 }

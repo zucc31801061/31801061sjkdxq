@@ -1,11 +1,13 @@
 package takeaway;
 
+import takeaway.control.AddressManager;
 import takeaway.control.ControlManager;
 import takeaway.control.OrderInfoManager;
 import takeaway.control.OrderManager;
 import takeaway.control.StoreManager;
 import takeaway.control.ProductManager;
 import takeaway.control.UserManager;
+import takeaway.itf.IAddressManager;
 import takeaway.itf.IControlManager;
 import takeaway.itf.IOrderInfoManager;
 import takeaway.itf.IOrderManager;
@@ -20,4 +22,5 @@ public class takeawayUtil {
 	public static IControlManager controlManager=new ControlManager();//需要换成自行设计的实现类
 	public static IOrderManager orderManager=new OrderManager();//需要换成自行设计的实现类
 	public static IOrderInfoManager orderinfoManager=new OrderInfoManager();//需要换成自行设计的实现类
+	public static IAddressManager addressManager=new AddressManager();//需要换成自行设计的实现类
 }

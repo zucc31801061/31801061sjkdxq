@@ -56,7 +56,7 @@ public class OrderManager implements IOrderManager{
 	}
 
 	@Override
-	public List<BeanOrder> loadAll() throws BaseException {
+	public List<BeanOrder> loadBysj() throws BaseException {
 		List<BeanOrder> result=new ArrayList<BeanOrder>();
 		String sjno = BeanStore.currentLoginstore.getsjno();
 		Connection conn = null;
@@ -93,7 +93,87 @@ public class OrderManager implements IOrderManager{
 		}
 		return result;
 	}
-
+	
+	@Override
+	public List<BeanOrder> loaduserHisOrder() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String userno = BeanUser.currentLoginUser.getUserid();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    pst.setString(2, "“—ÀÕ¥Ô");
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrder p=new BeanOrder();
+		        p.setsjno(rs.getString(1));
+		        p.setqsno(rs.getString(2));
+		        p.setddzt(rs.getString(3));
+		        p.setmjno(rs.getString(4));
+		        p.setyhno(rs.getString(5));
+		        p.setddstartmoney(rs.getFloat(6));
+		        p.setddendmoney(rs.getFloat(7));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	
+	@Override
+	public List<BeanOrder> loaduserIngOrder() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String userno = BeanUser.currentLoginUser.getUserid();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    pst.setString(2, "≈‰ÀÕ÷–");
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrder p=new BeanOrder();
+		        p.setsjno(rs.getString(1));
+		        p.setqsno(rs.getString(2));
+		        p.setddzt(rs.getString(3));
+		        p.setmjno(rs.getString(4));
+		        p.setyhno(rs.getString(5));
+		        p.setddstartmoney(rs.getFloat(6));
+		        p.setddendmoney(rs.getFloat(7));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	
 	@Override
 	public void deleteOrder(BeanOrder plan) throws BaseException {
 		/*Connection conn=null;

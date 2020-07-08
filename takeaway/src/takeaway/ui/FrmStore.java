@@ -15,12 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import takeaway.takeawayUtil;
-import takeaway.model.BeanControl;
 import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
 
 
-public class FrmAddStore extends JDialog implements ActionListener {
+public class FrmStore extends JDialog implements ActionListener {
 	
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
@@ -30,7 +29,7 @@ public class FrmAddStore extends JDialog implements ActionListener {
 	private JLabel sjname = new JLabel("请输入商家名：");
 	private JTextField edtsjname = new JTextField(20);
 	
-	public FrmAddStore(JFrame f, String s, boolean b) {
+	public FrmStore(JFrame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(becomesj);
@@ -76,8 +75,8 @@ public class FrmAddStore extends JDialog implements ActionListener {
 				return;
 			}
 			this.setVisible(false);
-			FrmStoreMain sm=new FrmStoreMain();
-			sm.setVisible(true);
+			FrmStoreMain fsm=new FrmStoreMain();
+			fsm.setVisible(true);
 		}
 		
 	}

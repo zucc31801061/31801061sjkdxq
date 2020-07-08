@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class BeanOrder {
 	public static final String[] tableTitles={"用户编号","骑手编号","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles1={"商家编号","骑手编号","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
 	private Float ddstartmoney;
 	private Float ddendmoney;
 	private Date ddstarttime;
@@ -87,6 +88,24 @@ public class BeanOrder {
 	public String getCell(int col){
 		if (col == 0)
 			return this.userno;
+		else if (col == 1)
+			return this.qsno;
+		else if (col == 2)
+			return this.ddzt;
+		else if (col == 3)
+			return this.mjno;
+		else if (col == 4)
+			return this.yhno;
+		else if (col == 5)
+			return (this.ddstartmoney + "");
+		else if (col == 6)
+			return (this.ddendmoney + "");
+		else
+		    return "";
+	}
+	public String getCell1(int col){
+		if (col == 0)
+			return this.sjno;
 		else if (col == 1)
 			return this.qsno;
 		else if (col == 2)

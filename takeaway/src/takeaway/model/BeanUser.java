@@ -3,6 +3,7 @@ package takeaway.model;
 import java.util.Date;
 
 public class BeanUser {
+	public static final String[] tableTitles={"姓名","性别","电话号","邮箱地址","所在城市"};
 	private String username;
 	private String usersex;
 	private String phnum;
@@ -73,6 +74,20 @@ public class BeanUser {
 	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	public String getCell(int col){
+		if (col == 0)
+			return this.username;
+		else if (col == 1)
+			return this.usersex;
+		else if (col == 2)
+			return this.phnum;
+		else if (col == 3)
+			return this.email;
+		else if (col == 4)
+			return this.city;
+		else
+		    return "";
 	}
 	public static BeanUser currentLoginUser=null;
 

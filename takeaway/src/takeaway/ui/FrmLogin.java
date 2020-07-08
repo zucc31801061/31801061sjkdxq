@@ -41,7 +41,7 @@ public class FrmLogin extends JDialog implements ActionListener {
 	public FrmLogin(Frame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		toolBar.add(this.btnRegister);
+		toolBar.add(btnRegister);
 		toolBar.add(btnLogin);
 		toolBar.add(btnCancel);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);

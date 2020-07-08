@@ -1,5 +1,7 @@
 package takeaway.itf;
 
+import java.util.List;
+
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
@@ -49,5 +51,5 @@ public interface IUserManager {
 	 * @return
 	 * @throws BaseException
 	 */
-	/*public String getinfo() throws BaseException;*/
+	public BeanUser SearchInfo() throws BaseException;
 }

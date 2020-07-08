@@ -2,8 +2,6 @@ package takeaway.control;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import takeaway.itf.IUserManager;
 import takeaway.model.BeanUser;
@@ -150,6 +148,7 @@ public class UserManager implements IUserManager {
 	    	pst.setString(4, email);
 	    	pst.setString(5, city);
 	    	pst.setString(6, userid);
+	    	pst.execute();
 	    	pst.close();
 	    	} catch (SQLException e) {
 	    		e.printStackTrace();
@@ -163,26 +162,24 @@ public class UserManager implements IUserManager {
 	    			}
 	    	}
 	}
-	
-	/*public String getinfo() throws BaseException {
+	@Override
+	public BeanUser SearchInfo() throws BaseException {
+		String userno = BeanUser.currentLoginUser.getUserid();
+    	BeanUser p=new BeanUser();
 		Connection conn = null;
-		String userid = BeanUser.currentLoginUser.getUserid();
-		String name=null,sex=null,phnum=null,email=null,city=null;
-		String result;
 		try {
 			conn = DBUtil.getConnection();
 			String sql = "select user_name,user_sex,user_phnum,user_email,user_city from user_info where user_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, userid);
+		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    if (rs.next()) {
-		        name = rs.getString(1);
-		        sex = rs.getString(2);
-		        phnum = rs.getString(3);
-		        email = rs.getString(4);
-		        city = rs.getString(5);
+		        p.setusername(rs.getString(1));
+		        p.setusersex(rs.getString(2));
+		        p.setphnum(rs.getString(3));
+		        p.setemail(rs.getString(4));
+		        p.setcity(rs.getString(5));
 		    }
-		    result ="原用户名："+name+"\n原性别："+sex+"\n原电话号："+phnum+"\n原邮箱地址："+email+"\n原城市："+city;
 		    rs.close();
 		    pst.close();
 		} catch (SQLException e) {
@@ -197,7 +194,7 @@ public class UserManager implements IUserManager {
 		        	e.printStackTrace();
 		        }
 		}
-		return result;
-	}*/
+		return p;
+	}
 
 }

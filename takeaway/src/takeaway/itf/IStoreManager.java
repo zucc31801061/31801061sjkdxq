@@ -26,9 +26,9 @@ public interface IStoreManager {
 	public List<BeanStore> loadAll()throws BaseException;
 	/**
 	 * É¾³ýÉÌ¼Ò
-	 * @param plan
+	 * @param store
 	 * @throws BaseException
 	 */
-	public void deleteStore(BeanStore plan)throws BaseException;
+	public void deleteStore(BeanStore store)throws BaseException;
 
 }

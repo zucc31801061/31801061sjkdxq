@@ -14,6 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -60,8 +61,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private JMenuItem  menuItem_seepj=new JMenuItem("查看评价");
 	
 	private JMenuItem  menuItem_updatename=new JMenuItem("修改商家名");
-	
-	//创建一个面板
+	//创建面板
 	private JPanel statusBar = new JPanel();
 	//订单列表
 	//表项标题
@@ -70,7 +70,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private Object tblOrderData[][];
 	//创建表格模型
 	DefaultTableModel tabOrderModel=new DefaultTableModel();
-	//用tabProductModel为模型构造表格
+	//用tabOrderModel为模型构造表格
 	private JTable dataTableOrder=new JTable(tabOrderModel);
 	
 	//订单详情列表
@@ -85,7 +85,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private void reloadOrderTable(){//这是测试数据，需要用实际数替换
 		try {
 			//加载所有的Order列表项
-			allOrder=takeawayUtil.orderManager.loadAll();
+			allOrder=takeawayUtil.orderManager.loadBysj();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
@@ -106,20 +106,20 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			//返回Order列表中该索引位置的Order
 			curOrder=allOrder.get(orderIdx);
 			try {
-				//加载该商家的商品列表
+				//加载对应的OrderInfo列表
 				orderinfo=takeawayUtil.orderinfoManager.loadOrderInfo(curOrder);
 			} catch (BaseException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			//定义一个二维对象，行大小为Products.size()，列大小为BeanProduct.tblProductTitle.length
+			//定义一个二维对象，行大小为orderinfo.size()，列大小为BeanOrderInfo.tblOrderInfoTitle.length
 			tblOrderInfoData =new Object[orderinfo.size()][BeanOrderInfo.tblOrderInfoTitle.length];
 			for(int i=0;i<orderinfo.size();i++){
 				for(int j=0;j<BeanOrderInfo.tblOrderInfoTitle.length;j++)
 					//遍历输出每项
 					tblOrderInfoData[i][j]=orderinfo.get(i).getCell(j);
 			}
-			//将实例中的值替换为数组中的值，行索引为tblProductData，列索引为tblProductTitle
+			//将实例中的值替换为数组中的值，行索引为tblOrderInfoData，列索引为tblOrderInfoTitle
 			tabOrderInfoModel.setDataVector(tblOrderInfoData,tblOrderInfoTitle);
 			this.dataTableOrderInfo.validate();
 			this.dataTableOrderInfo.repaint();
@@ -152,7 +152,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 		menubar.add(menu_updateinfo);
 		//将创建的菜单栏加入主窗口
 		this.setJMenuBar(menubar);
-		//加入一个显示dataTableStore的滚动条到页面的左边
+		//加入一个显示dataTableOrder的滚动条到页面的左边
 		this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.WEST);
 		//添加鼠标监听器组件
 		this.dataTableOrder.addMouseListener(new MouseAdapter (){
@@ -170,7 +170,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			}
 			
 		});
-		//加入一个显示dataTableProduct的滚动条到页面的中间
+		//加入一个显示dataTableOrderInfo的滚动条到页面的中间
 		this.getContentPane().add(new JScrollPane(this.dataTableOrderInfo), BorderLayout.CENTER);
 		
 		this.reloadOrderTable();
@@ -181,16 +181,15 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 		this.getContentPane().add(statusBar,BorderLayout.SOUTH);
 		this.addWindowListener(new WindowAdapter(){   
 			public void windowClosing(WindowEvent e){ 
-				System.exit(0);
+				this.windowClosed(e);
 			}
 		});
 		this.setVisible(true);
 	}	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*if(e.getSource()==this.cancel) {
+		/*if(e.getSource()==this.btnBack) {
 			this.setVisible(false);
-			return;
 		}
 		else if(e.getSource()==this.becomesj){
 			String name=this.edtsjname.getText();
