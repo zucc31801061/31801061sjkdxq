@@ -80,27 +80,22 @@ public class ProductManager implements IProductManager {
 	}
 
 	@Override
-	public List<BeanProduct> loadProducts(BeanStore plan) throws BaseException {
+	public List<BeanProduct> loadProducts(BeanStore store) throws BaseException {
 		List<BeanProduct> result = new ArrayList<BeanProduct>();
-		/*Connection conn = null;
+		Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
-	    	String sql = "SELECT step_order, step_name, plan_begin_time, plan_end_time,real_begin_time, real_end_time, step_id "
-	          + "FROM tbl_step " + "WHERE plan_id=?";
+	    	String sql = "select sp_name,fl_no,sp_money,sp_yh from sp_info where sj_no=?";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
-	    	pst.setInt(1, plan.getplanid());
+	    	pst.setString(1, store.getsjno());
 	    	ResultSet rs = pst.executeQuery();
 	    	while (rs.next()) {
 	    		BeanProduct s = new BeanProduct();
-	    		s.setSteporder(rs.getInt(1));
-	    		s.setStepname(rs.getString(2));
-	    		s.setPlanbegintime(sdf.parse(rs.getString(3)));
-	    		s.setPlanendtime(sdf.parse(rs.getString(4)));
-	    		s.setRealbegintime(rs.getString(5) == null ? null : sdf.parse(rs.getString(5)));
-	    		s.setRealendtime(rs.getString(6) == null ? null : sdf.parse(rs.getString(6)));
-	    		s.setStepid(rs.getInt(7));
-	    		s.setUserid(BeanUser.currentLoginUser.getUserid());
-	    		s.setPlanid(plan.getplanid());
+	    		s.setspname(rs.getString(1));
+	    		s.setflno(rs.getInt(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setsjno(store.getsjno());
 	    		result.add(s);
 	    	}
 	    	rs.close();
@@ -108,8 +103,6 @@ public class ProductManager implements IProductManager {
 	    } catch (SQLException e) {
 	    	e.printStackTrace();
 	    	throw new DbException(e);
-	    } catch (ParseException e) {
-	    	throw new RuntimeException("º”‘ÿ ß∞‹");
 	    } finally {
 	    	if (conn != null)
 	    		try {
@@ -117,7 +110,7 @@ public class ProductManager implements IProductManager {
 	    		} catch (SQLException e) {
 	    			e.printStackTrace();
 	    		}
-	    }*/
+	    }
 	    return result;
 	}
 

@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Visibility;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -72,8 +73,8 @@ public class FrmRider extends JDialog implements ActionListener {
 				return;
 			}
 			this.setVisible(false);
-			FrmRiderMain fsm=new FrmRiderMain();
-			fsm.setVisible(true);
+			FrmRiderMain rm=new FrmRiderMain();
+			rm.setVisible(true);
 		}
 		
 	}

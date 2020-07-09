@@ -15,20 +15,25 @@ import takeaway.util.DbException;
 
 public class AddressManager implements IAddressManager{
 	@Override
-	public BeanAddress addAddress(String sheng,String shi,String qu,String address,String name,String phnum,String addno) throws BaseException {
+	public BeanAddress addAddress(String sheng,String shi,String qu,String address,String name,String phnum) throws BaseException {
 		// TODO Auto-generated method stub
-		if(sheng.isEmpty()||shi.isEmpty()||qu.isEmpty()||address.isEmpty()||name.isEmpty()||phnum.isEmpty()||addno.isEmpty())
+		if(sheng.isEmpty()||shi.isEmpty()||qu.isEmpty()||address.isEmpty()||name.isEmpty()||phnum.isEmpty())
 			throw new BusinessException("请填写完整的地址信息");
 		BeanAddress add=new BeanAddress();
 		String userno = BeanUser.currentLoginUser.getUserid();
+		int addno = 1;
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql = "select * from add_info where add_no = ?";
+			String sql = "select add_no from add_info order by add_no desc limit 0,1";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,addno);
 			java.sql.ResultSet rs=pst.executeQuery();
-			if(rs.next()) throw new BusinessException("该地址编号已存在，请删除原有地址或者修改地址编号");
+			if (rs.next()) {
+				addno = rs.getInt(1) + 1;
+		    } 
+		    else {
+		    	addno = 1;
+		    }
 			rs.close();
 			pst.close();
 			sql = "insert into add_info(user_no,sheng,shi,qu,address,user_name,user_phnum,add_no) values(?,?,?,?,?,?,?,?)";
@@ -40,7 +45,7 @@ public class AddressManager implements IAddressManager{
 			pst.setString(5,address);
 			pst.setString(6,name);
 			pst.setString(7,phnum);
-			pst.setString(8,addno);
+			pst.setInt(8, addno);
 			pst.execute();
 		    pst.close();
 		} catch (SQLException e) {
@@ -78,7 +83,7 @@ public class AddressManager implements IAddressManager{
 		        p.setaddress(rs.getString(4));
 		        p.setusername(rs.getString(5));
 		        p.setuserphnum(rs.getString(6));
-		        p.setaddno(rs.getString(7));
+		        p.setaddno(rs.getInt(7));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -106,7 +111,7 @@ public class AddressManager implements IAddressManager{
 		    String sql = "delete from add_info where user_no=? and add_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
-		    pst.setString(2, address.getaddno());
+		    pst.setInt(2, address.getaddno());
 		    pst.executeUpdate();
 		    pst.close();
 		} catch (SQLException e) {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class BeanUser {
 	public static final String[] tableTitles={"姓名","性别","电话号","邮箱地址","所在城市"};
+	public static final String[] tableTitles1={"是否是会员","到期时间"};
 	private String username;
 	private String usersex;
 	private String phnum;
@@ -87,6 +88,13 @@ public class BeanUser {
 		else if (col == 4)
 			return this.city;
 		else
+		    return "";
+	}
+	public String getCell1(int col){
+		if (col == 0)
+			return String.valueOf(this.vip);
+		else if (col == 1)
+			return String.valueOf(this.vipenddate);
 		    return "";
 	}
 	public static BeanUser currentLoginUser=null;

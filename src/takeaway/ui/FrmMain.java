@@ -53,7 +53,7 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_info=new JMenuItem("我的信息");//已完成
     private JMenuItem  menuItem_address=new JMenuItem("我的地址");//已完成
     
-    private JMenuItem  menuItem_vip=new JMenuItem("我的会员");
+    private JMenuItem  menuItem_vip=new JMenuItem("我的会员");//已完成
     private JMenuItem  menuItem_store=new JMenuItem("成为商家");//已完成
     private JMenuItem  menuItem_rider=new JMenuItem("成为骑手");//有问题
     private JMenuItem  menuItem_modifyPwd=new JMenuItem("修改密码");//已完成
@@ -88,7 +88,7 @@ public class FrmMain extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		tblStoreData =  new Object[allStore.size()][BeanStore.tableTitles.length];
+		tblStoreData = new Object[allStore.size()][BeanStore.tableTitles.length];
 		for(int i=0;i<allStore.size();i++){
 			for(int j=0;j<BeanStore.tableTitles.length;j++)
 				tblStoreData[i][j]=allStore.get(i).getCell(j);
@@ -220,6 +220,10 @@ public class FrmMain extends JFrame implements ActionListener {
 		else if(e.getSource()==this.menuItem_rider){
 			FrmRider ri=new FrmRider(this,"成为骑手",true);
 			ri.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_vip){
+			FrmMyVIP mv=new FrmMyVIP(this,"我的会员",true);
+			mv.setVisible(true);
 		}/*
 		else if(e.getSource()==this.menuItem_DeleteProduct){
 			int i=FrmMain.this.dataTableProduct.getSelectedRow();

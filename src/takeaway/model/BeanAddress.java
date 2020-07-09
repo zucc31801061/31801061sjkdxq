@@ -1,8 +1,8 @@
 package takeaway.model;
 
 public class BeanAddress {
-	public static final String[] tableTitles={"编号","省","市","区","地址","姓名","手机号"};
-	private String addno;
+	public static final String[] tableTitles={"省","市","区","地址","姓名","手机号"};
+	private int addno;
 	private String userno;
 	private String sheng;
 	private String shi;
@@ -10,10 +10,10 @@ public class BeanAddress {
 	private String address;
 	private String username;
 	private String userphnum;
-	public String getaddno() {
+	public int getaddno() {
 		return addno;
 	}
-	public void setaddno(String addno) {
+	public void setaddno(int addno) {
 		this.addno = addno;
 	}
 	public String getuserno() {
@@ -57,18 +57,16 @@ public class BeanAddress {
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.addno;
-		else if (col == 1)
 			return this.sheng;
-		else if (col == 2)
+		else if (col == 1)
 			return this.shi;
-		else if (col == 3)
+		else if (col == 2)
 			return this.qu;
-		else if (col == 4)
+		else if (col == 3)
 			return this.address;
-		else if (col == 5)
+		else if (col == 4)
 			return this.username;
-		else if (col == 6)
+		else if (col == 5)
 			return this.userphnum;
 		else
 		    return "";

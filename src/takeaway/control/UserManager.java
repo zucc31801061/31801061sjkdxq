@@ -1,8 +1,14 @@
 package takeaway.control;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import sun.jvm.hotspot.oops.java_lang_Class;
 import takeaway.itf.IUserManager;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -29,11 +35,12 @@ public class UserManager implements IUserManager {
 			if(rs.next()) throw new BusinessException("用户已存在");
 			rs.close();
 			pst.close();
-			sql="insert into user_info(user_no,user_mm,user_starttime) values(?,?,?)";
+			sql="insert into user_info(user_no,user_mm,user_starttime,vip) values(?,?,?)";
 			pst=conn.prepareStatement(sql);
 			pst.setString(1,userid);
 			pst.setString(2,pwd);
 			pst.setTimestamp(3,new java.sql.Timestamp(System.currentTimeMillis()));
+			pst.setBoolean(4, false);
 			pst.execute();
 			pst.close();
 		} catch (SQLException e) {
@@ -62,7 +69,7 @@ public class UserManager implements IUserManager {
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select user_no,user_mm from user_info where user_no=?";
+			String sql="select user_no,user_mm,vip from user_info where user_no=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setString(1,userid);
 			java.sql.ResultSet rs=pst.executeQuery();
@@ -70,6 +77,7 @@ public class UserManager implements IUserManager {
 			BeanUser user=new BeanUser();
 			user.setUserid(rs.getString(1));
 			user.setPwd(rs.getString(2));
+			user.setvip(rs.getBoolean(3));
 			rs.close();
 			pst.close();
 			return user;
@@ -196,5 +204,66 @@ public class UserManager implements IUserManager {
 		}
 		return p;
 	}
-
+	@Override
+	public BeanUser SearchVIP() throws BaseException{
+		String userno = BeanUser.currentLoginUser.getUserid();
+    	BeanUser p=new BeanUser();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select vip,vip_enddate from user_info where user_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if (rs.next()) {
+		        p.setvip(rs.getBoolean(1));
+		        p.setvipenddate(rs.getDate(2));
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return p;
+	}
+	@Override
+	public BeanUser PayVIP() throws BaseException{
+		String userno = BeanUser.currentLoginUser.getUserid();
+		Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE,31);
+        Date enddate = new Date(c.getTimeInMillis());
+        
+    	BeanUser p=new BeanUser();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "update user_info set vip=TRUE,vip_enddate=? where user_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setDate(1, enddate);
+		    pst.setString(2, userno);
+		    pst.execute();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return p;
+	}
 }

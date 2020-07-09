@@ -101,7 +101,7 @@ public class OrderManager implements IOrderManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=?";
+			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=? order by dd_endtime desc";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    pst.setString(2, "ÒÑËÍ´ï");

@@ -89,7 +89,7 @@ public class StoreManager implements IStoreManager {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info order by sj_star DESC,sj_avgxf";
+			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl,sj_no from sj_info order by sj_star DESC,sj_avgxf";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
@@ -98,6 +98,7 @@ public class StoreManager implements IStoreManager {
 		        p.setsjstar(rs.getInt(2));
 		        p.setsjavgxf(rs.getFloat(3));
 		        p.setsjsumxl(rs.getFloat(4));
+		        p.setsjno(rs.getString(5));
 		        result.add(p);
 		    }
 		    rs.close();

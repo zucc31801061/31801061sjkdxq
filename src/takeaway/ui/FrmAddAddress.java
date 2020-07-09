@@ -22,7 +22,6 @@ public class FrmAddAddress extends JDialog implements ActionListener {
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
 	
-	private JLabel NewAddno = new JLabel("编号：");
 	private JLabel NewSheng = new JLabel("省：");
 	private JLabel NewShi = new JLabel("市：");
 	private JLabel NewQu = new JLabel("区：");
@@ -30,7 +29,6 @@ public class FrmAddAddress extends JDialog implements ActionListener {
 	private JLabel NewName = new JLabel("用户名：");
 	private JLabel NewPhnum = new JLabel("手机号：");
 	
-	private JTextField Addno = new JTextField(20);
 	private JTextField Sheng = new JTextField(20);
 	private JTextField Shi = new JTextField(20);
 	private JTextField Qu= new JTextField(20);
@@ -44,8 +42,6 @@ public class FrmAddAddress extends JDialog implements ActionListener {
 		toolBar.add(btnOk);
 		toolBar.add(btnCancel);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		workPane.add(NewAddno);
-		workPane.add(Addno);
 		workPane.add(NewSheng);
 		workPane.add(Sheng);
 		workPane.add(NewShi);
@@ -84,9 +80,8 @@ public class FrmAddAddress extends JDialog implements ActionListener {
 			String address=this.Address.getText();
 			String name=this.Name.getText();
 			String phnum=this.Phnum.getText();
-			String addno=this.Addno.getText();
 			try {
-				takeawayUtil.addressManager.addAddress(sheng, shi, qu, address, name, phnum, addno);
+				takeawayUtil.addressManager.addAddress(sheng, shi, qu, address, name, phnum);
 				this.setVisible(false);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);

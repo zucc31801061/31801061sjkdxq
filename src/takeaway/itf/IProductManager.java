@@ -7,7 +7,7 @@ import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
 public interface IProductManager {
-	public List<BeanProduct> loadProducts(BeanStore plan)throws BaseException;
+	public List<BeanProduct> loadProducts(BeanStore store)throws BaseException;
 	
 	/**
 	 * ÃÌº”≤Ω÷Ë

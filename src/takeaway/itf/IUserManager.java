@@ -52,4 +52,16 @@ public interface IUserManager {
 	 * @throws BaseException
 	 */
 	public BeanUser SearchInfo() throws BaseException;
+	/**
+	 * 显示当前用户信息
+	 * @return
+	 * @throws BaseException
+	 */
+	public BeanUser SearchVIP() throws BaseException;
+	/**
+	 * 充值VIP
+	 * @return
+	 * @throws BaseException
+	 */
+	public BeanUser PayVIP() throws BaseException;
 }

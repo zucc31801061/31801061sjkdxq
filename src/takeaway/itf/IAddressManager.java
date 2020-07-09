@@ -11,7 +11,7 @@ public interface IAddressManager {
 	 * 注意：当前登陆用户可通过 BeanUser.currentLoginUser获取
 	 * @throws BaseException
 	 */
-	public BeanAddress addAddress(String sheng,String shi,String qu,String address,String name,String phnum,String addno) throws BaseException;
+	public BeanAddress addAddress(String sheng,String shi,String qu,String address,String name,String phnum) throws BaseException;
 	/**
 	 * 提取所有商家
 	 * @return

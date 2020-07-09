@@ -31,10 +31,11 @@ public class RiderManager implements IRiderManager {
 			if(rs.next()) throw new BusinessException("您已是骑手，请点击“已是骑手”");
 			rs.close();
 			pst.close();
-			sql = "insert into qs_info(qs_name,qs_no) values(?,?)";
+			sql = "insert into qs_info(qs_name,qs_no,qs_date) values(?,?,?)";
 			pst = conn.prepareStatement(sql);
 			pst.setString(1,name);
 			pst.setString(2,userno);
+			pst.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
 			pst.execute();
 		    pst.close();
 		} catch (SQLException e) {
@@ -55,7 +56,7 @@ public class RiderManager implements IRiderManager {
 
 	@Override
 	public BeanRider login() throws BaseException {
-		BeanRider rider=new BeanRider();
+		
 		String userno = BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
@@ -65,6 +66,7 @@ public class RiderManager implements IRiderManager {
 			pst.setString(1,userno);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(!rs.next()) throw new BusinessException("您还不是骑手");
+			BeanRider rider=new BeanRider();
 			rider.setqsno(rs.getString(1));
 			rs.close();
 			pst.close();
