@@ -47,10 +47,8 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private JMenu menu_userpj=new JMenu("用户评价");
 	private JMenu menu_updateinfo=new JMenu("修改信息");
     //创建菜单项
-	private JMenuItem  menuItem_addproduct=new JMenuItem("增加商品");
-	private JMenuItem  menuItem_delproduct=new JMenuItem("删除商品");
-	private JMenuItem  menuItem_addkind=new JMenuItem("增加类别");
-	private JMenuItem  menuItem_delkind=new JMenuItem("删除类别");
+	private JMenuItem  menuItem_myproduct=new JMenuItem("我的商品");
+	private JMenuItem  menuItem_mykind=new JMenuItem("我的类别");
 	
 	private JMenuItem  menuItem_mymj=new JMenuItem("我的满减");
 	private JMenuItem  menuItem_myyh=new JMenuItem("我的优惠券");
@@ -103,37 +101,35 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	}
 	private void reloadOrderInfoTabel(int orderIdx){
 		if(orderIdx<0) return;
-			//返回Order列表中该索引位置的Order
-			curOrder=allOrder.get(orderIdx);
-			try {
-				//加载对应的OrderInfo列表
-				orderinfo=takeawayUtil.orderinfoManager.loadOrderInfo(curOrder);
-			} catch (BaseException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			//定义一个二维对象，行大小为orderinfo.size()，列大小为BeanOrderInfo.tblOrderInfoTitle.length
-			tblOrderInfoData =new Object[orderinfo.size()][BeanOrderInfo.tblOrderInfoTitle.length];
-			for(int i=0;i<orderinfo.size();i++){
-				for(int j=0;j<BeanOrderInfo.tblOrderInfoTitle.length;j++)
-					//遍历输出每项
-					tblOrderInfoData[i][j]=orderinfo.get(i).getCell(j);
-			}
-			//将实例中的值替换为数组中的值，行索引为tblOrderInfoData，列索引为tblOrderInfoTitle
-			tabOrderInfoModel.setDataVector(tblOrderInfoData,tblOrderInfoTitle);
-			this.dataTableOrderInfo.validate();
-			this.dataTableOrderInfo.repaint();
+		//返回Order列表中该索引位置的Order
+		curOrder=allOrder.get(orderIdx);
+		try {
+			//加载对应的OrderInfo列表
+			orderinfo=takeawayUtil.orderinfoManager.loadOrderInfo(curOrder);
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
 		}
+		//定义一个二维对象，行大小为orderinfo.size()，列大小为BeanOrderInfo.tblOrderInfoTitle.length
+		tblOrderInfoData =new Object[orderinfo.size()][BeanOrderInfo.tblOrderInfoTitle.length];
+		for(int i=0;i<orderinfo.size();i++){
+			for(int j=0;j<BeanOrderInfo.tblOrderInfoTitle.length;j++)
+				//遍历输出每项
+				tblOrderInfoData[i][j]=orderinfo.get(i).getCell(j);
+		}
+		//将实例中的值替换为数组中的值，行索引为tblOrderInfoData，列索引为tblOrderInfoTitle
+		tabOrderInfoModel.setDataVector(tblOrderInfoData,tblOrderInfoTitle);
+		this.dataTableOrderInfo.validate();
+		this.dataTableOrderInfo.repaint();
+	}
 	public FrmStoreMain() {
 		//设置窗口最大化
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		//设置窗口标题
 		this.setTitle("我是商家");
 		//将菜单项添加到菜单
-		this.menu_myproduct.add(this.menuItem_addproduct); this.menuItem_addproduct.addActionListener(this);
-		this.menu_myproduct.add(this.menuItem_delproduct); this.menuItem_delproduct.addActionListener(this);
-		this.menu_myproduct.add(this.menuItem_addkind); this.menuItem_addkind.addActionListener(this);
-		this.menu_myproduct.add(this.menuItem_delkind); this.menuItem_delkind.addActionListener(this);
+		this.menu_myproduct.add(this.menuItem_myproduct); this.menuItem_myproduct.addActionListener(this);
+		this.menu_myproduct.add(this.menuItem_mykind); this.menuItem_mykind.addActionListener(this);
 		
 		this.menu_provideyh.add(this.menuItem_mymj); this.menuItem_mymj.addActionListener(this);
 		this.menu_provideyh.add(this.menuItem_myyh); this.menuItem_myyh.addActionListener(this);

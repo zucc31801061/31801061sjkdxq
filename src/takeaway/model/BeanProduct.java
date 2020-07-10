@@ -4,12 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BeanProduct {
-	public static final String[] tblProductTitle={"商品名","分类编号","原价","优惠价"};
+	public static final String[] tblProductTitle={"商品名","分类","原价","优惠价"};
 	/**
 	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
 	 */
 	private int spno;
 	private int flno;
+	private String flname;
 	private String sjno;
 	private String spname;
 	private Float spmoney;
@@ -25,6 +26,12 @@ public class BeanProduct {
 	}
 	public void setflno(int flno) {
 	    this.flno = flno;
+	}
+	public String getflname() {
+	    return flname;
+	}
+	public void setflname(String flname) {
+	    this.flname = flname;
 	}
 	public String getsjno() {
 	    return sjno;
@@ -54,7 +61,7 @@ public class BeanProduct {
 		if (col == 0)
 			return this.spname;
 		else if (col == 1)
-		    return this.flno+"";
+		    return this.flname;
 		else if (col == 2)
 		    return this.spmoney+"";
 		else if (col == 3)

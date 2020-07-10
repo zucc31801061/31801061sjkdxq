@@ -62,19 +62,20 @@ public class OrderManager implements IOrderManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select user_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where sj_no=?";
+			String sql = "select user_name,qs_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney,dd_no from sp_dd,qs_info,add_info where sj_no=? and add_info.add_no=sp_dd.add_no and qs_info.qs_no=sp_dd.qs_no";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, sjno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanOrder p=new BeanOrder();
-		        p.setuserno(rs.getString(1));
-		        p.setqsno(rs.getString(2));
+		        p.setusername(rs.getString(1));
+		        p.setqsname(rs.getString(2));
 		        p.setddzt(rs.getString(3));
-		        p.setmjno(rs.getString(4));
-		        p.setyhno(rs.getString(5));
+		        p.setmjno(rs.getInt(4));
+		        p.setyhno(rs.getInt(5));
 		        p.setddstartmoney(rs.getFloat(6));
 		        p.setddendmoney(rs.getFloat(7));
+		        p.setddno(rs.getInt(8));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -101,18 +102,18 @@ public class OrderManager implements IOrderManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=? order by dd_endtime desc";
+			String sql = "select sj_name,qs_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd,sj_info,qs_info where user_no=? and dd_zt=? and sp_dd.sj_no=sj_info.sj_no and sp_dd.qs_no=qs_info.qs_no order by dd_endtime desc";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    pst.setString(2, "“—ÀÕ¥Ô");
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanOrder p=new BeanOrder();
-		        p.setsjno(rs.getString(1));
-		        p.setqsno(rs.getString(2));
+		        p.setsjname(rs.getString(1));
+		        p.setqsname(rs.getString(2));
 		        p.setddzt(rs.getString(3));
-		        p.setmjno(rs.getString(4));
-		        p.setyhno(rs.getString(5));
+		        p.setmjno(rs.getInt(4));
+		        p.setyhno(rs.getInt(5));
 		        p.setddstartmoney(rs.getFloat(6));
 		        p.setddendmoney(rs.getFloat(7));
 		        result.add(p);
@@ -141,7 +142,7 @@ public class OrderManager implements IOrderManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_no,qs_no,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd where user_no=? and dd_zt=? or dd_zt=?";
+			String sql = "select sj_name,qs_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd,sj_info,qs_info where user_no=? and sj_info.sj_no=sp_dd.sj_no and qs_info.qs_no=sp_dd.qs_no and (dd_zt=? or dd_zt=?)";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    pst.setString(2, "≈‰ÀÕ÷–");
@@ -149,11 +150,11 @@ public class OrderManager implements IOrderManager{
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanOrder p=new BeanOrder();
-		        p.setsjno(rs.getString(1));
-		        p.setqsno(rs.getString(2));
+		        p.setsjname(rs.getString(1));
+		        p.setqsname(rs.getString(2));
 		        p.setddzt(rs.getString(3));
-		        p.setmjno(rs.getString(4));
-		        p.setyhno(rs.getString(5));
+		        p.setmjno(rs.getInt(4));
+		        p.setyhno(rs.getInt(5));
 		        p.setddstartmoney(rs.getFloat(6));
 		        p.setddendmoney(rs.getFloat(7));
 		        result.add(p);

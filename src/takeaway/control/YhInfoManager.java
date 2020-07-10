@@ -19,14 +19,14 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,sj_no,dd_no from yh_info where yh_no in(select yh_no from own where user_no=?) and dd_no!=0 and jd_num=already";
+			String sql = "select yh_money,sj_name,dd_no from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no!=0 and jd_num=already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanYhInfo p=new BeanYhInfo();
 		        p.setyhmoney(rs.getInt(1));
-		        p.setsjno(rs.getString(2));
+		        p.setsjname(rs.getString(2));
 		        p.setddno(rs.getInt(3));
 		        result.add(p);
 		    }
@@ -52,7 +52,7 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,yh_startdate,yh_enddate,sj_no from yh_info where yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num=already";
+			String sql = "select yh_money,yh_startdate,yh_enddate,sj_name from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num=already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -61,7 +61,7 @@ public class YhInfoManager implements IYhInfoManager{
 		        p.setyhmoney(rs.getInt(1));
 		        p.setstartdate(rs.getDate(2));
 		        p.setenddate(rs.getDate(3));
-		        p.setsjno(rs.getString(4));
+		        p.setsjname(rs.getString(4));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -86,14 +86,14 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,sj_no,jd_num,already from yh_info where yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num>already";
+			String sql = "select yh_money,sj_name,jd_num,already from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num>already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanYhInfo p=new BeanYhInfo();
 		        p.setyhmoney(rs.getInt(1));
-		        p.setsjno(rs.getString(2));
+		        p.setsjname(rs.getString(2));
 		        p.setjdnum(rs.getInt(3));
 		        p.setalready(rs.getInt(4));
 		        result.add(p);

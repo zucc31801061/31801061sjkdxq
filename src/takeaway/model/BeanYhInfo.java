@@ -3,15 +3,16 @@ package takeaway.model;
 import java.sql.Date;
 
 public class BeanYhInfo {
-	public static final String[] tableTitles={"优惠金额","商家编号","订单编号"};
-	public static final String[] tableTitles1={"优惠金额","起始日期","结束日期","商家编号"};
-	public static final String[] tableTitles2={"优惠金额","商家编号","集单要求","已订单数"};
+	public static final String[] tableTitles={"优惠金额","商家","订单编号"};
+	public static final String[] tableTitles1={"优惠金额","起始日期","结束日期","商家"};
+	public static final String[] tableTitles2={"优惠金额","商家","集单要求","已订单数"};
 	private int yhmoney;
 	private int jdnum;
 	private Date startdate;
 	private Date enddate;
 	private int yhno;
 	private String sjno;
+	private String sjname;
 	private int ddno;
 	private int already;
 	public int getyhmoney() {
@@ -49,6 +50,12 @@ public class BeanYhInfo {
 	public String getsjno() {
 		return sjno;
 	}
+	public void setsjname(String sjname) {
+		this.sjname = sjname;
+	}
+	public String getsjname() {
+		return sjname;
+	}
 	public int getddno() {
 		return ddno;
 	}
@@ -65,7 +72,7 @@ public class BeanYhInfo {
 		if (col == 0)
 			return this.yhmoney+"";
 		else if (col == 1)
-			return this.sjno;
+			return this.sjname;
 		else if (col == 2)
 			return this.ddno+"";
 		else
@@ -79,7 +86,7 @@ public class BeanYhInfo {
 		else if (col == 2)
 			return this.enddate+"";
 		else if (col == 3)
-			return this.sjno;
+			return this.sjname;
 		else
 		    return "";
 	}
@@ -87,7 +94,7 @@ public class BeanYhInfo {
 		if (col == 0)
 			return this.yhmoney+"";
 		else if (col == 1)
-			return this.sjno;
+			return this.sjname;
 		else if (col == 2)
 			return this.jdnum+"";
 		else if (col == 3)

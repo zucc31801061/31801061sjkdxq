@@ -3,21 +3,24 @@ package takeaway.model;
 import java.sql.Date;
 
 public class BeanOrder {
-	public static final String[] tableTitles={"用户编号","骑手编号","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles1={"商家编号","骑手编号","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles2={"用户编号","商家编号","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles={"用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles1={"商家","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles2={"用户","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
 	private Float ddstartmoney;
 	private Float ddendmoney;
 	private Date ddstarttime;
 	private Date ddendtime;
 	private String ddzt;
 	private String sjno;
-	private String addno;
-	private String mjno;
-	private String ddno;
+	private String sjname;
+	private int addno;
+	private int mjno;
+	private int ddno;
 	private String qsno;
+	private String qsname;
 	private String userno;
-	private String yhno;
+	private String username;
+	private int yhno;
 	public Float getddstartmoney() {
 		return ddstartmoney;
 	}
@@ -54,49 +57,71 @@ public class BeanOrder {
 	public void setsjno(String sjno) {
 		this.sjno = sjno;
 	}
-	public String getaddno() {
+	public String getsjname() {
+		return sjname;
+	}
+	public void setsjname(String sjname) {
+		this.sjname = sjname;
+	}
+	public int getaddno() {
 		return addno;
 	}
-	public void setaddno(String addno) {
+	public void setaddno(int addno) {
 		this.addno = addno;
-	}public String getmjno() {
+	}
+	public int getmjno() {
 		return mjno;
 	}
-	public void setmjno(String mjno) {
+	public void setmjno(int mjno) {
 		this.mjno = mjno;
 	}
-	public String getddno() {
+	public int getddno() {
 		return ddno;
 	}
-	public void setddno(String ddno) {
+	public void setddno(int ddno) {
 		this.ddno = ddno;
-	}public String getqsno() {
+	}
+	public String getqsno() {
 		return qsno;
 	}
 	public void setqsno(String qsno) {
 		this.qsno = qsno;
-	}public String getuserno() {
+	}
+	public String getqsname() {
+		return qsname;
+	}
+	public void setqsname(String qsname) {
+		this.qsname = qsname;
+	}
+	public String getuserno() {
 		return userno;
 	}
 	public void setuserno(String userno) {
 		this.userno = userno;
-	}public String getyhno() {
+	}
+	public String getusername() {
+		return username;
+	}
+	public void setusername(String username) {
+		this.username = username;
+	}
+	public int getyhno() {
 		return yhno;
 	}
-	public void setyhno(String yhno) {
+	public void setyhno(int yhno) {
 		this.yhno = yhno;
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.userno;
+			return this.username;
 		else if (col == 1)
-			return this.qsno;
+			return this.qsname;
 		else if (col == 2)
 			return this.ddzt;
 		else if (col == 3)
-			return this.mjno;
+			return this.mjno+"";
 		else if (col == 4)
-			return this.yhno;
+			return this.yhno+"";
 		else if (col == 5)
 			return (this.ddstartmoney + "");
 		else if (col == 6)
@@ -106,15 +131,15 @@ public class BeanOrder {
 	}
 	public String getCell1(int col){
 		if (col == 0)
-			return this.sjno;
+			return this.sjname;
 		else if (col == 1)
-			return this.qsno;
+			return this.qsname;
 		else if (col == 2)
 			return this.ddzt;
 		else if (col == 3)
-			return this.mjno;
+			return this.mjno+"";
 		else if (col == 4)
-			return this.yhno;
+			return this.yhno+"";
 		else if (col == 5)
 			return (this.ddstartmoney + "");
 		else if (col == 6)
@@ -124,15 +149,15 @@ public class BeanOrder {
 	}
 	public String getCell2(int col){
 		if (col == 0)
-			return this.userno;
+			return this.username;
 		else if (col == 1)
-			return this.sjno;
+			return this.sjname;
 		else if (col == 2)
 			return this.ddzt;
 		else if (col == 3)
-			return this.mjno;
+			return this.mjno+"";
 		else if (col == 4)
-			return this.yhno;
+			return this.yhno+"";
 		else if (col == 5)
 			return (this.ddstartmoney + "");
 		else if (col == 6)

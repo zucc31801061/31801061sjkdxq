@@ -1,5 +1,9 @@
 package takeaway.control;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +12,8 @@ import takeaway.model.BeanOrder;
 import takeaway.model.BeanOrderInfo;
 import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
+import takeaway.util.DBUtil;
+import takeaway.util.DbException;
 
 public class OrderInfoManager implements IOrderInfoManager{
 	@Override
@@ -53,18 +59,20 @@ public class OrderInfoManager implements IOrderInfoManager{
 	@Override
 	public List<BeanOrderInfo> loadOrderInfo(BeanOrder order) throws BaseException {
 		List<BeanOrderInfo> result=new ArrayList<BeanOrderInfo>();
-		/*Connection conn = null;
+		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info order by sj_star DESC,sj_avgxf";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    java.sql.ResultSet rs = pst.executeQuery();
+			String sql = "select sp_name,dd_no,num,price,discount from dd_info,sp_info where dd_no=? and dd_info.sp_no=sp_info.sp_no";
+		    PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, order.getddno());
+		    ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
-		    	BeanOrder p=new BeanOrder();
-		        p.setsjname(rs.getString(1));
-		        p.setsjstar(rs.getInt(2));
-		        p.setsjavgxf(rs.getFloat(3));
-		        p.setsjsumxl(rs.getFloat(4));
+		    	BeanOrderInfo p=new BeanOrderInfo();
+		        p.setspname(rs.getString(1));
+		        p.setddno(rs.getInt(2));
+		        p.setnum(rs.getInt(3));
+		        p.setprice(rs.getFloat(4));
+		        p.setdiscount(rs.getFloat(5));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -80,7 +88,7 @@ public class OrderInfoManager implements IOrderInfoManager{
 		        } catch (SQLException e) {
 		        	e.printStackTrace();
 		        }
-		}*/
+		}
 		return result;
 	}
 

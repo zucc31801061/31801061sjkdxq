@@ -85,14 +85,14 @@ public class ProductManager implements IProductManager {
 		Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
-	    	String sql = "select sp_name,fl_no,sp_money,sp_yh from sp_info where sj_no=?";
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh from sp_info,sp_kind where sj_no=? and sp_info.fl_no=sp_kind.fl_no";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.setString(1, store.getsjno());
 	    	ResultSet rs = pst.executeQuery();
 	    	while (rs.next()) {
 	    		BeanProduct s = new BeanProduct();
 	    		s.setspname(rs.getString(1));
-	    		s.setflno(rs.getInt(2));
+	    		s.setflname(rs.getString(2));
 	    		s.setspmoney(rs.getFloat(3));
 	    		s.setyhmoney(rs.getFloat(4));
 	    		s.setsjno(store.getsjno());
