@@ -201,6 +201,10 @@ public class FrmMain extends JFrame implements ActionListener {
 			FrmIngOrder io=new FrmIngOrder(this,"正在配送",true);
 			io.setVisible(true);
 		}
+		else if(e.getSource()==this.menuItem_discount){
+			FrmMyyh my=new FrmMyyh(this,"我的优惠",true);
+			my.setVisible(true);
+		}
 		/*else if(e.getSource()==this.menuItem_DeleteStore){
 			if(this.curStore==null) {
 				JOptionPane.showMessageDialog(null, "请选择计划", "错误",JOptionPane.ERROR_MESSAGE);

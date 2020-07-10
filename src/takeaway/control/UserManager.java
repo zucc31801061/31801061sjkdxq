@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import sun.jvm.hotspot.oops.java_lang_Class;
 import takeaway.itf.IUserManager;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -238,17 +237,42 @@ public class UserManager implements IUserManager {
 	@Override
 	public BeanUser PayVIP() throws BaseException{
 		String userno = BeanUser.currentLoginUser.getUserid();
-		Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE,31);
-        Date enddate = new Date(c.getTimeInMillis());
-        
+		
+		Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);//time，是用户充值的月数
+        Date date = new Date(calendar.getTimeInMillis());
+		
+		Calendar calendar1 = new GregorianCalendar();
+		Date date2=new Date(calendar1.getTimeInMillis());
     	BeanUser p=new BeanUser();
+    	
+    	Calendar calendar2 = Calendar.getInstance();
+        Date now = new Date(calendar.getTimeInMillis());
+        
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user_info set vip=TRUE,vip_enddate=? where user_no=?";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setDate(1, enddate);
+			String sql = "select vip_enddate from user_info where user_no=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, userno);
+			java.sql.ResultSet rs = pst.executeQuery();
+		    if (rs.next()) {
+		        java.util.Date date1 = rs.getDate(1);
+		        calendar1.setTime(date1);
+		        calendar1.add(Calendar.MONTH, 1);
+		        date2=new Date(calendar1.getTimeInMillis());
+		    }
+		    rs.close();
+		    pst.close();
+			sql = "update user_info set vip=TRUE,vip_enddate=? where user_no=?";
+		    pst = conn.prepareStatement(sql);
+		    if(date2.before(now)) {
+		    	pst.setDate(1,date);
+		    }
+		    else {
+		    	pst.setDate(1,date2);
+		    }
+		    
 		    pst.setString(2, userno);
 		    pst.execute();
 		    pst.close();

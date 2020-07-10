@@ -2,7 +2,7 @@ package takeaway.model;
 
 import java.sql.Date;
 
-public class BeanYh {
+public class BeanYhInfo {
 	public static final String[] tableTitles={"优惠金额","商家编号","订单编号"};
 	public static final String[] tableTitles1={"优惠金额","起始日期","结束日期","商家编号"};
 	public static final String[] tableTitles2={"优惠金额","商家编号","集单要求","已订单数"};
