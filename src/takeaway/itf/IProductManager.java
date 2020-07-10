@@ -8,7 +8,7 @@ import takeaway.util.BaseException;
 
 public interface IProductManager {
 	public List<BeanProduct> loadProducts(BeanStore store)throws BaseException;
-	
+	public List<BeanProduct> loadAll()throws BaseException;
 	/**
 	 * 添加步骤
 	 * 新填的步骤序号为当前计划最大步骤序号+1
@@ -19,7 +19,7 @@ public interface IProductManager {
 	 * @param planfinishdate
 	 * @throws BaseException
 	 */
-	public void add(BeanStore plan, String name, String planstartdate, String planfinishdate)throws BaseException;
+	public BeanProduct addproduct(String name,String kind,Float start,Float end)throws BaseException;
 
 	
 	
@@ -29,7 +29,7 @@ public interface IProductManager {
 	 * @param step
 	 * @throws BaseException
 	 */
-	public void deleteStep(BeanProduct step)throws BaseException;
+	public void deleteProduct(BeanProduct product)throws BaseException;
 
 	/**
 	 * 设置当前步骤的实际开始时间，及对应的计划表中已开始步骤数量

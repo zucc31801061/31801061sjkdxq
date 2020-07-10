@@ -45,6 +45,8 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_function=new JMenu("我的功能");
     private JMenu menu_more=new JMenu("更多");
     //创建菜单项
+    private JMenuItem  menuItem_order=new JMenuItem("我要下单");
+    
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");//已完成
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");//已完成
     
@@ -130,6 +132,8 @@ public class FrmMain extends JFrame implements ActionListener {
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
 		//将菜单项添加到菜单
+		this.menu_order.add(this.menuItem_order); this.menuItem_order.addActionListener(this);
+		
 	    this.menu_myorder.add(this.menuItem_history); this.menuItem_history.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_ing); this.menuItem_ing.addActionListener(this);
 	    

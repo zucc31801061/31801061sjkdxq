@@ -6,6 +6,7 @@ public class BeanYhInfo {
 	public static final String[] tableTitles={"优惠金额","商家","订单编号"};
 	public static final String[] tableTitles1={"优惠金额","起始日期","结束日期","商家"};
 	public static final String[] tableTitles2={"优惠金额","商家","集单要求","已订单数"};
+	public static final String[] tableTitles3={"优惠编号","优惠金额","集单要求","起始日期","结束日期"};
 	private int yhmoney;
 	private int jdnum;
 	private Date startdate;
@@ -99,6 +100,20 @@ public class BeanYhInfo {
 			return this.jdnum+"";
 		else if (col == 3)
 			return this.already+"";
+		else
+		    return "";
+	}
+	public String getCell3(int col){
+		if (col == 0)
+			return this.yhno+"";
+		else if (col == 1)
+			return this.yhmoney+"";
+		else if (col == 2)
+			return this.jdnum+"";
+		else if (col == 3)
+			return this.startdate+"";
+		else if (col == 4)
+			return this.enddate+"";
 		else
 		    return "";
 	}

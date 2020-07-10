@@ -19,52 +19,57 @@ import takeaway.util.DBUtil;
 import takeaway.util.DbException;
 
 public class ProductManager implements IProductManager {
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Override
-	public void add(BeanStore plan, String name, String planstartdate,
-			String planfinishdate) throws BaseException {
-		/*if(name.isEmpty()) throw new BusinessException("计划名为空");
-		try {
-			sdf.parse(planstartdate);
-		    sdf.parse(planfinishdate);
-		} catch (ParseException e) {
-		    throw new BusinessException("计划时间错误");
-		}
-		int step_order;
-		Connection conn = null;
+	public BeanProduct addproduct(String name,String kind,Float start,Float end)throws BaseException {
+		if(name.isEmpty()||kind.isEmpty())
+			throw new BusinessException("请输入完整的商品信息");
+		String sjno = BeanStore.currentLoginstore.getsjno();
+		BeanProduct product=new BeanProduct();
+		int spno=1;
+		int flno;
+		int num;
+		Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
-		    String sql = "select step_order from tbl_step where plan_id=? order by step_order desc limit 0,1";
+		    String sql = "select sp_no from sp_info order by sp_no desc limit 0,1";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setInt(1, plan.getplanid());
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    if (rs.next()) {
-		    	step_order = rs.getInt(1) + 1;
-		    } else {
-		    	step_order = 1;
-		    }
-		    sql = "insert into tbl_step(plan_id,step_order,step_name,plan_begin_time,plan_end_time) values(?,?,?,?,?)";
-		    pst = conn.prepareStatement(sql);
-		    pst.setInt(1, plan.getplanid());
-		    pst.setInt(2, step_order);
-		    pst.setString(3, name);
-		    pst.setString(4, planstartdate);
-		    pst.setString(5, planstartdate);
-		    if (pst.executeUpdate() == 1) {
-		    	System.out.println("步骤名为: " + name);
-		    } else {
-		        throw new RuntimeException("查询失败");
-		    }
-		    sql = "update tbl_plan set step_count=? where plan_id=?";
-		    pst = conn.prepareStatement(sql);
-		    pst.setInt(1, step_order);
-		    pst.setInt(2, plan.getplanid());
-		    if (pst.executeUpdate() == 1) {
-		    	System.out.println("计划" + plan.getplanname() + "成功增添步骤");
-		    } else {
-		        throw new RuntimeException("步骤增添失败");
+		    	spno=rs.getInt(1) + 1;
+		    } 
+		    else {
+		    	spno=1;
 		    }
 		    rs.close();
+			pst.close();
+			sql = "select fl_no,num from sp_kind where fl_name=?";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, kind);
+			rs = pst.executeQuery();
+			if(!rs.next()) {
+				throw new BusinessException("该分类不存在");
+			}
+			else{
+				flno=rs.getInt(1);
+				num=rs.getInt(2);
+			}
+			rs.close();
+			pst.close();
+		    sql = "insert into sp_info(sp_no,fl_no,sj_no,sp_name,sp_money,sp_yh) values(?,?,?,?,?,?)";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, spno);
+		    pst.setInt(2, flno);
+		    pst.setString(3, sjno);
+		    pst.setString(4, name);
+		    pst.setFloat(5, start);
+		    pst.setFloat(6, end);
+		    pst.execute();
+		    pst.close();
+		    sql ="update sp_kind set num=? where fl_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, num+1);
+		    pst.setInt(2, flno);
+		    pst.execute();
 		    pst.close();
 		} catch (SQLException e) {
 		    e.printStackTrace();
@@ -76,9 +81,44 @@ public class ProductManager implements IProductManager {
 		        } catch (SQLException e) {
 		          e.printStackTrace();
 		        }
-		}*/
+		}
+		return product;
 	}
-
+	@Override
+	public List<BeanProduct> loadAll()throws BaseException {
+		List<BeanProduct> result = new ArrayList<BeanProduct>();
+		String store = BeanStore.currentLoginstore.getsjno();
+		Connection conn = null;
+		try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_no from sp_info,sp_kind where sj_no=? and sp_info.fl_no=sp_kind.fl_no";
+	    	PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, store);
+	    	ResultSet rs = pst.executeQuery();
+	    	while (rs.next()) {
+	    		BeanProduct s = new BeanProduct();
+	    		s.setspname(rs.getString(1));
+	    		s.setflname(rs.getString(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setspno(rs.getInt(5));
+	    		result.add(s);
+	    	}
+	    	rs.close();
+	    	pst.close();
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	throw new DbException(e);
+	    } finally {
+	    	if (conn != null)
+	    		try {
+	    			conn.close();
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}
+	    }
+		return result;
+	}
 	@Override
 	public List<BeanProduct> loadProducts(BeanStore store) throws BaseException {
 		List<BeanProduct> result = new ArrayList<BeanProduct>();
@@ -115,113 +155,75 @@ public class ProductManager implements IProductManager {
 	}
 
 	@Override
-	public void deleteStep(BeanProduct step) throws BaseException {
+	public void deleteProduct(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub
-		/*Connection conn = null;
-	    try {
-	      conn = DBUtil.getConnection();
-	      String sql = "DELETE from tbl_step WHERE step_id=?";
-	      java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-	      pst.setInt(1, step.getStepid());
-	      if (pst.executeUpdate() == 1) {
-	        System.out.println("查询到的step_id为" + step.getStepid());
-	      } else {
-	        throw new RuntimeException("查询失败");
-	      }
-	      int stepordermax;
-	      sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
-	      pst = conn.prepareStatement(sql);
-	      pst.setInt(1, step.getPlanid());
-	      ResultSet rs = pst.executeQuery();
-	      if (rs.next()) {
-	        stepordermax = rs.getInt(1);
-	      } else {
-	        stepordermax = 0;
-	      }
-	      int finishedstepcount = 0;
-	      int startstepcount = 0;
-	      sql = "SELECT start_step_count,finished_step_count FROM tbl_plan WHERE plan_id=?";
-	      pst = conn.prepareStatement(sql);
-	      pst.setInt(1, step.getPlanid());
-	      if (rs.next()) {
-	        startstepcount = rs.getInt(1);
-	        finishedstepcount = rs.getInt(2);
-	        if (step.getRealendtime() != null) {
-	          finishedstepcount -= 1;
-	        }
-	        if (step.getRealbegintime() != null) {
-	          startstepcount -= 1;
-	        }
-	      }
-	      rs.close();
-	      sql = "UPDATE tbl_plan SET step_count=?,start_step_count=?,finished_step_count=? WHERE plan_id=?";
-	      pst = conn.prepareStatement(sql);
-	      pst.setInt(1, stepordermax);
-	      pst.setInt(2, startstepcount);
-	      pst.setInt(3, finishedstepcount);
-	      pst.setInt(4, step.getPlanid());
-	      if (pst.executeUpdate() == 1) {
-	        System.out.println("已删除计划" + step.getPlanid() + "的步骤");
-	      } else {
-	        throw new RuntimeException("删除失败");
-	      }
-	      pst.close();
-	    } catch (SQLException e) {
-	      e.printStackTrace();
-	      throw new DbException(e);
-	    } finally {
-	      if (conn != null)
-	        try {
-	          conn.close();
-	        } catch (SQLException e) {
-	          e.printStackTrace();
-	        }
-	    }*/
+		String sjno = BeanStore.currentLoginstore.getsjno();
+		String flname = product.getflname();
+		int num=0;
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "delete from sp_info where sj_no=? and sp_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, BeanStore.currentLoginstore.getsjno());
+		    pst.setInt(2, product.getspno());
+		    pst.executeUpdate();
+		    pst.close();
+		    sql = "select num from sp_kind where fl_name=?";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, flname);
+			java.sql.ResultSet rs = pst.executeQuery();
+			if(rs.next()) {
+				num=rs.getInt(1);
+			}
+			rs.close();
+			pst.close();
+			sql ="update sp_kind set num=? where fl_name=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, num-1);
+		    pst.setString(2, flname);
+		    pst.execute();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 
 	@Override
-	public void startStep(BeanProduct step) throws BaseException {
+	public void startStep(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub
-		/*Connection conn = null;
-	    try {
-	    	conn = DBUtil.getConnection();
-	    	String sql = "UPDATE tbl_step SET real_begin_time=? WHERE step_id=?";
-	    	java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-	    	pst.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-	    	pst.setInt(2, step.getStepid());
-	    	if (pst.executeUpdate() == 1) {
-	    		System.out.println("已设定" + step.getStepid() + "为开始步骤");
-	    	} else {
-	    		throw new RuntimeException("查询失败");
-	    	}
-	    	int startstepcount;
-	    	sql = "SELECT start_step_count FROM tbl_plan WHERE plan_id=?";
-	    	pst = conn.prepareStatement(sql);
-	    	pst.setInt(1, step.getPlanid());
-	    	ResultSet rs = pst.executeQuery();
-	    	rs.next();
-	    	startstepcount = rs.getInt(1) + 1;
-	    	sql = "UPDATE tbl_plan SET start_step_count=? WHERE plan_id=?";
-	    	pst = conn.prepareStatement(sql);
-	    	pst.setInt(1, startstepcount);
-	    	pst.setInt(2, step.getPlanid());
-	    	if (pst.executeUpdate() == 1) {
-	    		System.out.println("计划" + step.getPlanid() + "开始步骤设置成功");
-	    	} else {
-	    		throw new RuntimeException("设置失败");
-	    	}
-	    	pst.close();
-	    	} catch (SQLException e) {
-	    		e.printStackTrace();
-	    		throw new DbException(e);
-	    	} finally {
-	    		if (conn != null)
-	    			try {
-	    				conn.close();
-	    			} catch (SQLException e) {
-	    				e.printStackTrace();
-	    			}
-	    	}*/
+		/*Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "delete from sp_info where sj_no=? and sp_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, BeanStore.currentLoginstore.getsjno());
+		    pst.setInt(2, product.getspno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}*/
 	}
 
 	@Override

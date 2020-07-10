@@ -16,39 +16,35 @@ import javax.swing.JTextField;
 import takeaway.takeawayUtil;
 import takeaway.util.BaseException;
 
-public class FrmAddProduct extends JDialog implements ActionListener {
+public class FrmAddMj extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
 	private Button btnOk = new Button("确定");
 	private Button btnCancel = new Button("取消");
 	
-	private JLabel newname = new JLabel("商品：");
-	private JLabel newkind = new JLabel("分类：");
-	private JLabel startmoney = new JLabel("原价：");
-	private JLabel endmoney = new JLabel("优惠价：");
+	private JLabel newmoney = new JLabel("设置满减金额：");
+	private JLabel newyh = new JLabel("设置满减优惠：");
+	private JLabel newyhdj = new JLabel("叠加优惠券(true/false)：");
 	
-	private JTextField name = new JTextField(20);
-	private JTextField kind = new JTextField(20);
-	private JTextField start= new JTextField(20);
-	private JTextField end = new JTextField(20);
+	private JTextField money = new JTextField(20);
+	private JTextField yh = new JTextField(20);
+	private JTextField yhdj= new JTextField(20);
 	
-	public FrmAddProduct(JDialog f, String s, boolean b) {
+	public FrmAddMj(JDialog f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnOk);
 		toolBar.add(btnCancel);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		workPane.add(newname);
-		workPane.add(name);
-		workPane.add(newkind);
-		workPane.add(kind);
-		workPane.add(startmoney);
-		workPane.add(start);
-		workPane.add(endmoney);
-		workPane.add(end);
+		workPane.add(newmoney);
+		workPane.add(money);
+		workPane.add(newyh);
+		workPane.add(yh);
+		workPane.add(newyhdj);
+		workPane.add(yhdj);
 		//新信息居中
 		this.getContentPane().add(workPane, BorderLayout.CENTER);
-		this.setSize(280, 200);
+		this.setSize(380, 180);
 		// 窗口居中
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -66,12 +62,11 @@ public class FrmAddProduct extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.btnOk){
-			String name=this.name.getText();
-			String kind=this.kind.getText();
-			Float start=Float.parseFloat(this.start.getText());
-			Float end=Float.parseFloat(this.end.getText());
+			Float money=Float.parseFloat(this.money.getText());
+			Float yh=Float.parseFloat(this.yh.getText());
+			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
 			try {
-				takeawayUtil.productManager.addproduct(name,kind,start,end);
+				takeawayUtil.mjManager.Addmj(money, yh, yhdj);
 				this.setVisible(false);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);

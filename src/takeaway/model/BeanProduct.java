@@ -1,10 +1,7 @@
 package takeaway.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class BeanProduct {
-	public static final String[] tblProductTitle={"商品名","分类","原价","优惠价"};
+	public static final String[] tblProductTitle={"商品","分类","原价","优惠价"};
 	/**
 	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
 	 */

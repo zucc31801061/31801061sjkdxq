@@ -47,13 +47,13 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private JMenu menu_userpj=new JMenu("用户评价");
 	private JMenu menu_updateinfo=new JMenu("修改信息");
     //创建菜单项
-	private JMenuItem  menuItem_myproduct=new JMenuItem("我的商品");
-	private JMenuItem  menuItem_mykind=new JMenuItem("我的类别");
+	private JMenuItem  menuItem_myproduct=new JMenuItem("我的商品");//已完成
+	private JMenuItem  menuItem_mykind=new JMenuItem("查看类别");//已完成
 	
-	private JMenuItem  menuItem_mymj=new JMenuItem("我的满减");
-	private JMenuItem  menuItem_myyh=new JMenuItem("我的优惠券");
+	private JMenuItem  menuItem_mymj=new JMenuItem("我的满减");//已完成
+	private JMenuItem  menuItem_myyh=new JMenuItem("我的优惠券");//用户持有表持有时该怎么删除，删除过期优惠券
 	
-	private JMenuItem  menuItem_notsend=new JMenuItem("未配送");//已完成
+	private JMenuItem  menuItem_notsend=new JMenuItem("未配送");
 	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");
 	
 	private JMenuItem  menuItem_seepj=new JMenuItem("查看评价");
@@ -184,10 +184,23 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	}	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*if(e.getSource()==this.btnBack) {
-			this.setVisible(false);
+		if(e.getSource()==this.menuItem_myproduct) {
+			FrmMyProduct mp=new FrmMyProduct(this,"我的商品",true);
+			mp.setVisible(true);
 		}
-		else if(e.getSource()==this.becomesj){
+		else if(e.getSource()==this.menuItem_mykind) {
+			FrmProKind pk=new FrmProKind(this,"查询分类",true);
+			pk.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_mymj) {
+			FrmMymj mm=new FrmMymj(this,"我的满减",true);
+			mm.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_myyh) {
+			FrmStoreMyyh sm=new FrmStoreMyyh(this,"我的优惠",true);
+			sm.setVisible(true);
+		}
+		/*else if(e.getSource()==this.becomesj){
 			String name=this.edtsjname.getText();
 			try {
 				takeawayUtil.planManager.addStore(name);
