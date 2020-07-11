@@ -50,8 +50,8 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");//已完成
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");//已完成
     
-    private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");
-    private JMenuItem  menuItem_reception=new JMenuItem("我的评价");
+    private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");//已完成
+    private JMenuItem  menuItem_reception=new JMenuItem("我的评价");//已完成
     private JMenuItem  menuItem_info=new JMenuItem("我的信息");//已完成
     private JMenuItem  menuItem_address=new JMenuItem("我的地址");//已完成
     
@@ -208,6 +208,10 @@ public class FrmMain extends JFrame implements ActionListener {
 		else if(e.getSource()==this.menuItem_discount){
 			FrmMyyh my=new FrmMyyh(this,"我的优惠",true);
 			my.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_reception){
+			FrmMypj mp=new FrmMypj(this,"我的评价",true);
+			mp.setVisible(true);
 		}
 		/*else if(e.getSource()==this.menuItem_DeleteStore){
 			if(this.curStore==null) {

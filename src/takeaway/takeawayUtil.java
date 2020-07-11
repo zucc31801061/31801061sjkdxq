@@ -9,6 +9,7 @@ import takeaway.control.OrderManager;
 import takeaway.control.StoreManager;
 import takeaway.control.ProductManager;
 import takeaway.control.RiderManager;
+import takeaway.control.SppjManager;
 import takeaway.control.UserManager;
 import takeaway.control.YhInfoManager;
 import takeaway.itf.IAddressManager;
@@ -20,6 +21,7 @@ import takeaway.itf.IOrderManager;
 import takeaway.itf.IStoreManager;
 import takeaway.itf.IProductManager;
 import takeaway.itf.IRiderManager;
+import takeaway.itf.ISppjManager;
 import takeaway.itf.IUserManager;
 import takeaway.itf.IYhInfoManager;
 
@@ -35,4 +37,5 @@ public class takeawayUtil {
 	public static IYhInfoManager yhManager=new YhInfoManager();//需要换成自行设计的实现类
 	public static IKindManager kindManager=new KindManager();//需要换成自行设计的实现类
 	public static IMjMethodManager mjManager=new MjMethodManager();//需要换成自行设计的实现类
+	public static ISppjManager sppjManager=new SppjManager();//需要换成自行设计的实现类
 }

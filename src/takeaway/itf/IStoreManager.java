@@ -24,11 +24,17 @@ public interface IStoreManager {
 	 * @throws BaseException
 	 */
 	public List<BeanStore> loadAll()throws BaseException;
+	public List<BeanStore> loadbystore()throws BaseException;
 	/**
 	 * 删除商家
 	 * @param store
 	 * @throws BaseException
 	 */
 	public void deleteStore(BeanStore store)throws BaseException;
-
+	/**
+	 * 修改商家名
+	 * @param store
+	 * @throws BaseException
+	 */
+	public void updateinfo(String name) throws BaseException;
 }

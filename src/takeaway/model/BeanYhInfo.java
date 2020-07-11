@@ -33,7 +33,8 @@ public class BeanYhInfo {
 	}
 	public void setstartdate(Date startdate) {
 		this.startdate = startdate;
-	}public Date getenddate() {
+	}
+	public Date getenddate() {
 		return enddate;
 	}
 	public void setenddate(Date enddate) {

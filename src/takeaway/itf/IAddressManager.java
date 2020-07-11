@@ -3,6 +3,7 @@ package takeaway.itf;
 import java.util.List;
 
 import takeaway.model.BeanAddress;
+import takeaway.model.BeanOrder;
 import takeaway.util.BaseException;
 
 public interface IAddressManager {
@@ -13,15 +14,21 @@ public interface IAddressManager {
 	 */
 	public BeanAddress addAddress(String sheng,String shi,String qu,String address,String name,String phnum) throws BaseException;
 	/**
-	 * 提取所有商家
+	 * 提取所有地址
 	 * @return
 	 * @throws BaseException
 	 */
 	public List<BeanAddress> loadAll()throws BaseException;
 	/**
-	 * 删除商家
+	 * 删除地址
 	 * @param address
 	 * @throws BaseException
 	 */
 	public void deleteAddress(BeanAddress address)throws BaseException;
+	/**
+	 * 加载对应订单的地址信息
+	 * @param address
+	 * @throws BaseException
+	 */
+	public List<BeanAddress> loadselect(BeanOrder order)throws BaseException;
 }

@@ -53,12 +53,13 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 	private JMenuItem  menuItem_mymj=new JMenuItem("我的满减");//已完成
 	private JMenuItem  menuItem_myyh=new JMenuItem("我的优惠券");//用户持有表持有时该怎么删除，删除过期优惠券
 	
-	private JMenuItem  menuItem_notsend=new JMenuItem("未配送");
-	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");
+	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");//已完成
+	private JMenuItem  menuItem_alsend=new JMenuItem("已送达");//已完成
 	
-	private JMenuItem  menuItem_seepj=new JMenuItem("查看评价");
+	private JMenuItem  menuItem_seepj=new JMenuItem("查看评价");//已完成
 	
-	private JMenuItem  menuItem_updatename=new JMenuItem("修改商家名");
+	private JMenuItem  menuItem_updatename=new JMenuItem("修改商家名");//已完成
+	private JMenuItem  menuItem_seeinfo=new JMenuItem("查看信息");//已完成
 	//创建面板
 	private JPanel statusBar = new JPanel();
 	//订单列表
@@ -134,12 +135,13 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 		this.menu_provideyh.add(this.menuItem_mymj); this.menuItem_mymj.addActionListener(this);
 		this.menu_provideyh.add(this.menuItem_myyh); this.menuItem_myyh.addActionListener(this);
 		
-		this.menu_userorder.add(this.menuItem_notsend); this.menuItem_notsend.addActionListener(this);
 		this.menu_userorder.add(this.menuItem_ingsend); this.menuItem_ingsend.addActionListener(this);
+		this.menu_userorder.add(this.menuItem_alsend); this.menuItem_alsend.addActionListener(this);
 		
 		this.menu_userpj.add(this.menuItem_seepj); this.menuItem_seepj.addActionListener(this);
 		
 		this.menu_updateinfo.add(this.menuItem_updatename); this.menuItem_updatename.addActionListener(this);
+		this.menu_updateinfo.add(this.menuItem_seeinfo); this.menuItem_seeinfo.addActionListener(this);
 		//将菜单添加到菜单栏
 		menubar.add(menu_myproduct);
 		menubar.add(menu_provideyh);
@@ -199,6 +201,26 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 		else if(e.getSource()==this.menuItem_myyh) {
 			FrmStoreMyyh sm=new FrmStoreMyyh(this,"我的优惠",true);
 			sm.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_updatename) {
+			FrmUpdateStore us=new FrmUpdateStore(this,"修改商家名",true);
+			us.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_seeinfo) {
+			FrmStoreInfo si=new FrmStoreInfo(this,"查看信息",true);
+			si.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_seepj) {
+			FrmStoreMypj sm=new FrmStoreMypj(this,"查看信息",true);
+			sm.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_alsend) {
+			FrmStoreHisOrder sh=new FrmStoreHisOrder(this,"已送达",true);
+			sh.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_ingsend) {
+			FrmStoreingOrder so=new FrmStoreingOrder(this,"配送中",true);
+			so.setVisible(true);
 		}
 		/*else if(e.getSource()==this.becomesj){
 			String name=this.edtsjname.getText();

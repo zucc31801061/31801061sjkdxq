@@ -89,9 +89,13 @@ public class StoreManager implements IStoreManager {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl,sj_no from sj_info order by sj_star DESC,sj_avgxf";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    java.sql.ResultSet rs = pst.executeQuery();
+			String sql = "update sj_info set sj_avgxf=(select avg(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_sumxl=(select sum(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_star=(select avg(pj_star) from sp_pj where sp_pj.sj_no=sj_info.sj_no)";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.execute();
+	    	pst.close();
+			sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl,sj_no from sj_info order by sj_star DESC,sj_avgxf";
+			pst = conn.prepareStatement(sql);
+			java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanStore p=new BeanStore();
 		        p.setsjname(rs.getString(1));
@@ -152,5 +156,66 @@ public class StoreManager implements IStoreManager {
 				}
 		}*/
 	}
-
+	
+	public void updateinfo(String name) throws BaseException {
+		// TODO Auto-generated method stub
+		if(name.isEmpty())
+			throw new BaseException("商家名为空");
+		Connection conn = null;
+	    String sjno = BeanStore.currentLoginstore.getsjno();
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "update sj_info set sj_name=? where sj_no=?";
+	    	java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, name);
+	    	pst.setString(2, sjno);
+	    	pst.execute();
+	    	pst.close();
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+	    		throw new DbException(e);
+	    	} finally {
+	    		if (conn != null)
+	    			try {
+	    				conn.close();
+	    			} catch (SQLException e) {
+	    				e.printStackTrace();
+	    			}
+	    	}
+	}
+	public List<BeanStore> loadbystore()throws BaseException{
+		List<BeanStore> result=new ArrayList<BeanStore>();
+		String sjno=BeanStore.currentLoginstore.getsjno();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl,sj_no from sj_info where sj_no=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, sjno);
+			java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanStore p=new BeanStore();
+		        p.setsjname(rs.getString(1));
+		        p.setsjstar(rs.getInt(2));
+		        p.setsjavgxf(rs.getFloat(3));
+		        p.setsjsumxl(rs.getFloat(4));
+		        p.setsjno(rs.getString(5));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
 }

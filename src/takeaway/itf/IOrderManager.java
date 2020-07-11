@@ -19,8 +19,42 @@ public interface IOrderManager {
 	 * @throws BaseException
 	 */
 	public List<BeanOrder> loadBysj()throws BaseException;
+	/**
+	 * 提取当前骑手所有订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadByqs()throws BaseException;
+	/**
+	 * 提取当前用户所有已送达订单
+	 * @return
+	 * @throws BaseException
+	 */
 	public List<BeanOrder> loaduserHisOrder() throws BaseException;
+	/**
+	 * 提取当前商家所有已送达订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadstoreHisOrder() throws BaseException;
+	/**
+	 * 提取当前用户所有配送中订单
+	 * @return
+	 * @throws BaseException
+	 */
 	public List<BeanOrder> loaduserIngOrder() throws BaseException;
+	/**
+	 * 提取当前商家所有配送中订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadstoreingOrder() throws BaseException;
+	/**
+	 * 提取当前用户所有评价(对骑手)
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loaduserpj() throws BaseException;
 	/**
 	 * 删除商家
 	 * @param plan

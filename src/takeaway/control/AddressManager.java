@@ -7,6 +7,7 @@ import java.util.List;
 
 import takeaway.itf.IAddressManager;
 import takeaway.model.BeanAddress;
+import takeaway.model.BeanOrder;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 import takeaway.util.BusinessException;
@@ -127,5 +128,42 @@ public class AddressManager implements IAddressManager{
 					e.printStackTrace();
 				}
 		}
+	}
+	public List<BeanAddress> loadselect(BeanOrder order)throws BaseException{
+		List<BeanAddress> result=new ArrayList<BeanAddress>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sheng,shi,qu,address,user_name,user_phnum\r\n" + 
+					"from add_info,sp_dd\r\n" + 
+					"where sp_dd.dd_no=? and sp_dd.add_no=add_info.add_no";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, order.getaddno());
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanAddress p=new BeanAddress();
+		        p.setsheng(rs.getString(1));
+		        p.setshi(rs.getString(2));
+		        p.setqu(rs.getString(3));
+		        p.setaddress(rs.getString(4));
+		        p.setusername(rs.getString(5));
+		        p.setuserphnum(rs.getString(6));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
 	}
 }

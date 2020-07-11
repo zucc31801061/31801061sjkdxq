@@ -3,9 +3,10 @@ package takeaway.model;
 import java.sql.Date;
 
 public class BeanOrder {
-	public static final String[] tableTitles={"用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles1={"商家","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles2={"用户","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles={"订单编号","用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles1={"订单编号","商家","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles2={"订单编号","用户","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles3={"订单编号","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
 	private Float ddstartmoney;
 	private Float ddendmoney;
 	private Date ddstarttime;
@@ -113,43 +114,67 @@ public class BeanOrder {
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.username;
+			return this.ddno+"";
 		else if (col == 1)
-			return this.qsname;
+			return this.username;
 		else if (col == 2)
-			return this.ddzt;
+			return this.qsname;
 		else if (col == 3)
-			return this.mjno+"";
+			return this.ddzt;
 		else if (col == 4)
-			return this.yhno+"";
+			return this.mjno+"";
 		else if (col == 5)
-			return (this.ddstartmoney + "");
+			return this.yhno+"";
 		else if (col == 6)
+			return (this.ddstartmoney + "");
+		else if (col == 7)
 			return (this.ddendmoney + "");
 		else
 		    return "";
 	}
 	public String getCell1(int col){
 		if (col == 0)
-			return this.sjname;
+			return this.ddno+"";
 		else if (col == 1)
-			return this.qsname;
+			return this.sjname;
 		else if (col == 2)
-			return this.ddzt;
+			return this.qsname;
 		else if (col == 3)
-			return this.mjno+"";
+			return this.ddzt;
 		else if (col == 4)
-			return this.yhno+"";
+			return this.mjno+"";
 		else if (col == 5)
-			return (this.ddstartmoney + "");
+			return this.yhno+"";
 		else if (col == 6)
+			return (this.ddstartmoney + "");
+		else if (col == 7)
 			return (this.ddendmoney + "");
 		else
 		    return "";
 	}
 	public String getCell2(int col){
 		if (col == 0)
+			return this.ddno+"";
+		else if (col == 1)
 			return this.username;
+		else if (col == 2)
+			return this.sjname;
+		else if (col == 3)
+			return this.ddzt;
+		else if (col == 4)
+			return this.mjno+"";
+		else if (col == 5)
+			return this.yhno+"";
+		else if (col == 6)
+			return (this.ddstartmoney + "");
+		else if (col == 7)
+			return (this.ddendmoney + "");
+		else
+		    return "";
+	}
+	public String getCell3(int col){
+		if (col == 0)
+			return this.ddno+"";
 		else if (col == 1)
 			return this.sjname;
 		else if (col == 2)
