@@ -38,6 +38,12 @@ public interface IOrderManager {
 	 */
 	public List<BeanOrder> loadstoreHisOrder() throws BaseException;
 	/**
+	 * 提取当前骑手所有已送达订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadriderHisOrder() throws BaseException;
+	/**
 	 * 提取当前用户所有配送中订单
 	 * @return
 	 * @throws BaseException
@@ -50,15 +56,48 @@ public interface IOrderManager {
 	 */
 	public List<BeanOrder> loadstoreingOrder() throws BaseException;
 	/**
+	 * 提取当前商家所有配送中订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadrideringOrder() throws BaseException;
+	/**
+	 * 提取所有可接单的订单
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadriderfreeOrder() throws BaseException;
+	/**
+	 * 接单
+	 * @param plan
+	 * @throws BaseException
+	 */
+	public void takeOrder(BeanOrder order)throws BaseException;
+	/**
+	 * 确认送达
+	 * @param plan
+	 * @throws BaseException
+	 */
+	public void sendOrder(BeanOrder order)throws BaseException;
+	/**
 	 * 提取当前用户所有评价(对骑手)
 	 * @return
 	 * @throws BaseException
 	 */
 	public List<BeanOrder> loaduserpj() throws BaseException;
 	/**
+	 * 提取当前骑手入账信息
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadridermoney() throws BaseException;
+	/**
 	 * 删除商家
 	 * @param plan
 	 * @throws BaseException
 	 */
-	public void deleteOrder(BeanOrder plan)throws BaseException;
+	public void deleteOrder(BeanOrder order)throws BaseException;
+	public void updhppj(BeanOrder order)throws BaseException;
+	public void updcppj(BeanOrder order)throws BaseException;
+	public void delpj(BeanOrder order)throws BaseException;
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import takeaway.itf.ISppjManager;
+import takeaway.model.BeanProduct;
 import takeaway.model.BeanSppj;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
@@ -15,27 +16,20 @@ import takeaway.util.DBUtil;
 import takeaway.util.DbException;
 
 public class SppjManager implements ISppjManager{
-	public BeanSppj addSppj(String pjnr,int pjstar,boolean photo,int ddno) throws BaseException {
+	public void addSppj(BeanSppj sppj,String pjnr,int pjstar,boolean photo) throws BaseException {
 		// TODO Auto-generated method stub
-		BeanSppj sppj=new BeanSppj();
-		String userno = BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql = "insert into sp_pj(sp_no,dd) select sp_no,dd_no from dd_info where dd_no=?";
+			String sql = "update sp_pj\r\n" + 
+					"set pj_nr=?,pj_date=?,pj_star=?,pj_photo=?\r\n" + 
+					"where dd=?";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-			pst.setInt(1, ddno);
-			pst.execute();
-			pst.close();
-			sql = "update sp_pj set pj_nr=?,pj_date=?,pj_star=?,pj_photo=?,sj_no=(select sj_no from sp_dd where dd_no=?),user_no=? where dd=?";
-			pst = conn.prepareStatement(sql);
 			pst.setString(1,pjnr);
 			pst.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
 			pst.setInt(3,pjstar);
 			pst.setBoolean(4,photo);
-			pst.setInt(5,ddno);
-			pst.setString(6,userno);
-			pst.setInt(7,ddno);
+			pst.setInt(5,sppj.getdd());
 			pst.execute();
 		    pst.close();
 		} catch (SQLException e) {
@@ -51,7 +45,6 @@ public class SppjManager implements ISppjManager{
 					e.printStackTrace();
 				}
 		}
-		return sppj;
 	}
 
 	public List<BeanSppj> loadbyuser()throws BaseException {
@@ -60,7 +53,11 @@ public class SppjManager implements ISppjManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select distinct dd,pj_nr,pj_star,pj_photo,sj_name,user_no,pj_date from sp_pj,sj_info where sp_pj.user_no=? and sj_info.sj_no=sp_pj.sj_no order by pj_date desc";
+			String sql = "select distinct dd,pj_nr,pj_star,pj_photo,sj_name,pj_date\r\n" + 
+					"from sp_pj,sj_info,sp_dd\r\n" + 
+					"where sp_dd.user_no=?\r\n" + 
+					"and sj_info.sj_no=sp_pj.sj_no\r\n" + 
+					"order by pj_date desc";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -71,8 +68,8 @@ public class SppjManager implements ISppjManager{
 		        p.setpjstar(rs.getInt(3));
 		        p.setphoto(rs.getBoolean(4));
 		        p.setsjname(rs.getString(5));
-		        p.setuserno(rs.getString(6));
-		        p.setpjdate(rs.getDate(7));
+		        p.setuserno(userno);
+		        p.setpjdate(rs.getDate(6));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -110,6 +107,43 @@ public class SppjManager implements ISppjManager{
 		        p.setusername(rs.getString(5));
 		        p.setsjno(rs.getString(6));
 		        p.setpjdate(rs.getDate(7));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public List<BeanSppj> loadpropj(BeanProduct product)throws BaseException{
+		List<BeanSppj> result=new ArrayList<BeanSppj>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select pj_nr,pj_star,pj_date,pj_photo,user_name\r\n" + 
+					"from sp_pj,user_info\r\n" + 
+					"where sp_no=? and sp_pj.user_no=user_info.user_no\r\n" + 
+					"order by pj_date desc";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, product.getspno());
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanSppj p=new BeanSppj();
+		    	p.setpjnr(rs.getString(1));
+		    	p.setpjstar(rs.getInt(2));
+		    	p.setpjdate(rs.getDate(3));
+		    	p.setphoto(rs.getBoolean(4));
+		    	p.setusername(rs.getString(5));
 		        result.add(p);
 		    }
 		    rs.close();

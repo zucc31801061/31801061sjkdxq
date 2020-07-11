@@ -129,6 +129,41 @@ public class AddressManager implements IAddressManager{
 				}
 		}
 	}
+	public void updateAddress(BeanAddress add,String sheng,String shi,String qu,String address,String name,String phnum)throws BaseException{
+		if(sheng.isEmpty()||shi.isEmpty()||qu.isEmpty()||address.isEmpty()||name.isEmpty()||phnum.isEmpty())
+			throw new BusinessException("请填写完整的地址信息");
+		Connection conn=null;
+		String userno=BeanUser.currentLoginUser.getUserid();
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update add_info\r\n" + 
+		    		"set sheng=?,shi=?,qu=?,address=?,user_name=?,user_phnum=?\r\n" + 
+		    		"where add_no=? and user_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, sheng);
+		    pst.setString(2, shi);
+		    pst.setString(3, qu);
+		    pst.setString(4, address);
+		    pst.setString(5, name);
+		    pst.setString(6, phnum);
+		    pst.setInt(7, add.getaddno());
+		    pst.setString(8, BeanUser.currentLoginUser.getUserid());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
 	public List<BeanAddress> loadselect(BeanOrder order)throws BaseException{
 		List<BeanAddress> result=new ArrayList<BeanAddress>();
 		Connection conn = null;

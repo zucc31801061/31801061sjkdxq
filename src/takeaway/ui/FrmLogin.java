@@ -86,6 +86,8 @@ public class FrmLogin extends JDialog implements ActionListener {
 					return;
 				}
 				this.setVisible(false);
+				FrmGlyMain gm=new FrmGlyMain();
+				gm.setVisible(true);
 			}
 			else {
 				try {

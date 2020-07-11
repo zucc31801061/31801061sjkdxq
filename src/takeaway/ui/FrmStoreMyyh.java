@@ -8,14 +8,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
@@ -25,8 +30,21 @@ import takeaway.util.BaseException;
 public class FrmStoreMyyh extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button addyh = new Button("增加优惠券");
+	private Button updyh = new Button("修改优惠券");
 	private Button delyh = new Button("删除优惠券");
 	private Button btnok = new Button("确定");
+	
+	private JPanel workPane = new JPanel();
+	private JLabel newmoney = new JLabel("优惠金额：");
+	private JLabel newnum = new JLabel("集单要求：");
+	private JLabel startdate = new JLabel("起始日期（yyyy-MM-dd）：");
+	private JLabel enddate = new JLabel("结束日期（yyyy-MM-dd）：");
+	
+	private JTextField money = new JTextField(10);
+	private JTextField num = new JTextField(10);
+	private JTextField start= new JTextField(10);
+	private JTextField end= new JTextField(10);
+	
 	private Object tblyhTitle[]=BeanYhInfo.tableTitles3;
 	private Object tblyhData[][];
 	DefaultTableModel tabyhModel=new DefaultTableModel();
@@ -55,10 +73,20 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 		this.setTitle("我的优惠券");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(addyh);
+		toolBar.add(updyh);
 		toolBar.add(delyh);
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-	    this.getContentPane().add(new JScrollPane(this.dataTableyh), BorderLayout.WEST);
+		workPane.add(newmoney);
+		workPane.add(money);
+		workPane.add(newnum);
+		workPane.add(num);
+		workPane.add(startdate);
+		workPane.add(start);
+		workPane.add(enddate);
+		workPane.add(end);
+		this.getContentPane().add(workPane, BorderLayout.NORTH);
+	    this.getContentPane().add(new JScrollPane(this.dataTableyh), BorderLayout.CENTER);
 	    this.dataTableyh.addMouseListener(new MouseAdapter (){
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -70,7 +98,7 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadyhTable();
-		this.setSize(460, 250);
+		this.setSize(1000, 250);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -79,6 +107,7 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 
 		this.validate();
 		this.addyh.addActionListener(this);
+		this.updyh.addActionListener(this);
 		this.delyh.addActionListener(this);
 		this.btnok.addActionListener(this);
 	}
@@ -89,8 +118,58 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.addyh) {
-			FrmAddYh ay=new FrmAddYh(this, "增加优惠券", true);
-			ay.setVisible(true);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			int money=Integer.valueOf(this.money.getText());
+			int num=Integer.valueOf(this.num.getText());
+			Date start=new Date();
+			try {
+				start = simpleDateFormat.parse(this.start.getText());
+			} catch (ParseException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			Date end=new Date();
+			try {
+				end = simpleDateFormat.parse(this.end.getText());
+			} catch (ParseException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				takeawayUtil.yhManager.Addyh(money, num, start, end);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
+		}
+		else if(e.getSource()==this.updyh) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			int money=Integer.valueOf(this.money.getText());
+			int num=Integer.valueOf(this.num.getText());
+			Date start=new Date();
+			try {
+				start = simpleDateFormat.parse(this.start.getText());
+			} catch (ParseException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			Date end=new Date();
+			try {
+				end = simpleDateFormat.parse(this.end.getText());
+			} catch (ParseException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				takeawayUtil.yhManager.Updyh(this.curyh,money, num, start, end);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
 		}
 		else if(e.getSource()==this.delyh) {
 			if(this.curyh==null) {

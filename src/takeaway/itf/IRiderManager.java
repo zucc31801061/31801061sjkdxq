@@ -29,4 +29,6 @@ public interface IRiderManager {
 	 * @throws BaseException
 	 */
 	public void deleteRider(BeanRider Rider)throws BaseException;
+	public void updateinfo(String name) throws BaseException;
+	public List<BeanRider> loadbyrider()throws BaseException;
 }

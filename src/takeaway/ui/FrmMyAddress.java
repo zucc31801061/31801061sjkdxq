@@ -12,10 +12,12 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
@@ -28,8 +30,25 @@ import takeaway.util.BaseException;
 public class FrmMyAddress extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button addadd = new Button("增加地址");
+	private Button updadd = new Button("修改地址");
 	private Button deladd = new Button("删除地址");
 	private Button btnok = new Button("确定");
+	
+	private JPanel workPane = new JPanel();
+	private JLabel NewSheng = new JLabel("省：");
+	private JLabel NewShi = new JLabel("市：");
+	private JLabel NewQu = new JLabel("区：");
+	private JLabel NewAddress = new JLabel("地址：");
+	private JLabel NewName = new JLabel("用户名：");
+	private JLabel NewPhnum = new JLabel("手机号：");
+	
+	private JTextField Sheng = new JTextField(10);
+	private JTextField Shi = new JTextField(10);
+	private JTextField Qu= new JTextField(10);
+	private JTextField Address = new JTextField(10);
+	private JTextField Name = new JTextField(10);
+	private JTextField Phnum = new JTextField(10);
+	
 	//地址列表
 	//表项标题
 	private Object tblAddTitle[]=BeanAddress.tableTitles;
@@ -67,11 +86,26 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 		this.setTitle("我的地址");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(addadd);
+		toolBar.add(updadd);
 		toolBar.add(deladd);
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
+		workPane.add(NewSheng);
+		workPane.add(Sheng);
+		workPane.add(NewShi);
+		workPane.add(Shi);
+		workPane.add(NewQu);
+		workPane.add(Qu);
+		workPane.add(NewAddress);
+		workPane.add(Address);
+		workPane.add(NewName);
+		workPane.add(Name);
+		workPane.add(NewPhnum);
+		workPane.add(Phnum);
+		//新信息居中
+		this.getContentPane().add(workPane, BorderLayout.NORTH);
 		//加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableAdd), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTableAdd), BorderLayout.CENTER);
 	  //添加鼠标监听器组件
 	    this.dataTableAdd.addMouseListener(new MouseAdapter (){
 			@Override
@@ -87,7 +121,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadAddTable();
-		this.setSize(460, 150);
+		this.setSize(950, 300);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -96,6 +130,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 
 		this.validate();
 		this.addadd.addActionListener(this);
+		this.updadd.addActionListener(this);
 		this.deladd.addActionListener(this);
 		this.btnok.addActionListener(this);
 	}
@@ -106,8 +141,38 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.addadd) {
-			FrmAddAddress aa=new FrmAddAddress(this, "增加地址", true);
-			aa.setVisible(true);
+			String sheng=this.Sheng.getText();
+			String shi=this.Shi.getText();
+			String qu=this.Qu.getText();
+			String address=this.Address.getText();
+			String name=this.Name.getText();
+			String phnum=this.Phnum.getText();
+			try {
+				takeawayUtil.addressManager.addAddress(sheng, shi, qu, address, name, phnum);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
+		}
+		else if(e.getSource()==this.updadd) {
+			if(this.curAdd==null) {
+				JOptionPane.showMessageDialog(null, "请选择地址", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String sheng=this.Sheng.getText();
+			String shi=this.Shi.getText();
+			String qu=this.Qu.getText();
+			String address=this.Address.getText();
+			String name=this.Name.getText();
+			String phnum=this.Phnum.getText();
+			try {
+				takeawayUtil.addressManager.updateAddress(this.curAdd, sheng, shi, qu, address, name, phnum);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
 		}
 		else if(e.getSource()==this.deladd) {
 			if(this.curAdd==null) {

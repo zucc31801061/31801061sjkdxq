@@ -17,49 +17,42 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
-import takeaway.model.BeanOrder;
+import takeaway.model.BeanRider;
 import takeaway.util.BaseException;
 
-public class FrmStoreIngOrder extends JDialog implements ActionListener {
+public class FrmRiderInfo extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button btnok = new Button("确定");
-	//表项标题
-	private Object tblHisOrderTitle[]=BeanOrder.tableTitles;
-	//二维表存储
-	private Object tblHisOrderData[][];
-	//创建表格模型
-	DefaultTableModel tabHisOrderModel=new DefaultTableModel();
-	//用tabHisOrderModel为模型构造表格
-	private JTable dataTableHisOrder=new JTable(tabHisOrderModel);
-	List<BeanOrder> HisOrder=null;
-	private void reloadHisOrder(){//这是测试数据，需要用实际数替换
+	private Object tblriderTitle[]=BeanRider.tableTitles;
+	private Object tblriderData[][];
+	DefaultTableModel tabriderModel=new DefaultTableModel();
+	private JTable dataTablerider=new JTable(tabriderModel);
+	List<BeanRider> rider=null;
+	private void reloadrider(){
 		try {
-			//查询当前HisOrder
-			HisOrder=takeawayUtil.orderManager.loadstoreingOrder();
+			rider=takeawayUtil.riderManager.loadbyrider();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		tblHisOrderData = new Object[HisOrder.size()][BeanOrder.tableTitles.length];
-		for(int i=0;i<HisOrder.size();i++){
-			for(int j=0;j<BeanOrder.tableTitles.length;j++)
-				tblHisOrderData[i][j]=HisOrder.get(i).getCell(j);
+		tblriderData = new Object[rider.size()][BeanRider.tableTitles.length];
+		for(int i=0;i<rider.size();i++){
+			for(int j=0;j<BeanRider.tableTitles.length;j++)
+				tblriderData[i][j]=rider.get(i).getCell(j);
 		}
-		tabHisOrderModel.setDataVector(tblHisOrderData,tblHisOrderTitle);
-		this.dataTableHisOrder.validate();
-		//验证容器及其子组件
-		this.dataTableHisOrder.repaint();
-		//重绘该组件
+		tabriderModel.setDataVector(tblriderData,tblriderTitle);
+		this.dataTablerider.validate();
+		this.dataTablerider.repaint();
 	}
-	public FrmStoreIngOrder(JFrame f, String s, boolean b) {
+	public FrmRiderInfo(JFrame f, String s, boolean b) {
 		super(f, s, b);
-		this.setTitle("我的信息");
+		this.setTitle("查看信息");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		//加入一个显示dataTableHisOrder的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.WEST);
-		this.reloadHisOrder();
+		//加入一个显示dataTablerider的滚动条到页面的左边
+	    this.getContentPane().add(new JScrollPane(this.dataTablerider), BorderLayout.WEST);
+		this.reloadrider();
 		this.setSize(460, 150);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();

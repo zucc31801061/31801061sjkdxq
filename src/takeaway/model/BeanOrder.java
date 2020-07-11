@@ -5,8 +5,10 @@ import java.sql.Date;
 public class BeanOrder {
 	public static final String[] tableTitles={"订单编号","用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
 	public static final String[] tableTitles1={"订单编号","商家","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles2={"订单编号","用户","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles3={"订单编号","商家","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles2={"订单编号","用户","商家","订单状态"};
+	public static final String[] tableTitles3={"订单编号","商家","订单状态"};
+	public static final String[] tableTitles4={"订单编号","用户","商家","订单状态","单笔收入","时间","评价"};
+	public static final String[] tableTitles5={"订单编号","商家","骑手","下单时间","要求送达","时间","评价"};
 	private Float ddstartmoney;
 	private Float ddendmoney;
 	private Date ddstarttime;
@@ -22,6 +24,27 @@ public class BeanOrder {
 	private String userno;
 	private String username;
 	private int yhno;
+	private Float money;
+	private Date time;
+	private String pj;
+	public String getpj() {
+		return pj;
+	}
+	public void setpj(String pj) {
+		this.pj = pj;
+	}
+	public Date gettime() {
+		return time;
+	}
+	public void settime(Date time) {
+		this.time = time;
+	}
+	public Float getmoney() {
+		return money;
+	}
+	public void setmoney(Float money) {
+		this.money = money;
+	}
 	public Float getddstartmoney() {
 		return ddstartmoney;
 	}
@@ -161,14 +184,6 @@ public class BeanOrder {
 			return this.sjname;
 		else if (col == 3)
 			return this.ddzt;
-		else if (col == 4)
-			return this.mjno+"";
-		else if (col == 5)
-			return this.yhno+"";
-		else if (col == 6)
-			return (this.ddstartmoney + "");
-		else if (col == 7)
-			return (this.ddendmoney + "");
 		else
 		    return "";
 	}
@@ -179,14 +194,42 @@ public class BeanOrder {
 			return this.sjname;
 		else if (col == 2)
 			return this.ddzt;
+		else
+		    return "";
+	}
+	public String getCell4(int col){
+		if (col == 0)
+			return this.ddno+"";
+		else if (col == 1)
+			return this.username;
+		else if (col == 2)
+			return this.sjname;
 		else if (col == 3)
-			return this.mjno+"";
+			return this.ddzt;
 		else if (col == 4)
-			return this.yhno+"";
+			return this.money+"";
 		else if (col == 5)
-			return (this.ddstartmoney + "");
+			return this.time+"";
 		else if (col == 6)
-			return (this.ddendmoney + "");
+			return this.pj;
+		else
+		    return "";
+	}
+	public String getCell5(int col){
+		if (col == 0)
+			return this.ddno+"";
+		else if (col == 1)
+			return this.sjname;
+		else if (col == 2)
+			return this.qsname;
+		else if (col == 3)
+			return this.ddstarttime+"";
+		else if (col == 4)
+			return this.ddendtime+"";
+		else if (col == 5)
+			return this.time+"";
+		else if (col == 6)
+			return this.pj;
 		else
 		    return "";
 	}

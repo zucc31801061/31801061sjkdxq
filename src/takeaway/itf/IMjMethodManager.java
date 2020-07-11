@@ -24,4 +24,5 @@ public interface IMjMethodManager {
 	 * @throws BaseException
 	 */
 	public void Delmj(BeanMjMethod method)throws BaseException;
+	public void Updmj(BeanMjMethod method,Float money,Float yh,Boolean yhdj)throws BaseException;
 }

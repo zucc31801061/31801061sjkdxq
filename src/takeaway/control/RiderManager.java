@@ -7,6 +7,7 @@ import java.util.List;
 
 import takeaway.itf.IRiderManager;
 import takeaway.model.BeanRider;
+import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 import takeaway.util.BusinessException;
@@ -31,7 +32,7 @@ public class RiderManager implements IRiderManager {
 			if(rs.next()) throw new BusinessException("您已是骑手，请点击“已是骑手”");
 			rs.close();
 			pst.close();
-			sql = "insert into qs_info(qs_name,qs_no,qs_date) values(?,?,?)";
+			sql = "insert into qs_info(qs_name,qs_no,qs_date,qs_id) values(?,?,?,'新人')";
 			pst = conn.prepareStatement(sql);
 			pst.setString(1,name);
 			pst.setString(2,userno);
@@ -84,6 +85,66 @@ public class RiderManager implements IRiderManager {
 					e.printStackTrace();
 				}
 		}
+	}
+	public void updateinfo(String name) throws BaseException {
+		// TODO Auto-generated method stub
+		if(name.isEmpty())
+			throw new BaseException("骑手名为空");
+		Connection conn = null;
+	    String qsno = BeanRider.currentLoginrider.getqsno();
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "update qs_info set qs_name=? where qs_no=?";
+	    	java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, name);
+	    	pst.setString(2, qsno);
+	    	pst.execute();
+	    	pst.close();
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+	    		throw new DbException(e);
+	    	} finally {
+	    		if (conn != null)
+	    			try {
+	    				conn.close();
+	    			} catch (SQLException e) {
+	    				e.printStackTrace();
+	    			}
+	    	}
+	}
+	public List<BeanRider> loadbyrider()throws BaseException{
+		List<BeanRider> result=new ArrayList<BeanRider>();
+		String qsno=BeanRider.currentLoginrider.getqsno();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, qsno);
+			java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanRider p=new BeanRider();
+		        p.setqsno(rs.getString(1));
+		        p.setqsname(rs.getString(2));
+		        p.setqsdate(rs.getDate(3));
+		        p.setqsid(rs.getString(4));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
 	}
 	@Override
 	public List<BeanRider> loadAll() throws BaseException {

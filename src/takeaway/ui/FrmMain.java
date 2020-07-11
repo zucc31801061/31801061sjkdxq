@@ -46,12 +46,16 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_more=new JMenu("更多");
     //创建菜单项
     private JMenuItem  menuItem_order=new JMenuItem("我要下单");
+    private JMenuItem  menuItem_seepro=new JMenuItem("查询商品");//已完成
+    private JMenuItem  menuItem_seerqpro=new JMenuItem("人气推荐");
     
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");//已完成
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");//已完成
+    private JMenuItem  menuItem_myxf=new JMenuItem("消费情况");
     
     private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");//已完成
-    private JMenuItem  menuItem_reception=new JMenuItem("我的评价");//已完成
+    private JMenuItem  menuItem_reception=new JMenuItem("订单评价");//已完成
+    private JMenuItem  menuItem_qspj=new JMenuItem("骑手评价");//已完成
     private JMenuItem  menuItem_info=new JMenuItem("我的信息");//已完成
     private JMenuItem  menuItem_address=new JMenuItem("我的地址");//已完成
     
@@ -131,14 +135,21 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.setTitle("外卖助手");
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
+		if(BeanUser.currentLoginUser.getUserid().isEmpty()) {
+			this.setVisible(false);
+		}
 		//将菜单项添加到菜单
 		this.menu_order.add(this.menuItem_order); this.menuItem_order.addActionListener(this);
+		this.menu_order.add(this.menuItem_seepro); this.menuItem_seepro.addActionListener(this);
+		this.menu_order.add(this.menuItem_seerqpro); this.menuItem_seerqpro.addActionListener(this);
 		
 	    this.menu_myorder.add(this.menuItem_history); this.menuItem_history.addActionListener(this);
 	    this.menu_myorder.add(this.menuItem_ing); this.menuItem_ing.addActionListener(this);
+	    this.menu_myorder.add(this.menuItem_myxf); this.menuItem_myxf.addActionListener(this);
 	    
 	    this.menu_function.add(this.menuItem_discount); this.menuItem_discount.addActionListener(this);
 	    this.menu_function.add(this.menuItem_reception); this.menuItem_reception.addActionListener(this);
+	    this.menu_function.add(this.menuItem_qspj); this.menuItem_qspj.addActionListener(this);
 	    this.menu_function.add(this.menuItem_info); this.menuItem_info.addActionListener(this);
 	    this.menu_function.add(this.menuItem_address); this.menuItem_address.addActionListener(this);
 	    
@@ -210,8 +221,16 @@ public class FrmMain extends JFrame implements ActionListener {
 			my.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_reception){
-			FrmMypj mp=new FrmMypj(this,"我的评价",true);
+			FrmMyStorepj mp=new FrmMyStorepj(this,"订单评价",true);
 			mp.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_qspj){
+			FrmMyRiderpj mr=new FrmMyRiderpj(this,"骑手评价",true);
+			mr.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_seepro){
+			FrmSelectPro sp=new FrmSelectPro(this,"查询商品",true);
+			sp.setVisible(true);
 		}
 		/*else if(e.getSource()==this.menuItem_DeleteStore){
 			if(this.curStore==null) {

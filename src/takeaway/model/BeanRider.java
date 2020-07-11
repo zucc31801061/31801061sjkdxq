@@ -3,7 +3,7 @@ package takeaway.model;
 import java.sql.Date;
 
 public class BeanRider {
-	/*public static final String[] tableTitles={"商家","星级","人均消费","总销量"};*/
+	public static final String[] tableTitles={"姓名","注册日期","获得称号"};
 	private String qsno;
 	private String ddno;
 	private String qsname;
@@ -60,17 +60,15 @@ public class BeanRider {
 	public void setpj(String pj) {
 		this.pj = pj;
 	}
-	/*public String getCell(int col){
+	public String getCell(int col){
 		if (col == 0)
-			return this.sjname;
+			return this.qsname;
 		else if (col == 1)
-			return (this.sjstar + "");
+			return this.qsdate+"";
 		else if (col == 2)
-			return (this.sjavgxf + "");
-		else if (col == 3)
-			return (this.sjsumxl + "");
+			return this.qsid;
 		else
 		    return "";
-	}*/
+	}
 	public static BeanRider currentLoginrider=null;
 }

@@ -12,10 +12,12 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
@@ -25,8 +27,19 @@ import takeaway.util.BaseException;
 public class FrmMymj extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button addmethod = new Button("增加方案");
+	private Button updmethod = new Button("修改方案");
 	private Button delmethod = new Button("删除方案");
 	private Button btnok = new Button("确定");
+	
+	private JPanel workPane = new JPanel();
+	private JLabel newmoney = new JLabel("满减金额：");
+	private JLabel newyh = new JLabel("满减优惠：");
+	private JLabel newyhdj = new JLabel("叠加优惠券(true/false)：");
+	
+	private JTextField money = new JTextField(12);
+	private JTextField yh = new JTextField(12);
+	private JTextField yhdj= new JTextField(12);
+	
 	//地址列表
 	//表项标题
 	private Object tblMethodTitle[]=BeanMjMethod.tblMjTitle;
@@ -64,11 +77,20 @@ public class FrmMymj extends JDialog implements ActionListener {
 		this.setTitle("我的商品");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(addmethod);
+		toolBar.add(updmethod);
 		toolBar.add(delmethod);
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
+		workPane.add(newmoney);
+		workPane.add(money);
+		workPane.add(newyh);
+		workPane.add(yh);
+		workPane.add(newyhdj);
+		workPane.add(yhdj);
+		//新信息居中
+		this.getContentPane().add(workPane, BorderLayout.NORTH);
 		//加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableMethod), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTableMethod), BorderLayout.CENTER);
 	  //添加鼠标监听器组件
 	    this.dataTableMethod.addMouseListener(new MouseAdapter (){
 			@Override
@@ -84,7 +106,7 @@ public class FrmMymj extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadMethodTable();
-		this.setSize(460, 250);
+		this.setSize(750, 250);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -93,6 +115,7 @@ public class FrmMymj extends JDialog implements ActionListener {
 
 		this.validate();
 		this.addmethod.addActionListener(this);
+		this.updmethod.addActionListener(this);
 		this.delmethod.addActionListener(this);
 		this.btnok.addActionListener(this);
 	}
@@ -103,8 +126,30 @@ public class FrmMymj extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.addmethod) {
-			FrmAddMj am=new FrmAddMj(this, "增加方案", true);
-			am.setVisible(true);
+			Float money=Float.parseFloat(this.money.getText());
+			Float yh=Float.parseFloat(this.yh.getText());
+			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
+			try {
+				takeawayUtil.mjManager.Addmj(money, yh, yhdj);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
+		}
+		else if(e.getSource()==this.updmethod) {
+			Float money=Float.parseFloat(this.money.getText());
+			Float yh=Float.parseFloat(this.yh.getText());
+			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
+			try {
+				takeawayUtil.mjManager.Updmj(this.curMethod,money, yh, yhdj);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
 		}
 		else if(e.getSource()==this.delmethod) {
 			if(this.curMethod==null) {

@@ -44,4 +44,5 @@ public interface IYhInfoManager {
 	 * @throws BaseException
 	 */
 	public void Delyh(BeanYhInfo yh)throws BaseException;
+	public void Updyh(BeanYhInfo yh,int yhmoney,int jdyq,Date start,Date end)throws BaseException;
 }

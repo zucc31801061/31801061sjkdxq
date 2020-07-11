@@ -12,21 +12,32 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
 import takeaway.model.BeanSppj;
 import takeaway.util.BaseException;
 
-public class FrmMypj extends JDialog implements ActionListener {
+public class FrmMyStorepj extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
-	private Button addpj = new Button("增加评价");
+	private Button addpj = new Button("修改评价");
 	private Button delpj = new Button("删除评价");
 	private Button btnok = new Button("确定");
+	
+	private JPanel workPane = new JPanel();
+	private JLabel Newpjnr = new JLabel("评价内容：");
+	private JLabel Newphoto = new JLabel("图片(true/false)：");
+	private JLabel Newpjstar = new JLabel("星级：");
+	private JTextField pjnr = new JTextField(13);
+	private JTextField photo= new JTextField(13);
+	private JTextField pjstar = new JTextField(13);
+	
 	//地址列表
 	//表项标题
 	private Object tblpjTitle[]=BeanSppj.tableTitles;
@@ -57,24 +68,32 @@ public class FrmMypj extends JDialog implements ActionListener {
 		this.dataTablepj.repaint();
 		//重绘该组件
 	}
-	public FrmMypj(JFrame f, String s, boolean b) {
+	public FrmMyStorepj(JFrame f, String s, boolean b) {
 		super(f, s, b);
 		//设置窗口标题
-		this.setTitle("我的评价");
+		this.setTitle("商家评价");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(addpj);
 		toolBar.add(delpj);
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
+		workPane.add(Newpjnr);
+		workPane.add(pjnr);
+		workPane.add(Newphoto);
+		workPane.add(photo);
+		workPane.add(Newpjstar);
+		workPane.add(pjstar);
+		//新信息居中
+		this.getContentPane().add(workPane, BorderLayout.NORTH);
 		//加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.CENTER);
 	  //添加鼠标监听器组件
 	    this.dataTablepj.addMouseListener(new MouseAdapter (){
 			@Override
 	    	//在组件上单击鼠标按钮时调用函数
 			public void mouseClicked(MouseEvent e) {
 				//返回所选第一行的索引
-				int i=FrmMypj.this.dataTablepj.getSelectedRow();
+				int i=FrmMyStorepj.this.dataTablepj.getSelectedRow();
 				//若没有选择行则返回-1
 				if(i<0) {
 					return;
@@ -83,7 +102,7 @@ public class FrmMypj extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadpjTable();
-		this.setSize(460, 150);
+		this.setSize(700, 250);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -102,8 +121,20 @@ public class FrmMypj extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.addpj) {
-			FrmAddpj ap=new FrmAddpj(this, "增加评价", true);
-			ap.setVisible(true);
+			if(this.curpj==null) {
+				JOptionPane.showMessageDialog(null, "请选择订单", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String pjnr=this.pjnr.getText();
+			boolean photo=Boolean.parseBoolean(this.photo.getText());
+			int pjstar=Integer.parseInt(this.pjstar.getText());
+			try {
+				takeawayUtil.sppjManager.addSppj(this.curpj,pjnr, pjstar, photo);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 		}
 		else if(e.getSource()==this.delpj) {
 			if(this.curpj==null) {

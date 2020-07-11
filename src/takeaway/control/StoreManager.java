@@ -89,7 +89,7 @@ public class StoreManager implements IStoreManager {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update sj_info set sj_avgxf=(select avg(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_sumxl=(select sum(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_star=(select avg(pj_star) from sp_pj where sp_pj.sj_no=sj_info.sj_no)";
+			String sql = "update sj_info set sj_avgxf=(select avg(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_sumxl=(select count(dd_no) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_star=(select avg(pj_star) from sp_pj where sp_pj.sj_no=sj_info.sj_no)";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.execute();
 	    	pst.close();

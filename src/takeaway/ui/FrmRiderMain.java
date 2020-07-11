@@ -36,18 +36,15 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 	//创建菜单
 	private JMenu menu_takeorder=new JMenu("我要接单");
 	private JMenu menu_seeorder=new JMenu("查看订单");
-	private JMenu menu_userpj=new JMenu("用户评价");
 	private JMenu menu_updateinfo=new JMenu("修改信息");
 	//创建菜单项
-	private JMenuItem  menuItem_takeorder=new JMenuItem("我要接单");
+	private JMenuItem  menuItem_takeorder=new JMenuItem("我要接单");//已完成
 	
-	private JMenuItem  menuItem_alrsend=new JMenuItem("已送达");
-	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");
-	private JMenuItem  menuItem_mytake=new JMenuItem("我的入账");
+	private JMenuItem  menuItem_alrsend=new JMenuItem("已送达");//已完成
+	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");//已完成
+	private JMenuItem  menuItem_mytake=new JMenuItem("我的入账");//已完成
 	
-	private JMenuItem  menuItem_seepj=new JMenuItem("查看评价");
-	
-	private JMenuItem  menuItem_updatename=new JMenuItem("修改姓名");
+	private JMenuItem  menuItem_updatename=new JMenuItem("修改信息");
 	private JMenuItem  menuItem_myinfo=new JMenuItem("我的信息");
 	//创建面板
 	private JPanel statusBar = new JPanel();
@@ -124,14 +121,11 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 		this.menu_seeorder.add(this.menuItem_ingsend); this.menuItem_ingsend.addActionListener(this);
 		this.menu_seeorder.add(this.menuItem_mytake); this.menuItem_mytake.addActionListener(this);
 		
-		this.menu_userpj.add(this.menuItem_seepj); this.menuItem_seepj.addActionListener(this);
-		
 		this.menu_updateinfo.add(this.menuItem_updatename); this.menuItem_updatename.addActionListener(this);
 		this.menu_updateinfo.add(this.menuItem_myinfo); this.menuItem_myinfo.addActionListener(this);
 		//将菜单添加到菜单栏
 		menubar.add(menu_takeorder);
 		menubar.add(menu_seeorder);
-		menubar.add(menu_userpj);
 		menubar.add(menu_updateinfo);
 		//将创建的菜单栏加入主窗口
 		this.setJMenuBar(menubar);
@@ -171,17 +165,29 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 	}	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*if(e.getSource()==this.btnBack) {
-			this.setVisible(false);
+		if(e.getSource()==this.menuItem_alrsend) {
+			FrmRiderHisOrder rho=new FrmRiderHisOrder(this,"已送达",true);
+			rho.setVisible(true);
 		}
-		else if(e.getSource()==this.becomesj){
-			String name=this.edtsjname.getText();
-			try {
-				takeawayUtil.planManager.addRider(name);
-			} catch (BaseException e1) {
-			JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-			return;
-			}
-		}*/
+		else if(e.getSource()==this.menuItem_ingsend) {
+			FrmRiderIngOrder rio=new FrmRiderIngOrder(this,"正在配送",true);
+			rio.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_takeorder) {
+			FrmTakeOrder to=new FrmTakeOrder(this,"我要接单",true);
+			to.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_mytake) {
+			FrmMyTake mt=new FrmMyTake(this,"我的入账",true);
+			mt.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_updatename) {
+			FrmUpdateRider ur=new FrmUpdateRider(this,"修改信息",true);
+			ur.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_myinfo) {
+			FrmRiderInfo ri=new FrmRiderInfo(this,"我的信息",true);
+			ri.setVisible(true);
+		}
 	}
 }

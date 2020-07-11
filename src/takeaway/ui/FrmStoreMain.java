@@ -211,7 +211,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			si.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_seepj) {
-			FrmStoreMypj sm=new FrmStoreMypj(this,"查看信息",true);
+			FrmStoreMypj sm=new FrmStoreMypj(this,"查看评价",true);
 			sm.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_alsend) {
@@ -219,17 +219,8 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			sh.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_ingsend) {
-			FrmStoreingOrder so=new FrmStoreingOrder(this,"配送中",true);
+			FrmStoreIngOrder so=new FrmStoreIngOrder(this,"配送中",true);
 			so.setVisible(true);
 		}
-		/*else if(e.getSource()==this.becomesj){
-			String name=this.edtsjname.getText();
-			try {
-				takeawayUtil.planManager.addStore(name);
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}*/
 	}
 }

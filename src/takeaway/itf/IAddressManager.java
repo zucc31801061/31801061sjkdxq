@@ -26,6 +26,12 @@ public interface IAddressManager {
 	 */
 	public void deleteAddress(BeanAddress address)throws BaseException;
 	/**
+	 * 修改地址
+	 * @param address
+	 * @throws BaseException
+	 */
+	public void updateAddress(BeanAddress add,String sheng,String shi,String qu,String address,String name,String phnum)throws BaseException;
+	/**
 	 * 加载对应订单的地址信息
 	 * @param address
 	 * @throws BaseException

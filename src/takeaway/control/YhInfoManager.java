@@ -3,9 +3,7 @@ package takeaway.control;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import takeaway.itf.IYhInfoManager;
@@ -199,7 +197,6 @@ public class YhInfoManager implements IYhInfoManager{
 		return method;
 	}
 	public void Delyh(BeanYhInfo yh)throws BaseException{
-		String sjno = BeanStore.currentLoginstore.getsjno();
 		Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
@@ -207,6 +204,35 @@ public class YhInfoManager implements IYhInfoManager{
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, BeanStore.currentLoginstore.getsjno());
 		    pst.setInt(2, yh.getyhno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		    throw new DbException(e);
+		} finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		          e.printStackTrace();
+		        }
+		}
+	}
+	public void Updyh(BeanYhInfo yh,int yhmoney,int jdyq,Date start,Date end)throws BaseException{
+		java.sql.Date start1 = new java.sql.Date(start.getTime());
+		java.sql.Date end1 = new java.sql.Date(end.getTime());
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update yh_info\r\n" + 
+		    		"set yh_money=?,jd_num=?,yh_startdate=?,yh_enddate=?\r\n" + 
+		    		"where yh_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, yhmoney);
+		    pst.setInt(2, jdyq);
+		    pst.setDate(3, start1);
+		    pst.setDate(4, end1);
+		    pst.setInt(5, yh.getyhno());
 		    pst.executeUpdate();
 		    pst.close();
 		} catch (SQLException e) {

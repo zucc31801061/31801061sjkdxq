@@ -7,10 +7,8 @@ import java.util.List;
 
 import takeaway.itf.IMjMethodManager;
 import takeaway.model.BeanMjMethod;
-import takeaway.model.BeanProduct;
 import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
-import takeaway.util.BusinessException;
 import takeaway.util.DBUtil;
 import takeaway.util.DbException;
 
@@ -95,7 +93,6 @@ public class MjMethodManager implements IMjMethodManager {
 	}
 	@Override
 	public void Delmj(BeanMjMethod method)throws BaseException {
-		String sjno = BeanStore.currentLoginstore.getsjno();
 		Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
@@ -103,6 +100,30 @@ public class MjMethodManager implements IMjMethodManager {
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, BeanStore.currentLoginstore.getsjno());
 		    pst.setInt(2, method.getmjno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		    throw new DbException(e);
+		} finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		          e.printStackTrace();
+		        }
+		}
+	}
+	public void Updmj(BeanMjMethod method,Float money,Float yh,Boolean yhdj)throws BaseException{
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update mj_method set mj_money=?,mj_yh=?,mj_dj=? where mj_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setFloat(1, money);
+		    pst.setFloat(2, yh);
+		    pst.setBoolean(3, yhdj);
+		    pst.setInt(4, method.getmjno());
 		    pst.executeUpdate();
 		    pst.close();
 		} catch (SQLException e) {

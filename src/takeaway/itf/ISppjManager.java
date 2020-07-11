@@ -2,6 +2,7 @@ package takeaway.itf;
 
 import java.util.List;
 
+import takeaway.model.BeanProduct;
 import takeaway.model.BeanSppj;
 import takeaway.util.BaseException;
 
@@ -11,7 +12,7 @@ public interface ISppjManager {
 	 * 注意：当前登陆用户可通过 BeanUser.currentLoginUser获取
 	 * @throws BaseException
 	 */
-	public BeanSppj addSppj(String pjnr,int pjstar,boolean photo,int ddno) throws BaseException;
+	public void addSppj(BeanSppj sppj,String pjnr,int pjstar,boolean photo) throws BaseException;
 	/**
 	 * 提取当前用户所有评价
 	 * @return
@@ -24,6 +25,7 @@ public interface ISppjManager {
 	 * @throws BaseException
 	 */
 	public List<BeanSppj> loadbystore()throws BaseException;
+	public List<BeanSppj> loadpropj(BeanProduct product)throws BaseException;
 	/**
 	 * 删除商家
 	 * @param address

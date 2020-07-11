@@ -12,10 +12,12 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
@@ -26,8 +28,21 @@ import takeaway.util.BaseException;
 public class FrmMyProduct extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button addpro = new Button("增加商品");
+	private Button updpro = new Button("修改商品");
 	private Button delpro = new Button("删除商品");
 	private Button btnok = new Button("确定");
+	
+	private JPanel workPane = new JPanel();
+	private JLabel newname = new JLabel("商品：");
+	private JLabel newkind = new JLabel("分类：");
+	private JLabel startmoney = new JLabel("原价：");
+	private JLabel endmoney = new JLabel("优惠价：");
+	
+	private JTextField name = new JTextField(10);
+	private JTextField kind = new JTextField(10);
+	private JTextField start= new JTextField(10);
+	private JTextField end = new JTextField(10);
+	
 	//地址列表
 	//表项标题
 	private Object tblProTitle[]=BeanProduct.tblProductTitle;
@@ -65,11 +80,24 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 		this.setTitle("我的商品");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(addpro);
+		toolBar.add(updpro);
 		toolBar.add(delpro);
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
+		
+		workPane.add(newname);
+		workPane.add(name);
+		workPane.add(newkind);
+		workPane.add(kind);
+		workPane.add(startmoney);
+		workPane.add(start);
+		workPane.add(endmoney);
+		workPane.add(end);
+		//新信息居中
+		this.getContentPane().add(workPane, BorderLayout.NORTH);
+		
 		//加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTablePro), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTablePro), BorderLayout.CENTER);
 	  //添加鼠标监听器组件
 	    this.dataTablePro.addMouseListener(new MouseAdapter (){
 			@Override
@@ -85,7 +113,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadProTable();
-		this.setSize(460, 250);
+		this.setSize(650, 250);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -94,6 +122,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 
 		this.validate();
 		this.addpro.addActionListener(this);
+		this.updpro.addActionListener(this);
 		this.delpro.addActionListener(this);
 		this.btnok.addActionListener(this);
 	}
@@ -104,8 +133,32 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 			return;
 		}
 		else if(e.getSource()==this.addpro) {
-			FrmAddProduct ap=new FrmAddProduct(this, "增加商品", true);
-			ap.setVisible(true);
+			String name=this.name.getText();
+			String kind=this.kind.getText();
+			Float start=Float.parseFloat(this.start.getText());
+			Float end=Float.parseFloat(this.end.getText());
+			try {
+				takeawayUtil.productManager.addproduct(name,kind,start,end);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
+		}
+		else if(e.getSource()==this.updpro) {
+			String name=this.name.getText();
+			String kind=this.kind.getText();
+			Float start=Float.parseFloat(this.start.getText());
+			Float end=Float.parseFloat(this.end.getText());
+			try {
+				takeawayUtil.productManager.updateProduct(this.curPro,name,kind,start,end);
+				this.setVisible(false);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.setVisible(false);
 		}
 		else if(e.getSource()==this.delpro) {
 			if(this.curPro==null) {

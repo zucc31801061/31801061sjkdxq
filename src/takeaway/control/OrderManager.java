@@ -8,6 +8,7 @@ import java.util.List;
 import takeaway.itf.IOrderManager;
 import takeaway.model.BeanOrder;
 import takeaway.model.BeanRider;
+import takeaway.model.BeanSppj;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -192,11 +193,54 @@ public class OrderManager implements IOrderManager{
 		    pst.setString(2, "已送达");
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
-		    	System.out.println(rs.getString(2));
 		    	BeanOrder p=new BeanOrder();
 		    	p.setddno(rs.getInt(1));
 		    	p.setusername(rs.getString(2));
 		        p.setqsname(rs.getString(3));
+		        p.setddzt(rs.getString(4));
+		        p.setmjno(rs.getInt(5));
+		        p.setyhno(rs.getInt(6));
+		        p.setddstartmoney(rs.getFloat(7));
+		        p.setddendmoney(rs.getFloat(8));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public List<BeanOrder> loadriderHisOrder() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String qsno=BeanRider.currentLoginrider.getqsno();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select dd_no,user_name,sj_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney\r\n" + 
+					"from sp_dd,add_info,sj_info\r\n" + 
+					"where qs_no=? and dd_zt='已送达'\r\n" + 
+					"and sp_dd.add_no=add_info.add_no\r\n" + 
+					"and sp_dd.sj_no=sj_info.sj_no\r\n" + 
+					"order by dd_endtime desc";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, qsno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	System.out.println(rs.getString(2));
+		    	BeanOrder p=new BeanOrder();
+		    	p.setddno(rs.getInt(1));
+		    	p.setusername(rs.getString(2));
+		        p.setsjname(rs.getString(3));
 		        p.setddzt(rs.getString(4));
 		        p.setmjno(rs.getInt(5));
 		        p.setyhno(rs.getInt(6));
@@ -306,28 +350,31 @@ public class OrderManager implements IOrderManager{
 		}
 		return result;
 	}
-	@Override
-	public List<BeanOrder> loaduserpj() throws BaseException{
+	public List<BeanOrder> loadrideringOrder() throws BaseException{
 		List<BeanOrder> result=new ArrayList<BeanOrder>();
-		/*String userno = BeanUser.currentLoginUser.getUserid();
+		String qsno=BeanRider.currentLoginrider.getqsno();
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,qs_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney from sp_dd,sj_info,qs_info where user_no=? and sj_info.sj_no=sp_dd.sj_no and qs_info.qs_no=sp_dd.qs_no and (dd_zt=? or dd_zt=?)";
+			String sql = "select sj_name,user_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney,dd_no\r\n" + 
+					"from sp_dd,sj_info,add_info\r\n" + 
+					"where qs_no=?\r\n" + 
+					"and sj_info.sj_no=sp_dd.sj_no\r\n" + 
+					"and add_info.add_no=sp_dd.add_no\r\n" + 
+					"and (dd_zt='已超时' or dd_zt='配送中')";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, userno);
-		    pst.setString(2, "配送中");
-		    pst.setString(3, "已超时");
+		    pst.setString(1, qsno);
 		    java.sql.ResultSet rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanOrder p=new BeanOrder();
 		        p.setsjname(rs.getString(1));
-		        p.setqsname(rs.getString(2));
+		        p.setusername(rs.getString(2));
 		        p.setddzt(rs.getString(3));
 		        p.setmjno(rs.getInt(4));
 		        p.setyhno(rs.getInt(5));
 		        p.setddstartmoney(rs.getFloat(6));
 		        p.setddendmoney(rs.getFloat(7));
+		        p.setddno(rs.getInt(8));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -343,8 +390,260 @@ public class OrderManager implements IOrderManager{
 		        } catch (SQLException e) {
 		        	e.printStackTrace();
 		        }
-		}*/
+		}
 		return result;
+	}
+	public List<BeanOrder> loadriderfreeOrder() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sj_name,user_name,dd_zt,mj_no,yh_no,dd_startmoney,dd_endmoney,dd_no\r\n" + 
+					"from sp_dd,sj_info,add_info\r\n" + 
+					"where qs_no=0\r\n" + 
+					"and sj_info.sj_no=sp_dd.sj_no\r\n" + 
+					"and add_info.add_no=sp_dd.add_no";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrder p=new BeanOrder();
+		        p.setsjname(rs.getString(1));
+		        p.setusername(rs.getString(2));
+		        p.setddzt(rs.getString(3));
+		        p.setmjno(rs.getInt(4));
+		        p.setyhno(rs.getInt(5));
+		        p.setddstartmoney(rs.getFloat(6));
+		        p.setddendmoney(rs.getFloat(7));
+		        p.setddno(rs.getInt(8));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public void takeOrder(BeanOrder order)throws BaseException{
+		Connection conn=null;
+		String qsno=BeanRider.currentLoginrider.getqsno();
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update sp_dd set qs_no=? where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, qsno);
+		    pst.setInt(2, order.getddno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void sendOrder(BeanOrder order)throws BaseException{
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update sp_dd set dd_zt='已送达',money=3,time=? where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+		    pst.setInt(2, order.getddno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public List<BeanOrder> loadridermoney() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String qsno=BeanRider.currentLoginrider.getqsno();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sj_name,user_name,dd_zt,money,pj,dd_no,time\r\n" + 
+					"from sp_dd,sj_info,add_info\r\n" + 
+					"where qs_no=? and dd_zt='已送达'\r\n" + 
+					"and sj_info.sj_no=sp_dd.sj_no\r\n" + 
+					"and add_info.add_no=sp_dd.add_no";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, qsno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrder p=new BeanOrder();
+		        p.setsjname(rs.getString(1));
+		        p.setusername(rs.getString(2));
+		        p.setddzt(rs.getString(3));
+		        p.setmoney(rs.getFloat(4));
+		        p.setpj(rs.getString(5));
+		        p.setddno(rs.getInt(6));
+		        p.settime(rs.getDate(7));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	@Override
+	public List<BeanOrder> loaduserpj() throws BaseException{
+		List<BeanOrder> result=new ArrayList<BeanOrder>();
+		String userno = BeanUser.currentLoginUser.getUserid();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select dd_no,sj_name,qs_name,dd_starttime,dd_endtime,dd_zt,pj,time\r\n" + 
+					"from sp_dd,sj_info,qs_info\r\n" + 
+					"where user_no=?\r\n" + 
+					"and sj_info.sj_no=sp_dd.sj_no\r\n" + 
+					"and qs_info.qs_no=sp_dd.qs_no\r\n" + 
+					"and dd_zt='已送达'";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrder p=new BeanOrder();
+		        p.setddno(rs.getInt(1));
+		        p.setsjname(rs.getString(2));
+		        p.setqsname(rs.getString(3));
+		        p.setddstarttime(rs.getDate(4));
+		        p.setddendtime(rs.getDate(5));
+		        p.setddzt(rs.getString(6));
+		        p.setpj(rs.getString(7));
+		        p.settime(rs.getDate(8));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public void updhppj(BeanOrder order)throws BaseException {
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update sp_dd\r\n" + 
+		    		"set pj='好评',money=3.5,time=?\r\n" + 
+		    		"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+		    pst.setInt(2, order.getddno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void updcppj(BeanOrder order)throws BaseException {
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update sp_dd\r\n" + 
+		    		"set pj='差评',money=2.5,time=?\r\n" + 
+		    		"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+		    pst.setInt(2, order.getddno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void delpj(BeanOrder order)throws BaseException {
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "update sp_dd\r\n" + 
+		    		"set pj=null,money=3,time=?\r\n" + 
+		    		"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+		    pst.setInt(2, order.getddno());
+		    pst.executeUpdate();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 	@Override
 	public void deleteOrder(BeanOrder plan) throws BaseException {

@@ -119,6 +119,46 @@ public class ProductManager implements IProductManager {
 	    }
 		return result;
 	}
+	public List<BeanProduct> selectproduct(String name)throws BaseException{
+		if(name.isEmpty())
+			throw new BusinessException("商品名为空");
+		List<BeanProduct> result = new ArrayList<BeanProduct>();
+		Connection conn = null;
+		try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_no,sj_name\n" + 
+	    			"from sp_info,sp_kind,sj_info\n" + 
+	    			"where sj_info.sj_no=sp_info.sj_no\n" + 
+	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
+	    			"and sp_name like ?";
+	    	PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, "%"+name+"%");
+	    	ResultSet rs = pst.executeQuery();
+	    	while (rs.next()) {
+	    		BeanProduct s = new BeanProduct();
+	    		s.setspname(rs.getString(1));
+	    		s.setflname(rs.getString(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setspno(rs.getInt(5));
+	    		s.setsjname(rs.getString(6));
+	    		result.add(s);
+	    	}
+	    	rs.close();
+	    	pst.close();
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	throw new DbException(e);
+	    } finally {
+	    	if (conn != null)
+	    		try {
+	    			conn.close();
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}
+	    }
+		return result;
+	}
 	@Override
 	public List<BeanProduct> loadProducts(BeanStore store) throws BaseException {
 		List<BeanProduct> result = new ArrayList<BeanProduct>();
@@ -157,7 +197,6 @@ public class ProductManager implements IProductManager {
 	@Override
 	public void deleteProduct(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub
-		String sjno = BeanStore.currentLoginstore.getsjno();
 		String flname = product.getflname();
 		int num=0;
 		Connection conn=null;
@@ -198,7 +237,47 @@ public class ProductManager implements IProductManager {
 				}
 		}
 	}
-
+	public void updateProduct(BeanProduct product,String name,String kind,Float start,Float end)throws BaseException{
+		if(name.isEmpty()||kind.isEmpty())
+			throw new BusinessException("请输入完整的商品信息");
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select fl_no,num from sp_kind where fl_name=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, kind);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+				throw new BusinessException("该分类不存在");
+			}
+			rs.close();
+			pst.close();
+			sql = "update sp_info\n" + 
+					"set sp_name=?,fl_no=(select fl_no from sp_kind where fl_name=?),sp_money=?,sp_yh=?\n" + 
+					"where sp_no=?";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, name);
+			pst.setString(2, kind);
+			pst.setFloat(3, start);
+			pst.setFloat(4, end);
+			pst.setInt(5, product.getspno());
+			pst.execute();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
 	@Override
 	public void startStep(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub

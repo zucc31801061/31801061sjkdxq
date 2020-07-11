@@ -1,7 +1,7 @@
 package takeaway.model;
 
 public class BeanMjMethod {
-	public static final String[] tblMjTitle={"Âú¼õ±àºÅ","Âú¼õ½ğ¶î","Âú¼õÓÅ»İ","ÊÇ·ñµş¼ÓÓÅ»İÈ¯"};
+	public static final String[] tblMjTitle={"Âú¼õ½ğ¶î","Âú¼õÓÅ»İ","ÊÇ·ñµş¼ÓÓÅ»İÈ¯"};
 	private int mjno;
 	private String sjno;
 	private Float mjmoney;
@@ -39,12 +39,10 @@ public class BeanMjMethod {
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.mjno+"";
-		else if (col == 1)
 		    return this.mjmoney+"";
-		else if (col == 2)
+		else if (col == 1)
 		    return this.mjyh+"";
-		else if (col == 3) {
+		else if (col == 2) {
 			if(this.dj == true) {
 				return "¿Éµş¼Ó";
 			}
