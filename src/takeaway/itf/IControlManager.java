@@ -34,5 +34,7 @@ public interface IControlManager {
 	 * @param newPwd  新密码
 	 * @param newPwd2 重复输入的新密码
 	 */
-	public void changePwd(BeanControl user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+	public void changePwd(BeanControl control, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+	public BeanControl SearchInfo() throws BaseException;
+	public void updateinfo(String name) throws BaseException;
 }

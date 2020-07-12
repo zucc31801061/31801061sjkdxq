@@ -1,5 +1,6 @@
 package takeaway.itf;
 
+import java.sql.Date;
 import java.util.List;
 
 import takeaway.model.BeanUser;
@@ -64,4 +65,8 @@ public interface IUserManager {
 	 * @throws BaseException
 	 */
 	public BeanUser PayVIP() throws BaseException;
+	public List<BeanUser> loadAll()throws BaseException;
+	public List<BeanUser> searchuser(String name)throws BaseException;
+	public void changevip(String userno,boolean vip,Date date)throws BaseException;
+	public void deluser(BeanUser user)throws BaseException;
 }

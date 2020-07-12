@@ -91,7 +91,47 @@ public class OrderInfoManager implements IOrderInfoManager{
 		}
 		return result;
 	}
-
+	public List<BeanOrderInfo> loadretj()throws BaseException{
+		List<BeanOrderInfo> result=new ArrayList<BeanOrderInfo>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select sp_name,sj_name,fl_name,sp_money,sp_yh,sum(dd_info.num),sp_info.sp_no\r\n" + 
+					"from dd_info,sp_info,sj_info,sp_kind\r\n" + 
+					"where dd_info.sp_no=sp_info.sp_no\r\n" + 
+					"and sp_info.sj_no=sj_info.sj_no\r\n" + 
+					"and sp_info.fl_no=sp_kind.fl_no\r\n" + 
+					"group by sp_name\r\n" + 
+					"order by sum(dd_info.num) desc";
+		    PreparedStatement pst = conn.prepareStatement(sql);
+		    ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanOrderInfo p=new BeanOrderInfo();
+		        p.setspname(rs.getString(1));
+		        p.setsjname(rs.getString(2));
+		        p.setflname(rs.getString(3));
+		        p.setprice(rs.getFloat(4));
+		        p.setdiscount(rs.getFloat(5));
+		        p.setsumnum(rs.getInt(6));
+		        p.setspno(rs.getInt(7));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
 	@Override
 	public void deleteOrderInfo(BeanOrderInfo plan) throws BaseException {
 		/*Connection conn=null;

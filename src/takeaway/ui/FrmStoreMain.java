@@ -151,7 +151,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 		//将创建的菜单栏加入主窗口
 		this.setJMenuBar(menubar);
 		//加入一个显示dataTableOrder的滚动条到页面的左边
-		this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.WEST);
+		this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.CENTER);
 		//添加鼠标监听器组件
 		this.dataTableOrder.addMouseListener(new MouseAdapter (){
 			@Override
@@ -169,7 +169,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			
 		});
 		//加入一个显示dataTableOrderInfo的滚动条到页面的中间
-		this.getContentPane().add(new JScrollPane(this.dataTableOrderInfo), BorderLayout.CENTER);
+		this.getContentPane().add(new JScrollPane(this.dataTableOrderInfo), BorderLayout.EAST);
 		
 		this.reloadOrderTable();
 		//创建一个状态栏在页面左端
@@ -219,7 +219,7 @@ public class FrmStoreMain extends JFrame implements ActionListener {
 			sh.setVisible(true);
 		}
 		else if(e.getSource()==this.menuItem_ingsend) {
-			FrmStoreIngOrder so=new FrmStoreIngOrder(this,"配送中",true);
+			FrmStoreIngOrder so=new FrmStoreIngOrder(this,"正在配送",true);
 			so.setVisible(true);
 		}
 	}

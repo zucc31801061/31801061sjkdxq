@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class BeanStore {
 	public static final String[] tableTitles={"商家","星级","人均消费","总销量"};
+	public static final String[] tableTitles1={"账号","商家","星级","人均消费","总销量"};
 	/**
 	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
 	 */
@@ -50,6 +51,20 @@ public class BeanStore {
 		else if (col == 2)
 			return (this.sjavgxf + "");
 		else if (col == 3)
+			return (this.sjsumxl + "");
+		else
+		    return "";
+	}
+	public String getCell1(int col){
+		if (col == 0)
+			return this.sjno;
+		else if (col == 1)
+			return this.sjname;
+		else if (col == 2)
+			return (this.sjstar + "");
+		else if (col == 3)
+			return (this.sjavgxf + "");
+		else if (col == 4)
 			return (this.sjsumxl + "");
 		else
 		    return "";

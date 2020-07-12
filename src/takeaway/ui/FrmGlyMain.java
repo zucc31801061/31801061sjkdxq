@@ -1,6 +1,7 @@
 package takeaway.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -23,8 +24,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
-import takeaway.model.BeanAddress;
-import takeaway.model.BeanOrder;
+import takeaway.model.BeanRider;
+import takeaway.model.BeanStore;
+import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
 public class FrmGlyMain extends JFrame implements ActionListener {
@@ -33,122 +35,134 @@ public class FrmGlyMain extends JFrame implements ActionListener {
 		//创建菜单条
 		private JMenuBar menubar=new JMenuBar(); 
 		//创建菜单
-		private JMenu menu_takeorder=new JMenu("我要接单");
-		private JMenu menu_seeorder=new JMenu("查看订单");
-		private JMenu menu_updateinfo=new JMenu("修改信息");
+		private JMenu menu_user=new JMenu("用户操作");
+		private JMenu menu_store=new JMenu("商家操作");
+		private JMenu menu_rider=new JMenu("骑手操作");
+		private JMenu menu_more=new JMenu("更多");
 		//创建菜单项
-		private JMenuItem  menuItem_takeorder=new JMenuItem("我要接单");//已完成
+		private JMenuItem  menuItem_userxfinfo=new JMenuItem("用户消费情况");//已完成
+		private JMenuItem  menuItem_userinfo=new JMenuItem("查询用户");//已完成
 		
-		private JMenuItem  menuItem_alrsend=new JMenuItem("已送达");//已完成
-		private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");//已完成
-		private JMenuItem  menuItem_mytake=new JMenuItem("我的入账");//已完成
+		private JMenuItem  menuItem_seefl=new JMenuItem("查看分类");//已完成
+		private JMenuItem  menuItem_storeinfo=new JMenuItem("查询商家");//已完成
 		
-		private JMenuItem  menuItem_updatename=new JMenuItem("修改信息");
-		private JMenuItem  menuItem_myinfo=new JMenuItem("我的信息");
-		//创建面板
+		private JMenuItem  menuItem_riderrz=new JMenuItem("骑手入账");//已完成
+		private JMenuItem  menuItem_riderinfo=new JMenuItem("查询骑手");//已完成
+		
+		private JMenuItem  menuItem_updateinfo=new JMenuItem("我的信息");
+		private JMenuItem  menuItem_updatemm=new JMenuItem("修改信息");
+		
+		private JPanel menuBar = new JPanel();
+		private JLabel userl = new JLabel("骑手：                                                                                                                        ");
+		private JLabel riderl = new JLabel("                                       用户：                                                                                 ");
+		private JLabel storel = new JLabel("                                                                                     商家：");
 		private JPanel statusBar = new JPanel();
-		//订单列表
-		//表项标题
-		private Object tblOrderTitle[]=BeanOrder.tableTitles3;
-		//二维表存储
-		private Object tblOrderData[][];
-		//创建表格模型
-		DefaultTableModel tabOrderModel=new DefaultTableModel();
-		//用tabOrderModel为模型构造表格
-		private JTable dataTableOrder=new JTable(tabOrderModel);
 		
-		//用户地址列表
-		private Object tblUserAddressTitle[]=BeanAddress.tableTitles;
-		private Object tblUserAddressData[][];
-		DefaultTableModel tabUserAddressModel=new DefaultTableModel();
-		private JTable dataTableUserAddress=new JTable(tabUserAddressModel);
-		
-		private BeanOrder curOrder=null;
-		List<BeanOrder> allOrder=null;
-		List<BeanAddress> UserAddress=null;
-		/*private void reloadOrderTable(){//这是测试数据，需要用实际数替换
+		//所有用户
+		private Object tbluserTitle[]=BeanUser.tableTitles2;
+		private Object tbluserData[][];
+		DefaultTableModel tabuserModel=new DefaultTableModel();
+		private JTable dataTableuser=new JTable(tabuserModel);
+		List<BeanUser> user=null;
+		private void reloaduser(){
 			try {
-				//加载所有的Order列表项
-				allOrder=takeawayUtil.orderManager.loadByqs();
+				user=takeawayUtil.userManager.loadAll();
 			} catch (BaseException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			tblOrderData =  new Object[allOrder.size()][BeanOrder.tableTitles3.length];
-			for(int i=0;i<allOrder.size();i++){
-				for(int j=0;j<BeanOrder.tableTitles3.length;j++)
-					tblOrderData[i][j]=allOrder.get(i).getCell3(j);
+			tbluserData = new Object[user.size()][BeanUser.tableTitles2.length];
+			for(int i=0;i<user.size();i++){
+				for(int j=0;j<BeanUser.tableTitles2.length;j++)
+					tbluserData[i][j]=user.get(i).getCell2(j);
 			}
-			tabOrderModel.setDataVector(tblOrderData,tblOrderTitle);
-			this.dataTableOrder.validate();
-			//验证容器及其子组件
-			this.dataTableOrder.repaint();
-			//重绘该组件
+			tabuserModel.setDataVector(tbluserData,tbluserTitle);
+			this.dataTableuser.validate();
+			this.dataTableuser.repaint();
 		}
-		private void reloadUserAddressTabel(int orderIdx){
-			if(orderIdx<0) return;
-			//返回Order列表中该索引位置的Order
-			curOrder=allOrder.get(orderIdx);
+		//所有商家
+		private Object tblstoreTitle[]=BeanStore.tableTitles1;
+		private Object tblstoreData[][];
+		DefaultTableModel tabstoreModel=new DefaultTableModel();
+		private JTable dataTablestore=new JTable(tabstoreModel);
+		List<BeanStore> store=null;
+		private void reloadstore(){
 			try {
-				//加载对应的UserAddress列表
-				UserAddress=takeawayUtil.addressManager.loadselect(curOrder);
+				store=takeawayUtil.storeManager.loadAll();
 			} catch (BaseException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			//定义一个二维对象，行大小为UserAddress.size()，列大小为BeanAddressAddress.tblUserAddressTitle.length
-			tblUserAddressData =new Object[UserAddress.size()][BeanAddress.tableTitles.length];
-			for(int i=0;i<UserAddress.size();i++){
-				for(int j=0;j<BeanAddress.tableTitles.length;j++)
-					//遍历输出每项
-					tblUserAddressData[i][j]=UserAddress.get(i).getCell(j);
+			tblstoreData = new Object[store.size()][BeanStore.tableTitles1.length];
+			for(int i=0;i<store.size();i++){
+				for(int j=0;j<BeanStore.tableTitles1.length;j++)
+					tblstoreData[i][j]=store.get(i).getCell1(j);
 			}
-			//将实例中的值替换为数组中的值，行索引为tblUserAddressData，列索引为tblUserAddressTitle
-			tabUserAddressModel.setDataVector(tblUserAddressData,tblUserAddressTitle);
-			this.dataTableUserAddress.validate();
-			this.dataTableUserAddress.repaint();
-		}*/
+			tabstoreModel.setDataVector(tblstoreData,tblstoreTitle);
+			this.dataTablestore.validate();
+			this.dataTablestore.repaint();
+		}
+		//所有骑手
+		private Object tblriderTitle[]=BeanRider.tableTitles1;
+		private Object tblriderData[][];
+		DefaultTableModel tabriderModel=new DefaultTableModel();
+		private JTable dataTablerider=new JTable(tabriderModel);
+		List<BeanRider> rider=null;
+		private void reloadrider(){
+			try {
+				rider=takeawayUtil.riderManager.loadAll();
+			} catch (BaseException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			tblriderData = new Object[rider.size()][BeanRider.tableTitles1.length];
+			for(int i=0;i<rider.size();i++){
+				for(int j=0;j<BeanRider.tableTitles1.length;j++)
+					tblriderData[i][j]=rider.get(i).getCell1(j);
+			}
+			tabriderModel.setDataVector(tblriderData,tblriderTitle);
+			this.dataTablerider.validate();
+			this.dataTablerider.repaint();
+		}
+		
 		public FrmGlyMain() {
 			//设置窗口最大化
 			this.setExtendedState(Frame.MAXIMIZED_BOTH);
 			//设置窗口标题
-			this.setTitle("我是骑手");
+			this.setTitle("我是管理员");
 			//将菜单项添加到菜单
-			this.menu_takeorder.add(this.menuItem_takeorder); this.menuItem_takeorder.addActionListener(this);
+			this.menu_user.add(this.menuItem_userxfinfo); this.menuItem_userxfinfo.addActionListener(this);
+			this.menu_user.add(this.menuItem_userinfo); this.menuItem_userinfo.addActionListener(this);
 			
-			this.menu_seeorder.add(this.menuItem_alrsend); this.menuItem_alrsend.addActionListener(this);
-			this.menu_seeorder.add(this.menuItem_ingsend); this.menuItem_ingsend.addActionListener(this);
-			this.menu_seeorder.add(this.menuItem_mytake); this.menuItem_mytake.addActionListener(this);
+			this.menu_store.add(this.menuItem_seefl); this.menuItem_seefl.addActionListener(this);
+			this.menu_store.add(this.menuItem_storeinfo); this.menuItem_storeinfo.addActionListener(this);
 			
-			this.menu_updateinfo.add(this.menuItem_updatename); this.menuItem_updatename.addActionListener(this);
-			this.menu_updateinfo.add(this.menuItem_myinfo); this.menuItem_myinfo.addActionListener(this);
+			this.menu_rider.add(this.menuItem_riderrz); this.menuItem_riderrz.addActionListener(this);
+			this.menu_rider.add(this.menuItem_riderinfo); this.menuItem_riderinfo.addActionListener(this);
+			
+			this.menu_more.add(this.menuItem_updateinfo); this.menuItem_updateinfo.addActionListener(this);
+			this.menu_more.add(this.menuItem_updatemm); this.menuItem_updatemm.addActionListener(this);
 			//将菜单添加到菜单栏
-			menubar.add(menu_takeorder);
-			menubar.add(menu_seeorder);
-			menubar.add(menu_updateinfo);
+			menubar.add(menu_user);
+			menubar.add(menu_store);
+			menubar.add(menu_rider);
+			menubar.add(menu_more);
 			//将创建的菜单栏加入主窗口
 			this.setJMenuBar(menubar);
-			//加入一个显示dataTableOrder的滚动条到页面的左边
-			this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.WEST);
-			//添加鼠标监听器组件
-			this.dataTableOrder.addMouseListener(new MouseAdapter (){
-				@Override
-				//在组件上单击鼠标按钮时调用函数
-				public void mouseClicked(MouseEvent e) {
-					//返回所选第一行的索引
-					int i=FrmGlyMain.this.dataTableOrder.getSelectedRow();
-					//若没有选择行则返回-1
-					if(i<0) {
-						return;
-					}
-					//加载对应商品列表
-					/*FrmGlyMain.this.reloadUserAddressTabel(i);*/
-				}
-				
-			});
-			//加入一个显示dataTableUserAddress的滚动条到页面的中间
-			this.getContentPane().add(new JScrollPane(this.dataTableUserAddress), BorderLayout.CENTER);
 			
+			menuBar.add(userl);
+			menuBar.add(riderl);
+			menuBar.add(storel);
+			this.getContentPane().add(menuBar, BorderLayout.NORTH);
+			
+			//加入一个显示dataTableOrder的滚动条到页面的左边
+			this.getContentPane().add(new JScrollPane(this.dataTableuser), BorderLayout.CENTER);
+			this.getContentPane().add(new JScrollPane(this.dataTablerider), BorderLayout.WEST);
+			this.getContentPane().add(new JScrollPane(this.dataTablestore), BorderLayout.EAST);
+			
+			this.reloaduser();
+			this.reloadrider();
+			this.reloadstore();
 			/*this.reloadOrderTable();*/
 			//创建一个状态栏在页面左端
 			statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -157,36 +171,40 @@ public class FrmGlyMain extends JFrame implements ActionListener {
 			this.getContentPane().add(statusBar,BorderLayout.SOUTH);
 			this.addWindowListener(new WindowAdapter(){   
 				public void windowClosing(WindowEvent e){ 
-					this.windowClosed(e);
+					System.exit(0);
 				}
 			});
 			this.setVisible(true);
 		}	
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource()==this.menuItem_alrsend) {
-				FrmRiderHisOrder rho=new FrmRiderHisOrder(this,"已送达",true);
-				rho.setVisible(true);
+			if(e.getSource()==this.menuItem_userxfinfo) {
+				FrmUserXfInfo uxi=new FrmUserXfInfo(this,"用户消费情况",true);
+				uxi.setVisible(true);
 			}
-			else if(e.getSource()==this.menuItem_ingsend) {
-				FrmRiderIngOrder rio=new FrmRiderIngOrder(this,"正在配送",true);
-				rio.setVisible(true);
+			else if(e.getSource()==this.menuItem_userinfo) {
+				FrmSelectUser su=new FrmSelectUser(this,"查询用户",true);
+				su.setVisible(true);
 			}
-			else if(e.getSource()==this.menuItem_takeorder) {
-				FrmTakeOrder to=new FrmTakeOrder(this,"我要接单",true);
-				to.setVisible(true);
+			else if(e.getSource()==this.menuItem_seefl) {
+				FrmSearchFl sf=new FrmSearchFl(this,"查看分类",true);
+				sf.setVisible(true);
 			}
-			else if(e.getSource()==this.menuItem_mytake) {
-				FrmMyTake mt=new FrmMyTake(this,"我的入账",true);
-				mt.setVisible(true);
+			else if(e.getSource()==this.menuItem_riderrz) {
+				FrmAllQsrz aq=new FrmAllQsrz(this,"骑手入账",true);
+				aq.setVisible(true);
 			}
-			else if(e.getSource()==this.menuItem_updatename) {
-				FrmUpdateRider ur=new FrmUpdateRider(this,"修改信息",true);
-				ur.setVisible(true);
+			else if(e.getSource()==this.menuItem_riderinfo) {
+				FrmSelectRider sr=new FrmSelectRider(this,"查询骑手",true);
+				sr.setVisible(true);
 			}
-			else if(e.getSource()==this.menuItem_myinfo) {
-				FrmRiderInfo ri=new FrmRiderInfo(this,"我的信息",true);
-				ri.setVisible(true);
+			else if(e.getSource()==this.menuItem_updateinfo) {
+				FrmGlyInfo gi=new FrmGlyInfo(this,"我的信息",true);
+				gi.setVisible(true);
+			}
+			else if(e.getSource()==this.menuItem_updatemm) {
+				FrmChangeYgmm cy=new FrmChangeYgmm(this,"修改密码",true);
+				cy.setVisible(true);
 			}
 		}
 }

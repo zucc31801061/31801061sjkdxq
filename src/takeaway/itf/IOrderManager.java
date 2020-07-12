@@ -3,6 +3,8 @@ package takeaway.itf;
 import java.util.List;
 
 import takeaway.model.BeanOrder;
+import takeaway.model.BeanRider;
+import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
 public interface IOrderManager {
@@ -92,12 +94,27 @@ public interface IOrderManager {
 	 */
 	public List<BeanOrder> loadridermoney() throws BaseException;
 	/**
+	 * 提取查询骑手入账信息
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> selectridermoney(BeanRider rider) throws BaseException;
+	/**
+	 * 提取所有骑手入账信息
+	 * @return
+	 * @throws BaseException
+	 */
+	public List<BeanOrder> loadallridermoney() throws BaseException;
+	/**
 	 * 删除商家
 	 * @param plan
 	 * @throws BaseException
 	 */
+	public List<BeanOrder> loaduserxfinfo() throws BaseException;
 	public void deleteOrder(BeanOrder order)throws BaseException;
 	public void updhppj(BeanOrder order)throws BaseException;
 	public void updcppj(BeanOrder order)throws BaseException;
 	public void delpj(BeanOrder order)throws BaseException;
+	public List<BeanOrder> loadallxfinfo() throws BaseException;
+	public List<BeanOrder> selectxfinfo(BeanUser user) throws BaseException;
 }

@@ -69,7 +69,7 @@ public class FrmMyRiderpj extends JDialog implements ActionListener {
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
 		//加入一个显示dataTableStore的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.CENTER);
 	  //添加鼠标监听器组件
 	    this.dataTablepj.addMouseListener(new MouseAdapter (){
 			@Override
@@ -85,7 +85,7 @@ public class FrmMyRiderpj extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadpjTable();
-		this.setSize(460, 300);
+		this.setSize(900, 300);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

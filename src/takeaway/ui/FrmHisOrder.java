@@ -89,7 +89,7 @@ public class FrmHisOrder extends JDialog implements ActionListener {
 		titleBar.add(title);
 		this.getContentPane().add(titleBar, BorderLayout.NORTH);
 		//加入一个显示dataTableHisOrder的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.CENTER);
 	    this.dataTableHisOrder.addMouseListener(new MouseAdapter (){
 			@Override
 			//在组件上单击鼠标按钮时调用函数
@@ -106,7 +106,7 @@ public class FrmHisOrder extends JDialog implements ActionListener {
 		});
 	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrderInfo), BorderLayout.EAST);
 	    this.reloadHisOrder();
-		this.setSize(1000, 300);
+		this.setSize(1100, 300);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

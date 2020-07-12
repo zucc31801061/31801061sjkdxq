@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/7/5 21:37:40                            */
+/* Created on:     2020/7/11 9:37:05                            */
 /*==============================================================*/
 
 
@@ -39,15 +39,14 @@ drop table if exists yh_use;
 /*==============================================================*/
 create table add_info
 (
-   add_no               varchar(5) not null,
-   use_user_no          varchar(5),
+   add_no               int not null,
+   user_no              varchar(5),
    sheng                varchar(5),
    shi                  varchar(5),
    qu                   varchar(5),
    address              varchar(50),
    user_name            varchar(20),
    user_phnum           varchar(20),
-   user_no              varchar(5),
    primary key (add_no)
 );
 
@@ -56,7 +55,7 @@ create table add_info
 /*==============================================================*/
 create table control
 (
-   dd_no                varchar(5) not null,
+   dd_no                int not null,
    yg_no                varchar(20) not null,
    primary key (dd_no, yg_no)
 );
@@ -66,8 +65,8 @@ create table control
 /*==============================================================*/
 create table dd_info
 (
-   sp_no                varchar(5) not null,
-   dd_no                varchar(5) not null,
+   sp_no                int not null,
+   dd_no                int not null,
    num                  int,
    price                float(15),
    discount             float(15),
@@ -90,7 +89,7 @@ create table gly_info
 /*==============================================================*/
 create table mj_method
 (
-   mj_no                varchar(5) not null,
+   mj_no                int not null,
    sj_no                varchar(5),
    mj_money             float(15),
    mj_yh                float(15),
@@ -103,7 +102,7 @@ create table mj_method
 /*==============================================================*/
 create table own
 (
-   yh_no                varchar(5) not null,
+   yh_no                int not null,
    user_no              varchar(5) not null,
    money                float(15),
    num                  int,
@@ -117,13 +116,9 @@ create table own
 create table qs_info
 (
    qs_no                varchar(5) not null,
-   dd_no                varchar(5) not null,
    qs_name              varchar(20),
    qs_date              date,
    qs_id                varchar(20),
-   money                float(15),
-   time                 datetime,
-   pj                   varchar(500),
    primary key (qs_no)
 );
 
@@ -151,14 +146,15 @@ create table sp_dd
    dd_endtime           datetime,
    dd_zt                varchar(20),
    sj_no                varchar(5),
-   add_no               varchar(5),
-   mj_no                varchar(5),
+   add_no               int,
+   mj_no                int,
+   dd_no                int not null,
+   qs_no                varchar(5) not null,
    user_no              varchar(5),
-   dd_no                varchar(5) not null,
-   qs__qs_no            varchar(5),
-   use_user_no          varchar(5),
-   qs_no                varchar(5),
-   yh_no                varchar(5),
+   yh_no                int,
+   money                float(15),
+   time                 datetime,
+   pj                   varchar(500),
    primary key (dd_no)
 );
 
@@ -167,13 +163,12 @@ create table sp_dd
 /*==============================================================*/
 create table sp_info
 (
-   sp_no                varchar(5) not null,
-   sp__fl_no            varchar(5),
+   sp_no                int not null,
+   fl_no                int,
    sj_no                varchar(5),
    sp_name              varchar(20),
    sp_money             float(15),
    sp_yh                float(15),
-   fl_no                varchar(5),
    primary key (sp_no)
 );
 
@@ -182,7 +177,7 @@ create table sp_info
 /*==============================================================*/
 create table sp_kind
 (
-   fl_no                varchar(5) not null,
+   fl_no                int not null,
    fl_name              varchar(20),
    num                  int,
    primary key (fl_no)
@@ -193,16 +188,14 @@ create table sp_kind
 /*==============================================================*/
 create table sp_pj
 (
+   sp_no                int,
    pj_nr                varchar(500),
    pj_date              datetime,
    pj_star              int,
    pj_photo             bool,
-   sp_no                varchar(5),
    sj_no                varchar(5),
    user_no              varchar(5),
-   dd                   varchar(5) not null,
-   sp__sp_no            varchar(5),
-   primary key (dd)
+   dd                   int
 );
 
 /*==============================================================*/
@@ -232,9 +225,9 @@ create table yh_info
    jd_num               int,
    yh_startdate         date,
    yh_enddate           date,
-   yh_no                varchar(5) not null,
+   yh_no                int not null,
    sj_no                varchar(5),
-   dd_no                varchar(5) not null,
+   dd_no                int not null,
    already              int,
    primary key (yh_no)
 );
@@ -244,12 +237,12 @@ create table yh_info
 /*==============================================================*/
 create table yh_use
 (
-   yh_no                varchar(5) not null,
-   dd_no                varchar(5) not null,
+   yh_no                int not null,
+   dd_no                int not null,
    primary key (yh_no, dd_no)
 );
 
-alter table add_info add constraint FK_add_use foreign key (use_user_no)
+alter table add_info add constraint FK_add_use foreign key (user_no)
       references user_info (user_no) on delete restrict on update restrict;
 
 alter table control add constraint FK_control foreign key (dd_no)
@@ -273,22 +266,19 @@ alter table own add constraint FK_own2 foreign key (yh_no)
 alter table own add constraint FK_own3 foreign key (user_no)
       references user_info (user_no) on delete restrict on update restrict;
 
-alter table qs_info add constraint FK_makemoney foreign key (dd_no)
-      references sp_dd (dd_no) on delete restrict on update restrict;
-
-alter table sp_dd add constraint FK_order foreign key (use_user_no)
-      references user_info (user_no) on delete restrict on update restrict;
-
-alter table sp_dd add constraint FK_take foreign key (qs__qs_no)
+alter table sp_dd add constraint FK_makemoney foreign key (qs_no)
       references qs_info (qs_no) on delete restrict on update restrict;
 
-alter table sp_info add constraint FK_belong foreign key (sp__fl_no)
+alter table sp_dd add constraint FK_order foreign key (user_no)
+      references user_info (user_no) on delete restrict on update restrict;
+
+alter table sp_info add constraint FK_belong foreign key (fl_no)
       references sp_kind (fl_no) on delete restrict on update restrict;
 
 alter table sp_info add constraint FK_produce foreign key (sj_no)
       references sj_info (sj_no) on delete restrict on update restrict;
 
-alter table sp_pj add constraint FK_own foreign key (sp__sp_no)
+alter table sp_pj add constraint FK_own foreign key (sp_no)
       references sp_info (sp_no) on delete restrict on update restrict;
 
 alter table yh_info add constraint FK_sum foreign key (dd_no)

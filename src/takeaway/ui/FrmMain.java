@@ -47,11 +47,11 @@ public class FrmMain extends JFrame implements ActionListener {
     //创建菜单项
     private JMenuItem  menuItem_order=new JMenuItem("我要下单");
     private JMenuItem  menuItem_seepro=new JMenuItem("查询商品");//已完成
-    private JMenuItem  menuItem_seerqpro=new JMenuItem("人气推荐");
+    private JMenuItem  menuItem_seerqpro=new JMenuItem("人气推荐");//已完成
     
     private JMenuItem  menuItem_history=new JMenuItem("历史订单");//已完成
     private JMenuItem  menuItem_ing=new JMenuItem("正在配送");//已完成
-    private JMenuItem  menuItem_myxf=new JMenuItem("消费情况");
+    private JMenuItem  menuItem_myxf=new JMenuItem("消费情况");//已完成
     
     private JMenuItem  menuItem_discount=new JMenuItem("我的优惠券");//已完成
     private JMenuItem  menuItem_reception=new JMenuItem("订单评价");//已完成
@@ -232,18 +232,14 @@ public class FrmMain extends JFrame implements ActionListener {
 			FrmSelectPro sp=new FrmSelectPro(this,"查询商品",true);
 			sp.setVisible(true);
 		}
-		/*else if(e.getSource()==this.menuItem_DeleteStore){
-			if(this.curStore==null) {
-				JOptionPane.showMessageDialog(null, "请选择计划", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.StoreManager.deleteStore(this.curStore);
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}*/
+		else if(e.getSource()==this.menuItem_myxf){
+			FrmMyxfInfo mxi=new FrmMyxfInfo(this,"消费情况",true);
+			mxi.setVisible(true);
+		}
+		else if(e.getSource()==this.menuItem_seerqpro){
+			FrmRqtj rt=new FrmRqtj(this,"人气推荐",true);
+			rt.setVisible(true);
+		}
 		else if(e.getSource()==this.menuItem_store){
 			FrmStore st=new FrmStore(this,"成为商家",true);
 			st.setVisible(true);
@@ -255,75 +251,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		else if(e.getSource()==this.menuItem_vip){
 			FrmMyVIP mv=new FrmMyVIP(this,"我的会员",true);
 			mv.setVisible(true);
-		}/*
-		else if(e.getSource()==this.menuItem_DeleteProduct){
-			int i=FrmMain.this.dataTableProduct.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.ProductManager.deleteProduct(this.Product.get(i));
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 		}
-		else if(e.getSource()==this.menuItem_startProduct){
-			int i=FrmMain.this.dataTableProduct.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.ProductManager.startProduct(this.Product.get(i));
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		else if(e.getSource()==this.menuItem_finishProduct){
-			int i=FrmMain.this.dataTableProduct.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.ProductManager.finishProduct(this.Product.get(i));
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		else if(e.getSource()==this.menuItem_moveUpProduct){
-			int i=FrmMain.this.dataTableProduct.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.ProductManager.moveUp(this.Product.get(i));
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		else if(e.getSource()==this.menuItem_moveDownProduct){
-			int i=FrmMain.this.dataTableProduct.getSelectedRow();
-			if(i<0) {
-				JOptionPane.showMessageDialog(null, "请选择步骤", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				takeawayUtil.ProductManager.moveDown(this.Product.get(i));
-			} catch (BaseException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		else if(e.getSource()==this.menuItem_static1){
-			
-		}*/
 		else if(e.getSource()==this.menuItem_modifyPwd){
 			FrmModifyPwd mp=new FrmModifyPwd(this,"修改密码",true);
 			mp.setVisible(true);

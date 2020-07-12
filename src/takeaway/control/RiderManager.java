@@ -1,8 +1,12 @@
 package takeaway.control;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import takeaway.itf.IRiderManager;
@@ -57,18 +61,19 @@ public class RiderManager implements IRiderManager {
 
 	@Override
 	public BeanRider login() throws BaseException {
-		
 		String userno = BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
 			conn=DBUtil.getConnection();
-			String sql="select qs_no from qs_info where qs_no=?";
+			String sql="select qs_no,qs_id,qs_date from qs_info where qs_no=?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
 			pst.setString(1,userno);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(!rs.next()) throw new BusinessException("您还不是骑手");
 			BeanRider rider=new BeanRider();
 			rider.setqsno(rs.getString(1));
+			rider.setqsid(rs.getString(2));
+			rider.setqsdate(rs.getDate(3));
 			rs.close();
 			pst.close();
 			return rider;
@@ -114,14 +119,41 @@ public class RiderManager implements IRiderManager {
 	}
 	public List<BeanRider> loadbyrider()throws BaseException{
 		List<BeanRider> result=new ArrayList<BeanRider>();
+		
+		Calendar calendar1 = new GregorianCalendar();
+		Date date=new Date(calendar1.getTimeInMillis());
+    	
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.add(Calendar.DATE, 1);
+        Date now = new Date(calendar.getTimeInMillis());
+        
 		String qsno=BeanRider.currentLoginrider.getqsno();
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no=?";
+			String sql = "select qs_date from qs_info where qs_no=?";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 			pst.setString(1, qsno);
-			java.sql.ResultSet rs = pst.executeQuery();
+			java.sql.ResultSet rs=pst.executeQuery();
+			if (rs.next()) {
+		        java.util.Date date1 = rs.getDate(1);
+		        calendar1.setTime(date1);
+		        calendar1.add(Calendar.MONTH, 3);
+		        date=new Date(calendar1.getTimeInMillis());
+		    }
+			rs.close();
+		    pst.close();
+		    if(date.before(now)){
+		    	sql = "update qs_info set qs_id='正式员工' where qs_no=?";
+		    	pst = conn.prepareStatement(sql);
+				pst.setString(1, qsno);
+				pst.execute();
+		    	pst.close();
+		    }
+			sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no=?";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, qsno);
+			rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanRider p=new BeanRider();
 		        p.setqsno(rs.getString(1));
@@ -149,18 +181,46 @@ public class RiderManager implements IRiderManager {
 	@Override
 	public List<BeanRider> loadAll() throws BaseException {
 		List<BeanRider> result=new ArrayList<BeanRider>();
-		/*Connection conn = null;
+		
+		Calendar calendar1 = new GregorianCalendar();
+		Date date=new Date(calendar1.getTimeInMillis());
+    	
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.add(Calendar.DATE, 1);
+        Date now = new Date(calendar.getTimeInMillis());
+        
+        String qsno=null;
+		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select qs_name,qs_star,qs_avgxf,qs_sumxl from qs_info order by qs_star DESC,qs_avgxf";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    java.sql.ResultSet rs = pst.executeQuery();
+			String sql = "select qs_date,qs_no from qs_info group by qs_no";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			java.sql.ResultSet rs=pst.executeQuery();
+			while (rs.next()) {
+		        java.util.Date date1 = rs.getDate(1);
+		        calendar1.setTime(date1);
+		        calendar1.add(Calendar.MONTH, 3);
+		        date=new Date(calendar1.getTimeInMillis());
+		        qsno=rs.getString(2);
+		        if(date.before(now)){
+		        	String sql1 = "update qs_info set qs_id='正式员工' where qs_no=?";
+		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+		        	pst1.setString(1, qsno);
+		        	pst1.execute();
+		        	pst1.close();
+		        }
+		    }
+			rs.close();
+		    pst.close();
+		    sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no!=0 order by qs_date desc";
+			pst = conn.prepareStatement(sql);
+			rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanRider p=new BeanRider();
-		        p.setqsname(rs.getString(1));
-		        p.setqsstar(rs.getInt(2));
-		        p.setqsavgxf(rs.getFloat(3));
-		        p.setqssumxl(rs.getFloat(4));
+		        p.setqsno(rs.getString(1));
+		        p.setqsname(rs.getString(2));
+		        p.setqsdate(rs.getDate(3));
+		        p.setqsid(rs.getString(4));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -176,28 +236,117 @@ public class RiderManager implements IRiderManager {
 		        } catch (SQLException e) {
 		        	e.printStackTrace();
 		        }
-		}*/
+		}
 		return result;
 	}
-
-	@Override
-	public void deleteRider(BeanRider Rider) throws BaseException {
-		/*Connection conn=null;
+	public List<BeanRider> searchrider(String name)throws BaseException{
+		if(name.isEmpty())
+			throw new BusinessException("账号为空");
+		List<BeanRider> result=new ArrayList<BeanRider>();
+		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-		    String sql = "select finished_step_count,step_count from tbl_plan where user_id=? and plan_order=?";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
-		    pst.setInt(2, plan.getplanorder());
-		    ResultSet rs = pst.executeQuery();
-		    rs.next();
-		    if (rs.getInt(1) < rs.getInt(2)) {
-		    	throw new BusinessException("计划执行步骤有误");
+			String sql="select qs_no from qs_info where qs_no=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,name);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("骑手不存在");
+			rs.close();
+			pst.close();
+			sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no=?";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, name);
+			rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanRider p=new BeanRider();
+		        p.setqsno(rs.getString(1));
+		        p.setqsname(rs.getString(2));
+		        p.setqsdate(rs.getDate(3));
+		        p.setqsid(rs.getString(4));
+		        result.add(p);
 		    }
-		    sql = "delete from tbl_plan where user_id=? and plan_order=?";
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public void changeid(String rider,String id) throws BaseException{
+		if(rider.isEmpty())
+			throw new BaseException("账号为空");
+		Connection conn = null;
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "update qs_info set qs_id=? where qs_no=?";
+	    	java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, id);
+	    	pst.setString(2, rider);
+	    	pst.execute();
+	    	pst.close();
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+	    		throw new DbException(e);
+	    	} finally {
+	    		if (conn != null)
+	    			try {
+	    				conn.close();
+	    			} catch (SQLException e) {
+	    				e.printStackTrace();
+	    			}
+	    	}
+	}
+	@Override
+	public void deleteRider(BeanRider Rider) throws BaseException {
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "delete from dd_info\r\n" + 
+		    		"where dd_no in(\r\n" + 
+		    		"select dd_no\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where qs_no=?)";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, Rider.getqsno());
+		    pst.executeUpdate();
+		    pst.close();
+		    sql = "delete from yh_use\r\n" + 
+		    		"where dd_no in(\r\n" + 
+		    		"select dd_no\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where qs_no=?)";
 		    pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
-		    pst.setInt(2, plan.getplanorder());
+		    pst.setString(1, Rider.getqsno());
+		    pst.executeUpdate();
+		    pst.close();
+		    sql = "delete from yh_info\r\n" + 
+		    		"where dd_no in(\r\n" + 
+		    		"select dd_no\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where qs_no=?)";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, Rider.getqsno());
+		    pst.executeUpdate();
+		    pst.close();
+		    sql = "delete from sp_dd\r\n" + 
+		    		"where qs_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, Rider.getqsno());
+		    pst.executeUpdate();
+		    pst.close();
+		    sql = "delete from qs_info\r\n" + 
+		    		"where qs_no=1";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, Rider.getqsno());
 		    pst.executeUpdate();
 		    pst.close();
 		} catch (SQLException e) {
@@ -211,6 +360,7 @@ public class RiderManager implements IRiderManager {
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}*/
+				}
 		}
+	}
 }

@@ -1,13 +1,13 @@
 package takeaway.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class BeanSppj {
 	public static final String[] tableTitles={"订单编号","评价","评价日期","星级","图片","商家"};
-	public static final String[] tableTitles1={"订单编号","评价","评价日期","星级","图片","用户"};
+	public static final String[] tableTitles1={"订单编号","商品","评价","评价日期","星级","图片","用户"};
 	public static final String[] tableTitles2={"评价","评价日期","星级","图片","用户"};
 	private String pjnr;
-	private Date pjdate;
+	private Timestamp pjdate;
 	private int pjstar;
 	private boolean photo;
 	private String sjno;
@@ -16,16 +16,23 @@ public class BeanSppj {
 	private String username;
 	private int dd;
 	private int spno;
+	private String spname;
+	public void setspname(String spname) {
+		this.spname = spname;
+	}
+	public String getspname() {
+		return spname;
+	}
 	public void setpjnr(String pjnr) {
 		this.pjnr = pjnr;
 	}
 	public String getpjnr() {
 		return pjnr;
 	}
-	public Date getpjdate() {
+	public Timestamp getpjdate() {
 		return pjdate;
 	}
-	public void setpjdate(Date pjdate) {
+	public void setpjdate(Timestamp pjdate) {
 		this.pjdate = pjdate;
 	}
 	public int getpjstar() {
@@ -101,12 +108,14 @@ public class BeanSppj {
 		if (col == 0)
 			return this.dd+"";
 		else if (col == 1)
-			return this.pjnr;
+			return this.spname;
 		else if (col == 2)
-			return this.pjdate+"";
+			return this.pjnr;
 		else if (col == 3)
-			return this.pjstar+"";
+			return this.pjdate+"";
 		else if (col == 4)
+			return this.pjstar+"";
+		else if (col == 5)
 			if(this.photo==true) {
 				return "如图";
 			}
@@ -132,7 +141,7 @@ public class BeanSppj {
 			else {
 				return "无";
 			}
-		else if (col == 5)
+		else if (col == 4)
 			return this.username;
 		else
 		    return "";

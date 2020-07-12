@@ -25,6 +25,7 @@ public interface IStoreManager {
 	 */
 	public List<BeanStore> loadAll()throws BaseException;
 	public List<BeanStore> loadbystore()throws BaseException;
+	public List<BeanStore> selectstore(String sjno)throws BaseException;
 	/**
 	 * É¾³ýÉÌ¼Ò
 	 * @param store

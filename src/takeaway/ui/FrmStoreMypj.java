@@ -54,7 +54,7 @@ public class FrmStoreMypj extends JDialog implements ActionListener {
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.WEST);
+	    this.getContentPane().add(new JScrollPane(this.dataTablepj), BorderLayout.CENTER);
 	    this.dataTablepj.addMouseListener(new MouseAdapter (){
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -66,7 +66,7 @@ public class FrmStoreMypj extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadpjTable();
-		this.setSize(460, 250);
+		this.setSize(700, 250);
 		// ∆¡ƒªæ”÷–œ‘ æ
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

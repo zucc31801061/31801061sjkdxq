@@ -44,8 +44,8 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 	private JMenuItem  menuItem_ingsend=new JMenuItem("正在配送");//已完成
 	private JMenuItem  menuItem_mytake=new JMenuItem("我的入账");//已完成
 	
-	private JMenuItem  menuItem_updatename=new JMenuItem("修改信息");
-	private JMenuItem  menuItem_myinfo=new JMenuItem("我的信息");
+	private JMenuItem  menuItem_updatename=new JMenuItem("修改信息");//已完成
+	private JMenuItem  menuItem_myinfo=new JMenuItem("我的信息");//已完成
 	//创建面板
 	private JPanel statusBar = new JPanel();
 	//订单列表
@@ -130,7 +130,7 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 		//将创建的菜单栏加入主窗口
 		this.setJMenuBar(menubar);
 		//加入一个显示dataTableOrder的滚动条到页面的左边
-		this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.WEST);
+		this.getContentPane().add(new JScrollPane(this.dataTableOrder), BorderLayout.CENTER);
 		//添加鼠标监听器组件
 		this.dataTableOrder.addMouseListener(new MouseAdapter (){
 			@Override
@@ -148,12 +148,12 @@ public class FrmRiderMain extends JFrame implements ActionListener {
 			
 		});
 		//加入一个显示dataTableUserAddress的滚动条到页面的中间
-		this.getContentPane().add(new JScrollPane(this.dataTableUserAddress), BorderLayout.CENTER);
+		this.getContentPane().add(new JScrollPane(this.dataTableUserAddress), BorderLayout.EAST);
 		
 		this.reloadOrderTable();
 		//创建一个状态栏在页面左端
 		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-		JLabel label=new JLabel("您好!");//修改成   您好！+登陆用户名
+		JLabel label=new JLabel("您好!");
 		statusBar.add(label);
 		this.getContentPane().add(statusBar,BorderLayout.SOUTH);
 		this.addWindowListener(new WindowAdapter(){   

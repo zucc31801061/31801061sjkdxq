@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
+import takeaway.model.BeanAddress;
 import takeaway.model.BeanOrder;
 import takeaway.util.BaseException;
 
@@ -34,8 +35,15 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 	DefaultTableModel tabFreeOrderModel=new DefaultTableModel();
 	//用tabFreeOrderModel为模型构造表格
 	private JTable dataTableFreeOrder=new JTable(tabFreeOrderModel);
+	
+	private Object tblUserAddressTitle[]=BeanAddress.tableTitles;
+	private Object tblUserAddressData[][];
+	DefaultTableModel tabUserAddressModel=new DefaultTableModel();
+	private JTable dataTableUserAddress=new JTable(tabUserAddressModel);
+	
 	BeanOrder curOrder;
 	List<BeanOrder> FreeOrder=null;
+	List<BeanAddress> UserAddress=null;
 	private void reloadFreeOrder(){//这是测试数据，需要用实际数替换
 		try {
 			//查询当前FreeOrder
@@ -54,6 +62,29 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 		//验证容器及其子组件
 		this.dataTableFreeOrder.repaint();
 		//重绘该组件
+	}
+	private void reloadUserAddressTabel(int orderIdx){
+		if(orderIdx<0) return;
+		//返回Order列表中该索引位置的Order
+		curOrder=FreeOrder.get(orderIdx);
+		try {
+			//加载对应的UserAddress列表
+			UserAddress=takeawayUtil.addressManager.loadselect(curOrder);
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		//定义一个二维对象，行大小为UserAddress.size()，列大小为BeanAddressAddress.tblUserAddressTitle.length
+		tblUserAddressData =new Object[UserAddress.size()][BeanAddress.tableTitles.length];
+		for(int i=0;i<UserAddress.size();i++){
+			for(int j=0;j<BeanAddress.tableTitles.length;j++)
+				//遍历输出每项
+				tblUserAddressData[i][j]=UserAddress.get(i).getCell(j);
+		}
+		//将实例中的值替换为数组中的值，行索引为tblUserAddressData，列索引为tblUserAddressTitle
+		tabUserAddressModel.setDataVector(tblUserAddressData,tblUserAddressTitle);
+		this.dataTableUserAddress.validate();
+		this.dataTableUserAddress.repaint();
 	}
 	public FrmTakeOrder(JFrame f, String s, boolean b) {
 		super(f, s, b);
@@ -75,10 +106,12 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 					return;
 				}
 				curOrder=FreeOrder.get(i);
+				FrmTakeOrder.this.reloadUserAddressTabel(i);
 			}
 	    });
+	    this.getContentPane().add(new JScrollPane(this.dataTableUserAddress), BorderLayout.CENTER);
 	    this.reloadFreeOrder();
-		this.setSize(460, 250);
+		this.setSize(1100, 300);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

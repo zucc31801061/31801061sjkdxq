@@ -1,31 +1,39 @@
 package takeaway.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class BeanOrder {
-	public static final String[] tableTitles={"订单编号","用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
+	public static final String[] tableTitles={"下单时间","用户","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
 	public static final String[] tableTitles1={"订单编号","商家","骑手","订单状态","满减编号","优惠券编号","原始金额","结算金额"};
-	public static final String[] tableTitles2={"订单编号","用户","商家","订单状态"};
-	public static final String[] tableTitles3={"订单编号","商家","订单状态"};
+	public static final String[] tableTitles2={"订单编号","用户","商家","订单状态","下单时间","要求送达时间"};
+	public static final String[] tableTitles3={"订单编号","商家","订单状态","下单时间","要求送达时间"};
 	public static final String[] tableTitles4={"订单编号","用户","商家","订单状态","单笔收入","时间","评价"};
 	public static final String[] tableTitles5={"订单编号","商家","骑手","下单时间","要求送达","时间","评价"};
+	public static final String[] tableTitles6={"总单数","总消费","总优惠"};
+	public static final String[] tableTitles7={"账号","用户名","总单数","总消费","总优惠"};
+	public static final String[] tableTitles8={"账号","骑手名","总单数","总入账"};
+	public static final String[] tableTitles9={"总单数","总入账"};
 	private Float ddstartmoney;
 	private Float ddendmoney;
-	private Date ddstarttime;
-	private Date ddendtime;
+	private Float sumddendmoney;
+	private Float sumddyh;
+	private Timestamp ddstarttime;
+	private Timestamp ddendtime;
 	private String ddzt;
 	private String sjno;
 	private String sjname;
 	private int addno;
 	private int mjno;
 	private int ddno;
+	private int ddcount;
 	private String qsno;
 	private String qsname;
 	private String userno;
 	private String username;
 	private int yhno;
 	private Float money;
-	private Date time;
+	private Float summoney;
+	private Timestamp time;
 	private String pj;
 	public String getpj() {
 		return pj;
@@ -33,10 +41,10 @@ public class BeanOrder {
 	public void setpj(String pj) {
 		this.pj = pj;
 	}
-	public Date gettime() {
+	public Timestamp gettime() {
 		return time;
 	}
-	public void settime(Date time) {
+	public void settime(Timestamp time) {
 		this.time = time;
 	}
 	public Float getmoney() {
@@ -44,6 +52,12 @@ public class BeanOrder {
 	}
 	public void setmoney(Float money) {
 		this.money = money;
+	}
+	public Float getsummoney() {
+		return summoney;
+	}
+	public void setsummoney(Float summoney) {
+		this.summoney = summoney;
 	}
 	public Float getddstartmoney() {
 		return ddstartmoney;
@@ -57,16 +71,28 @@ public class BeanOrder {
 	public void setddendmoney(Float ddendmoney) {
 		this.ddendmoney = ddendmoney;
 	}
-	public Date getddstarttime() {
+	public Float getsumddendmoney() {
+		return sumddendmoney;
+	}
+	public void setsumddendmoney(Float sumddendmoney) {
+		this.sumddendmoney = sumddendmoney;
+	}
+	public Float getsumddyh() {
+		return sumddyh;
+	}
+	public void setsumddyh(Float sumddyh) {
+		this.sumddyh = sumddyh;
+	}
+	public Timestamp getddstarttime() {
 		return ddstarttime;
 	}
-	public void setddstarttime(Date ddstarttime) {
+	public void setddstarttime(Timestamp ddstarttime) {
 		this.ddstarttime = ddstarttime;
 	}
-	public Date getddendtime() {
+	public Timestamp getddendtime() {
 		return ddendtime;
 	}
-	public void setddendtime(Date ddendtime) {
+	public void setddendtime(Timestamp ddendtime) {
 		this.ddendtime = ddendtime;
 	}
 	public String getddzt() {
@@ -105,6 +131,12 @@ public class BeanOrder {
 	public void setddno(int ddno) {
 		this.ddno = ddno;
 	}
+	public int getddcount() {
+		return ddcount;
+	}
+	public void setddcount(int ddcount) {
+		this.ddcount = ddcount;
+	}
 	public String getqsno() {
 		return qsno;
 	}
@@ -137,7 +169,7 @@ public class BeanOrder {
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.ddno+"";
+			return this.ddstarttime+"";
 		else if (col == 1)
 			return this.username;
 		else if (col == 2)
@@ -184,6 +216,10 @@ public class BeanOrder {
 			return this.sjname;
 		else if (col == 3)
 			return this.ddzt;
+		else if (col == 4)
+			return this.ddstarttime+"";
+		else if (col == 5)
+			return this.ddendtime+"";
 		else
 		    return "";
 	}
@@ -194,6 +230,10 @@ public class BeanOrder {
 			return this.sjname;
 		else if (col == 2)
 			return this.ddzt;
+		else if (col == 3)
+			return this.ddstarttime+"";
+		else if (col == 4)
+			return this.ddendtime+"";
 		else
 		    return "";
 	}
@@ -230,6 +270,50 @@ public class BeanOrder {
 			return this.time+"";
 		else if (col == 6)
 			return this.pj;
+		else
+		    return "";
+	}
+	public String getCell6(int col){
+		if (col == 0)
+			return this.ddcount+"";
+		else if (col == 1)
+			return this.sumddendmoney+"";
+		else if (col == 2)
+			return this.sumddyh+"";
+		else
+		    return "";
+	}
+	public String getCell7(int col){
+		if (col == 0)
+			return this.userno;
+		else if (col == 1)
+			return this.username;
+		else if (col == 2)
+			return this.ddcount+"";
+		else if (col == 3)
+			return this.sumddendmoney+"";
+		else if (col == 4)
+			return this.sumddyh+"";
+		else
+		    return "";
+	}
+	public String getCell8(int col){
+		if (col == 0)
+			return this.qsno;
+		else if (col == 1)
+			return this.qsname;
+		else if (col == 2)
+			return this.summoney+"";
+		else if (col == 3)
+			return this.ddcount+"";
+		else
+		    return "";
+	}
+	public String getCell9(int col){
+		if (col == 0)
+			return this.summoney+"";
+		else if (col == 1)
+			return this.ddcount+"";
 		else
 		    return "";
 	}

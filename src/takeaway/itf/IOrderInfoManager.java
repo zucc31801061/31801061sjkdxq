@@ -26,4 +26,5 @@ public interface IOrderInfoManager {
 	 * @throws BaseException
 	 */
 	public void deleteOrderInfo(BeanOrderInfo plan)throws BaseException;
+	public List<BeanOrderInfo> loadretj()throws BaseException;
 }

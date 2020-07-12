@@ -3,7 +3,9 @@ package takeaway.control;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import takeaway.itf.IYhInfoManager;
@@ -21,7 +23,12 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,sj_name,dd_no from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no!=0 and jd_num=already";
+			String sql = "select yh_money,sj_name,yh_use.dd_no\r\n" + 
+					"from yh_info,sj_info,yh_use,sp_dd\r\n" + 
+					"where yh_info.yh_no=yh_use.yh_no\r\n" + 
+					"and yh_info.sj_no=sj_info.sj_no\r\n" + 
+					"and sp_dd.dd_no=yh_use.dd_no\r\n" + 
+					"and sp_dd.user_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -50,14 +57,51 @@ public class YhInfoManager implements IYhInfoManager{
 	}
 	public List<BeanYhInfo> loadnotused()throws BaseException{
 		List<BeanYhInfo> result=new ArrayList<BeanYhInfo>();
+		
+		Calendar calendar = new GregorianCalendar();
+		Date date=new Date(calendar.getTimeInMillis());
+		
+		Calendar calendar1 = Calendar.getInstance();
+        Date now = new Date(calendar1.getTimeInMillis());
+		
 		String userno = BeanUser.currentLoginUser.getUserid();
+		int yhno=0;
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,yh_startdate,yh_enddate,sj_name from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num=already";
+			String sql = "select endtime,own.yh_no\r\n" + 
+					"from own,yh_info\r\n" + 
+					"where user_no=?\r\n" + 
+					"and yh_info.yh_no=own.yh_no\r\n" + 
+					"and jd_num=already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	java.util.Date date1 = rs.getDate(1);
+		        calendar.setTime(date1);
+		        date=new Date(calendar.getTimeInMillis());
+		        yhno=rs.getInt(2);
+		        if(date.before(now)) {
+		        	String sql1 = "delete from own where yh_no=?";
+		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        }
+		    }
+		    rs.close();
+		    pst.close();
+		    
+			sql = "select yh_money,yh_startdate,yh_enddate,sj_name\r\n" + 
+					"from yh_info,sj_info,own\r\n" + 
+					"where yh_info.sj_no=sj_info.sj_no\r\n" + 
+					"and yh_info.yh_no=own.yh_no\r\n" + 
+					"and jd_num=already\r\n" + 
+					"and own.user_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanYhInfo p=new BeanYhInfo();
 		        p.setyhmoney(rs.getInt(1));
@@ -84,14 +128,54 @@ public class YhInfoManager implements IYhInfoManager{
 	}
 	public List<BeanYhInfo> loadnothave()throws BaseException{
 		List<BeanYhInfo> result=new ArrayList<BeanYhInfo>();
+		
+		Calendar calendar = new GregorianCalendar();
+		Date date=new Date(calendar.getTimeInMillis());
+		
+		Calendar calendar1 = Calendar.getInstance();
+        Date now = new Date(calendar1.getTimeInMillis());
+		
 		String userno = BeanUser.currentLoginUser.getUserid();
+		int yhno=0;
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_money,sj_name,jd_num,already from yh_info,sj_info where yh_info.sj_no=sj_info.sj_no and yh_no in(select yh_no from own where user_no=?) and dd_no=0 and jd_num>already";
+			conn = DBUtil.getConnection();
+			String sql = "select endtime,own.yh_no\r\n" + 
+					"from own,yh_info\r\n" + 
+					"where user_no=?\r\n" + 
+					"and yh_info.yh_no=own.yh_no\r\n" + 
+					"and jd_num>already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	java.util.Date date1 = rs.getDate(1);
+		        calendar.setTime(date1);
+		        date=new Date(calendar.getTimeInMillis());
+		        yhno=rs.getInt(2);
+		        System.out.println(date);
+		        System.out.println(now);
+		        if(date.before(now)) {
+		        	String sql1 = "delete from own where yh_no=?";
+		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        }
+		    }
+		    rs.close();
+		    pst.close();
+			
+			sql = "select yh_money,sj_name,jd_num,already\r\n" + 
+					"from yh_info,sj_info,own\r\n" + 
+					"where yh_info.sj_no=sj_info.sj_no\r\n" + 
+					"and yh_info.yh_no=own.yh_no\r\n" + 
+					"and jd_num>already\r\n" + 
+					"and own.user_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanYhInfo p=new BeanYhInfo();
 		        p.setyhmoney(rs.getInt(1));

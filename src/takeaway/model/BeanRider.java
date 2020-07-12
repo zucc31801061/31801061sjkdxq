@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class BeanRider {
 	public static final String[] tableTitles={"姓名","注册日期","获得称号"};
+	public static final String[] tableTitles1={"账号","姓名","注册日期","获得称号"};
 	private String qsno;
 	private String ddno;
 	private String qsname;
@@ -66,6 +67,18 @@ public class BeanRider {
 		else if (col == 1)
 			return this.qsdate+"";
 		else if (col == 2)
+			return this.qsid;
+		else
+		    return "";
+	}
+	public String getCell1(int col){
+		if (col == 0)
+			return this.qsno;
+		else if (col == 1)
+			return this.qsname;
+		else if (col == 2)
+			return this.qsdate+"";
+		else if (col == 3)
 			return this.qsid;
 		else
 		    return "";

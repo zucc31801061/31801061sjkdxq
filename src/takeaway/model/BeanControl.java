@@ -1,6 +1,7 @@
 package takeaway.model;
 
 public class BeanControl {
+	public static final String[] tableTitles={"’À∫≈","–’√˚"};
 	private String ygno;
 	private String pwd;
 	private String ygname;
@@ -23,4 +24,11 @@ public class BeanControl {
 		this.ygname = ygname;
 	}
 	public static BeanControl currentLoginControl=null;
+	public String getCell(int col){
+		if (col == 0)
+			return this.ygno;
+		else if (col == 1)
+			return this.ygname;
+		    return "";
+	}
 }

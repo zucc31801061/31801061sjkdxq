@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import takeaway.itf.ISppjManager;
+import takeaway.model.BeanOrderInfo;
 import takeaway.model.BeanProduct;
 import takeaway.model.BeanSppj;
 import takeaway.model.BeanStore;
@@ -69,7 +70,7 @@ public class SppjManager implements ISppjManager{
 		        p.setphoto(rs.getBoolean(4));
 		        p.setsjname(rs.getString(5));
 		        p.setuserno(userno);
-		        p.setpjdate(rs.getDate(6));
+		        p.setpjdate(rs.getTimestamp(6));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -94,7 +95,13 @@ public class SppjManager implements ISppjManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select distinct dd,pj_nr,pj_star,pj_photo,user_name,sj_no,pj_date from sp_pj,user_info where sp_pj.sj_no=? and user_info.user_no=sp_pj.user_no order by pj_date desc";
+			String sql = "select distinct dd,pj_nr,pj_star,pj_photo,user_name,sp_pj.sj_no,pj_date,sp_name\r\n" + 
+					"from sp_pj,user_info,dd_info,sp_info\r\n" + 
+					"where sp_pj.sj_no=?\r\n" + 
+					"and user_info.user_no=sp_pj.user_no\r\n" + 
+					"and sp_pj.dd=dd_info.dd_no\r\n" + 
+					"and sp_info.sp_no=dd_info.sp_no\r\n" + 
+					"order by pj_date desc";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, sjno);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -106,7 +113,8 @@ public class SppjManager implements ISppjManager{
 		        p.setphoto(rs.getBoolean(4));
 		        p.setusername(rs.getString(5));
 		        p.setsjno(rs.getString(6));
-		        p.setpjdate(rs.getDate(7));
+		        p.setpjdate(rs.getTimestamp(7));
+		        p.setspname(rs.getString(8));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -141,7 +149,44 @@ public class SppjManager implements ISppjManager{
 		    	BeanSppj p=new BeanSppj();
 		    	p.setpjnr(rs.getString(1));
 		    	p.setpjstar(rs.getInt(2));
-		    	p.setpjdate(rs.getDate(3));
+		    	p.setpjdate(rs.getTimestamp(3));
+		    	p.setphoto(rs.getBoolean(4));
+		    	p.setusername(rs.getString(5));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	public List<BeanSppj> loadpropj(BeanOrderInfo orderinfo)throws BaseException{
+		List<BeanSppj> result=new ArrayList<BeanSppj>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select pj_nr,pj_star,pj_date,pj_photo,user_name\r\n" + 
+					"from sp_pj,user_info\r\n" + 
+					"where sp_no=? and sp_pj.user_no=user_info.user_no\r\n" + 
+					"order by pj_date desc";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, orderinfo.getspno());
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanSppj p=new BeanSppj();
+		    	p.setpjnr(rs.getString(1));
+		    	p.setpjstar(rs.getInt(2));
+		    	p.setpjdate(rs.getTimestamp(3));
 		    	p.setphoto(rs.getBoolean(4));
 		    	p.setusername(rs.getString(5));
 		        result.add(p);

@@ -3,11 +3,13 @@ package takeaway.itf;
 import java.util.List;
 
 import takeaway.model.BeanStore;
+import takeaway.model.BeanKind;
 import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
 public interface IProductManager {
 	public List<BeanProduct> loadProducts(BeanStore store)throws BaseException;
+	public List<BeanProduct> loadProductbykind(BeanKind kind)throws BaseException;
 	public List<BeanProduct> loadAll()throws BaseException;
 	public List<BeanProduct> selectproduct(String name)throws BaseException;
 	/**

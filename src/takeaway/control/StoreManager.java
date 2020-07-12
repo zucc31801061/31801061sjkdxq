@@ -121,27 +121,115 @@ public class StoreManager implements IStoreManager {
 		}
 		return result;
 	}
-
-	@Override
-	public void deleteStore(BeanStore store) throws BaseException {
-		/*Connection conn=null;
+	public List<BeanStore> selectstore(String sjno)throws BaseException{
+		if(sjno.isEmpty())
+			throw new BusinessException("账号为空");
+		List<BeanStore> result=new ArrayList<BeanStore>();
+		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-		    String sql = "select finished_step_count,step_count from tbl_plan where user_id=? and plan_order=?";
-		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
-		    pst.setInt(2, plan.getplanorder());
-		    ResultSet rs = pst.executeQuery();
-		    rs.next();
-		    if (rs.getInt(1) < rs.getInt(2)) {
-		    	throw new BusinessException("计划执行步骤有误");
+			String sql="select sj_no from sj_info where sj_no=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,sjno);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("商家不存在");
+			rs.close();
+			pst.close();
+			sql = "update sj_info set sj_avgxf=(select avg(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_sumxl=(select count(dd_no) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_star=(select avg(pj_star) from sp_pj where sp_pj.sj_no=sj_info.sj_no)";
+			pst = conn.prepareStatement(sql);
+	    	pst.execute();
+	    	pst.close();
+			sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl from sj_info where sj_no=? order by sj_star DESC,sj_avgxf";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, sjno);
+			rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanStore p=new BeanStore();
+		        p.setsjname(rs.getString(1));
+		        p.setsjstar(rs.getInt(2));
+		        p.setsjavgxf(rs.getFloat(3));
+		        p.setsjsumxl(rs.getFloat(4));
+		        p.setsjno(sjno);
+		        result.add(p);
 		    }
-		    sql = "delete from tbl_plan where user_id=? and plan_order=?";
-		    pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanUser.currentLoginUser.getUserid());
-		    pst.setInt(2, plan.getplanorder());
-		    pst.executeUpdate();
+		    rs.close();
 		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
+	@Override
+	public void deleteStore(BeanStore store) throws BaseException {
+		Connection conn=null;
+		try {
+			conn=DBUtil.getConnection();
+			String sql="delete from mj_method\n" + 
+					"where sj_no=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from dd_info\n" + 
+					"where sp_no in(\n" + 
+					"select sp_no\n" + 
+					"from sp_info\n" + 
+					"where sj_no=?)";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from sp_pj\n" + 
+					"where sj_no=?";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from sp_info\n" + 
+					"where sj_no=?";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from own\n" + 
+					"where yh_no in(\n" + 
+					"select yh_no\n" + 
+					"from yh_info\n" + 
+					"where sj_no=?)";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from yh_use\n" + 
+					"where yh_no in(\n" + 
+					"select yh_no\n" + 
+					"from yh_info\n" + 
+					"where sj_no=?)";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from yh_info\n" + 
+					"where sj_no=?";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
+			sql="delete from sj_info\n" + 
+					"where sj_no=?";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,store.getsjno());
+			pst.execute();
+			pst.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DbException(e);
@@ -154,7 +242,7 @@ public class StoreManager implements IStoreManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		}*/
+		}
 	}
 	
 	public void updateinfo(String name) throws BaseException {

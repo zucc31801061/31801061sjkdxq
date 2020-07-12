@@ -102,7 +102,7 @@ public class FrmMyStorepj extends JDialog implements ActionListener {
 			}
 	    });
 	    this.reloadpjTable();
-		this.setSize(700, 250);
+		this.setSize(750, 250);
 		// ∆¡ƒªæ”÷–œ‘ æ
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();

@@ -2,6 +2,7 @@ package takeaway.itf;
 
 import java.util.List;
 
+import takeaway.model.BeanOrderInfo;
 import takeaway.model.BeanProduct;
 import takeaway.model.BeanSppj;
 import takeaway.util.BaseException;
@@ -26,6 +27,7 @@ public interface ISppjManager {
 	 */
 	public List<BeanSppj> loadbystore()throws BaseException;
 	public List<BeanSppj> loadpropj(BeanProduct product)throws BaseException;
+	public List<BeanSppj> loadpropj(BeanOrderInfo orderinfo)throws BaseException;
 	/**
 	 * É¾³ýÉÌ¼Ò
 	 * @param address

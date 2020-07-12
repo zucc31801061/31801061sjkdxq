@@ -20,48 +20,40 @@ import takeaway.takeawayUtil;
 import takeaway.model.BeanOrder;
 import takeaway.util.BaseException;
 
-public class FrmMyTake extends JDialog implements ActionListener {
+public class FrmUserXfInfo extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button btnok = new Button("确定");
-	//表项标题
-	private Object tblHisOrderTitle[]=BeanOrder.tableTitles4;
-	//二维表存储
-	private Object tblHisOrderData[][];
-	//创建表格模型
-	DefaultTableModel tabHisOrderModel=new DefaultTableModel();
-	//用tabHisOrderModel为模型构造表格
-	private JTable dataTableHisOrder=new JTable(tabHisOrderModel);
-	BeanOrder curOrder;
-	List<BeanOrder> HisOrder=null;
-	private void reloadHisOrder(){//这是测试数据，需要用实际数替换
+	private Object tblxfTitle[]=BeanOrder.tableTitles7;
+	private Object tblxfData[][];
+	DefaultTableModel tabxfModel=new DefaultTableModel();
+	private JTable dataTablexf=new JTable(tabxfModel);
+	
+	List<BeanOrder> xf=null;
+	private void reloadxfTable(){
 		try {
-			//查询当前HisOrder
-			HisOrder=takeawayUtil.orderManager.loadridermoney();
+			xf=takeawayUtil.orderManager.loadallxfinfo();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		tblHisOrderData = new Object[HisOrder.size()][BeanOrder.tableTitles4.length];
-		for(int i=0;i<HisOrder.size();i++){
-			for(int j=0;j<BeanOrder.tableTitles4.length;j++)
-				tblHisOrderData[i][j]=HisOrder.get(i).getCell4(j);
+		tblxfData = new Object[xf.size()][BeanOrder.tableTitles7.length];
+		for(int i=0;i<xf.size();i++){
+			for(int j=0;j<BeanOrder.tableTitles7.length;j++)
+				tblxfData[i][j]=xf.get(i).getCell7(j);
 		}
-		tabHisOrderModel.setDataVector(tblHisOrderData,tblHisOrderTitle);
-		this.dataTableHisOrder.validate();
-		//验证容器及其子组件
-		this.dataTableHisOrder.repaint();
-		//重绘该组件
+		tabxfModel.setDataVector(tblxfData,tblxfTitle);
+		this.dataTablexf.validate();
+		this.dataTablexf.repaint();
 	}
-	public FrmMyTake(JFrame f, String s, boolean b) {
+	public FrmUserXfInfo(JFrame f, String s, boolean b) {
 		super(f, s, b);
-		this.setTitle("我的入账");
+		this.setTitle("消费情况");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		//加入一个显示dataTableHisOrder的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.CENTER);
-		this.reloadHisOrder();
-		this.setSize(800, 300);
+	    this.getContentPane().add(new JScrollPane(this.dataTablexf), BorderLayout.CENTER);
+	    this.reloadxfTable();
+		this.setSize(500, 500);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -71,6 +63,7 @@ public class FrmMyTake extends JDialog implements ActionListener {
 		this.validate();
 		this.btnok.addActionListener(this);
 	}
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.btnok) {
 			this.setVisible(false);

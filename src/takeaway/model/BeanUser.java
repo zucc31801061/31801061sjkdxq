@@ -1,10 +1,11 @@
 package takeaway.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class BeanUser {
 	public static final String[] tableTitles={"姓名","性别","电话号","邮箱地址","所在城市"};
 	public static final String[] tableTitles1={"是否是会员","到期时间"};
+	public static final String[] tableTitles2={"账号","姓名","性别","电话号","邮箱地址","所在城市","是否是会员","到期时间"};
 	private String username;
 	private String usersex;
 	private String phnum;
@@ -95,6 +96,26 @@ public class BeanUser {
 			return String.valueOf(this.vip);
 		else if (col == 1)
 			return String.valueOf(this.vipenddate);
+		    return "";
+	}
+	public String getCell2(int col){
+		if (col == 0)
+			return this.userid;
+		else if (col == 1)
+			return this.username;
+		else if (col == 2)
+			return this.usersex;
+		else if (col == 3)
+			return this.phnum;
+		else if (col == 4)
+			return this.email;
+		else if (col == 5)
+			return this.city;
+		else if (col == 6)
+			return String.valueOf(this.vip);
+		else if (col == 7)
+			return String.valueOf(this.vipenddate);
+		else
 		    return "";
 	}
 	public static BeanUser currentLoginUser=null;

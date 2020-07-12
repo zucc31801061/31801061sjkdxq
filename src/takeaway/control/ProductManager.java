@@ -11,6 +11,7 @@ import java.util.List;
 
 import takeaway.itf.IProductManager;
 import takeaway.model.BeanStore;
+import takeaway.model.BeanKind;
 import takeaway.model.BeanProduct;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -91,7 +92,12 @@ public class ProductManager implements IProductManager {
 		Connection conn = null;
 		try {
 	    	conn = DBUtil.getConnection();
-	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_no from sp_info,sp_kind where sj_no=? and sp_info.fl_no=sp_kind.fl_no";
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_info.sp_no,sum(dd_info.num)\n" + 
+	    			"from sp_info,sp_kind,dd_info\n" + 
+	    			"where sj_no=?\n" + 
+	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
+	    			"and sp_info.sp_no=dd_info.sp_no\n" + 
+	    			"group by sp_info.sp_no";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.setString(1, store);
 	    	ResultSet rs = pst.executeQuery();
@@ -102,6 +108,7 @@ public class ProductManager implements IProductManager {
 	    		s.setspmoney(rs.getFloat(3));
 	    		s.setyhmoney(rs.getFloat(4));
 	    		s.setspno(rs.getInt(5));
+	    		s.setxl(rs.getInt(6));
 	    		result.add(s);
 	    	}
 	    	rs.close();
@@ -130,7 +137,8 @@ public class ProductManager implements IProductManager {
 	    			"from sp_info,sp_kind,sj_info\n" + 
 	    			"where sj_info.sj_no=sp_info.sj_no\n" + 
 	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
-	    			"and sp_name like ?";
+	    			"and sp_name like ?\n" + 
+	    			"order by sp_money";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.setString(1, "%"+name+"%");
 	    	ResultSet rs = pst.executeQuery();
@@ -277,6 +285,43 @@ public class ProductManager implements IProductManager {
 				}
 		}
 		
+	}
+	public List<BeanProduct> loadProductbykind(BeanKind kind)throws BaseException{
+		List<BeanProduct> result = new ArrayList<BeanProduct>();
+		Connection conn = null;
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sj_name\n" + 
+	    			"from sp_info,sp_kind,sj_info\n" + 
+	    			"where sp_kind.fl_no=?\n" + 
+	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
+	    			"and sp_info.sj_no=sj_info.sj_no";
+	    	PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setInt(1, kind.getflno());
+	    	ResultSet rs = pst.executeQuery();
+	    	while (rs.next()) {
+	    		BeanProduct s = new BeanProduct();
+	    		s.setspname(rs.getString(1));
+	    		s.setflname(rs.getString(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setsjname(rs.getString(5));
+	    		result.add(s);
+	    	}
+	    	rs.close();
+	    	pst.close();
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	throw new DbException(e);
+	    } finally {
+	    	if (conn != null)
+	    		try {
+	    			conn.close();
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}
+	    }
+	    return result;
 	}
 	@Override
 	public void startStep(BeanProduct product) throws BaseException {

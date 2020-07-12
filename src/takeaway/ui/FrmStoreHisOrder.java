@@ -6,10 +6,13 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,23 +21,30 @@ import javax.swing.table.DefaultTableModel;
 
 import takeaway.takeawayUtil;
 import takeaway.model.BeanOrder;
+import takeaway.model.BeanOrderInfo;
 import takeaway.util.BaseException;
 
 public class FrmStoreHisOrder extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private Button btnok = new Button("确定");
-	//表项标题
+	private JPanel titleBar = new JPanel();
+	private JLabel title = new JLabel("商品订单：                                                                                                                                                           订单详情：");
+	
 	private Object tblHisOrderTitle[]=BeanOrder.tableTitles;
-	//二维表存储
 	private Object tblHisOrderData[][];
-	//创建表格模型
 	DefaultTableModel tabHisOrderModel=new DefaultTableModel();
-	//用tabHisOrderModel为模型构造表格
 	private JTable dataTableHisOrder=new JTable(tabHisOrderModel);
+	
+	private Object tblHisOrderInfoTitle[]=BeanOrderInfo.tblOrderInfoTitle;
+	private Object tblHisOrderInfoData[][];
+	DefaultTableModel tabHisOrderInfoModel=new DefaultTableModel();
+	private JTable dataTableHisOrderInfo=new JTable(tabHisOrderInfoModel);
+	
+	private BeanOrder curHisOrder=null;
 	List<BeanOrder> HisOrder=null;
-	private void reloadHisOrder(){//这是测试数据，需要用实际数替换
+	List<BeanOrderInfo> orderinfo=null;
+	private void reloadHisOrder(){
 		try {
-			//查询当前HisOrder
 			HisOrder=takeawayUtil.orderManager.loadstoreHisOrder();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
@@ -47,20 +57,48 @@ public class FrmStoreHisOrder extends JDialog implements ActionListener {
 		}
 		tabHisOrderModel.setDataVector(tblHisOrderData,tblHisOrderTitle);
 		this.dataTableHisOrder.validate();
-		//验证容器及其子组件
 		this.dataTableHisOrder.repaint();
-		//重绘该组件
+	}
+	private void reloadHisOrderInfoTabel(int HisOrderIdx){
+		if(HisOrderIdx<0) return;
+		curHisOrder=HisOrder.get(HisOrderIdx);
+		try {
+			orderinfo=takeawayUtil.orderinfoManager.loadOrderInfo(curHisOrder);
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblHisOrderInfoData =new Object[orderinfo.size()][BeanOrderInfo.tblOrderInfoTitle.length];
+		for(int i=0;i<orderinfo.size();i++){
+			for(int j=0;j<BeanOrderInfo.tblOrderInfoTitle.length;j++)
+				tblHisOrderInfoData[i][j]=orderinfo.get(i).getCell(j);
+		}
+		tabHisOrderInfoModel.setDataVector(tblHisOrderInfoData,tblHisOrderInfoTitle);
+		this.dataTableHisOrderInfo.validate();
+		this.dataTableHisOrderInfo.repaint();
 	}
 	public FrmStoreHisOrder(JFrame f, String s, boolean b) {
 		super(f, s, b);
-		this.setTitle("我的信息");
+		this.setTitle("已送达");
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(btnok);
 		this.getContentPane().add(toolBar, BorderLayout.SOUTH);
-		//加入一个显示dataTableHisOrder的滚动条到页面的左边
-	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.WEST);
-		this.reloadHisOrder();
-		this.setSize(460, 150);
+		titleBar.add(title);
+		this.getContentPane().add(titleBar, BorderLayout.NORTH);
+	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrder), BorderLayout.CENTER);
+	    this.dataTableHisOrder.addMouseListener(new MouseAdapter (){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i=FrmStoreHisOrder.this.dataTableHisOrder.getSelectedRow();
+				if(i<0) {
+					return;
+				}
+				FrmStoreHisOrder.this.reloadHisOrderInfoTabel(i);
+			}
+		});
+	    this.getContentPane().add(new JScrollPane(this.dataTableHisOrderInfo), BorderLayout.EAST);
+	    this.reloadHisOrder();
+		this.setSize(1100, 300);
 		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
