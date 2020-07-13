@@ -28,4 +28,6 @@ public interface IOrderInfoManager {
 	 */
 	public List<BeanOrderInfo> loadretj()throws BaseException;
 	public void addproduct(BeanProduct product,int num)throws BaseException;
+	public void updatenum(BeanOrderInfo orderinfo,int num)throws BaseException;
+	public void delproduct(BeanOrderInfo orderinfo)throws BaseException;
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import takeaway.itf.IYhInfoManager;
 import takeaway.model.BeanYhInfo;
+import takeaway.model.BeanOrder;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
@@ -93,7 +94,7 @@ public class YhInfoManager implements IYhInfoManager{
 		    rs.close();
 		    pst.close();
 		    
-			sql = "select yh_money,yh_startdate,yh_enddate,sj_name\r\n" + 
+			sql = "select yh_money,yh_startdate,yh_enddate,sj_name,num\r\n" + 
 					"from yh_info,sj_info,own\r\n" + 
 					"where yh_info.sj_no=sj_info.sj_no\r\n" + 
 					"and yh_info.yh_no=own.yh_no\r\n" + 
@@ -108,6 +109,7 @@ public class YhInfoManager implements IYhInfoManager{
 		        p.setstartdate(rs.getDate(2));
 		        p.setenddate(rs.getDate(3));
 		        p.setsjname(rs.getString(4));
+		        p.setnum(rs.getInt(5));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -414,5 +416,81 @@ public class YhInfoManager implements IYhInfoManager{
 		          e.printStackTrace();
 		        }
 		}
+	}
+	public List<BeanYhInfo> loadnotusebystore()throws BaseException{
+		List<BeanYhInfo> result=new ArrayList<BeanYhInfo>();
+		
+		Calendar calendar = new GregorianCalendar();
+		Date date=new Date(calendar.getTimeInMillis());
+		
+		Calendar calendar1 = Calendar.getInstance();
+        Date now = new Date(calendar1.getTimeInMillis());
+		
+		String userno = BeanUser.currentLoginUser.getUserid();
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		int yhno=0;
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select endtime,own.yh_no\r\n" + 
+					"from own,yh_info\r\n" + 
+					"where user_no=?\r\n" + 
+					"and yh_info.yh_no=own.yh_no\r\n" + 
+					"and jd_num=already";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	java.util.Date date1 = rs.getDate(1);
+		        calendar.setTime(date1);
+		        date=new Date(calendar.getTimeInMillis());
+		        yhno=rs.getInt(2);
+		        if(date.before(now)) {
+		        	String sql1 = "delete from own where yh_no=?";
+		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        }
+		    }
+		    rs.close();
+		    pst.close();
+			sql = "select yh_info.yh_no,yh_money,num,endtime,sj_name\r\n" + 
+					"from own,yh_info,sp_dd,sj_info\r\n" + 
+					"where already=jd_num\r\n" + 
+					"and own.yh_no=yh_info.yh_no\r\n" + 
+					"and own.user_no=?\r\n" + 
+					"and yh_info.sj_no\r\n" + 
+					"and sp_dd.sj_no=yh_info.sj_no\r\n" + 
+					"and sp_dd.sj_no=sj_info.sj_no\r\n" + 
+					"and sp_dd.dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, userno);
+		    pst.setInt(2, ddno);
+		    rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanYhInfo p=new BeanYhInfo();
+		        p.setyhno(rs.getInt(1));
+		        p.setyhmoney(rs.getInt(2));
+		        p.setnum(rs.getInt(3));
+		        p.setenddate(rs.getDate(4));
+		        p.setsjname(rs.getString(5));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
 	}
 }

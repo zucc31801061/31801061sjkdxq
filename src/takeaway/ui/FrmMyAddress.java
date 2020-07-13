@@ -117,7 +117,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 				if(i<0) {
 					return;
 				}
-				curAdd=Add.get(i);
+				FrmMyAddress.this.curAdd=Add.get(i);
 			}
 	    });
 	    this.reloadAddTable();

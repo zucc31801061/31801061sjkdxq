@@ -139,6 +139,8 @@ public class FrmOrder extends JDialog implements ActionListener {
 	private Object tblddinfoData[][];
 	DefaultTableModel tabddinfoModel=new DefaultTableModel();
 	private JTable dataTableddinfo=new JTable(tabddinfoModel);
+	
+	private BeanOrderInfo curddinfo=null;
 	List<BeanOrderInfo> ddinfo=null;
 	private void reloadddinfo(BeanOrder order){
 		try {
@@ -215,6 +217,16 @@ public class FrmOrder extends JDialog implements ActionListener {
 		
 		orderinfo.add(new JScrollPane(dataTableddinfo));
 		this.getContentPane().add(orderinfo, BorderLayout.EAST);
+		this.dataTableddinfo.addMouseListener(new MouseAdapter (){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i=FrmOrder.this.dataTableddinfo.getSelectedRow();
+				if(i<0) {
+					return;
+				}
+				FrmOrder.this.curddinfo=ddinfo.get(i);
+			}
+		});
 		this.reloadddinfo(BeanOrder.currentLoginOrder);
 
 		this.setSize(1400, 550);
@@ -224,17 +236,6 @@ public class FrmOrder extends JDialog implements ActionListener {
 				(int) (height - this.getHeight()) / 2);
 
 		this.validate();
-		this.addWindowListener(new WindowAdapter(){   
-	    	public void windowClosing(WindowEvent e){ 
-	    		try {
-					takeawayUtil.orderManager.deleteOrder();
-				} catch (BaseException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-	    		this.windowClosed(e);
-             }
-        });
 		this.selectstore.addActionListener(this);
 		this.addstore.addActionListener(this);
 		this.selectpro.addActionListener(this);
@@ -245,9 +246,21 @@ public class FrmOrder extends JDialog implements ActionListener {
 		this.cancel.addActionListener(this);
 	}
 	public void actionPerformed(ActionEvent e) {
+		float a = 0;
 		if(e.getSource()==this.btnok) {
-			this.setVisible(false);
-			return;
+			try {
+				takeawayUtil.orderManager.csh();
+				a = takeawayUtil.orderManager.pdxd();
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(a == 0) {
+				JOptionPane.showMessageDialog(null, "请先添加购物车", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			FrmChosemjyh cmy = new FrmChosemjyh(this,"下单",true);
+			cmy.setVisible(true);
 		}
 		else if(e.getSource()==this.selectstore) {
 			String name=this.storename.getText();
@@ -278,6 +291,33 @@ public class FrmOrder extends JDialog implements ActionListener {
 			}
 			try {
 				takeawayUtil.orderinfoManager.addproduct(curselpro, num);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.reloadddinfo(BeanOrder.currentLoginOrder);
+		}
+		else if(e.getSource()==this.changenum) {
+			int num=Integer.parseInt(this.changepronum.getText());
+			if(this.curddinfo==null) {
+				JOptionPane.showMessageDialog(null, "请选择购物车中商品", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				takeawayUtil.orderinfoManager.updatenum(curddinfo, num);
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			this.reloadddinfo(BeanOrder.currentLoginOrder);
+		}
+		else if(e.getSource()==this.delpro) {
+			if(this.curddinfo==null) {
+				JOptionPane.showMessageDialog(null, "请选择购物车中商品", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				takeawayUtil.orderinfoManager.delproduct(curddinfo);
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;

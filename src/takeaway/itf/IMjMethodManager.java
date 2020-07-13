@@ -12,6 +12,7 @@ public interface IMjMethodManager {
 	 * @throws BaseException
 	 */
 	public List<BeanMjMethod> loadAll() throws BaseException;
+	public List<BeanMjMethod> selectbestmj() throws BaseException;
 	/**
 	 * 增加满减方案
 	 * @return

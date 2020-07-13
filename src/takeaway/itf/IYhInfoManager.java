@@ -37,6 +37,7 @@ public interface IYhInfoManager {
 	 * @return
 	 * @throws BaseException
 	 */
+	public List<BeanYhInfo> loadnotusebystore()throws BaseException;
 	public BeanYhInfo Addyh(int yhmoney,int jdyq,Date start,Date end)throws BaseException;
 	/**
 	 * É¾³ýÓÅ»ÝÈ¯

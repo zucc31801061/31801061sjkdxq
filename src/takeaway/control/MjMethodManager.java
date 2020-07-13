@@ -7,6 +7,7 @@ import java.util.List;
 
 import takeaway.itf.IMjMethodManager;
 import takeaway.model.BeanMjMethod;
+import takeaway.model.BeanOrder;
 import takeaway.model.BeanStore;
 import takeaway.util.BaseException;
 import takeaway.util.DBUtil;
@@ -137,5 +138,45 @@ public class MjMethodManager implements IMjMethodManager {
 		          e.printStackTrace();
 		        }
 		}
+	}
+	public List<BeanMjMethod> selectbestmj() throws BaseException{
+		List<BeanMjMethod> result=new ArrayList<BeanMjMethod>();
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select mj_method.mj_no,mj_money,mj_yh,mj_dj\r\n" + 
+					"from sp_dd,mj_method\r\n" + 
+					"where sp_dd.sj_no=mj_method.sj_no\r\n" + 
+					"and dd_endmoney>=mj_money\r\n" + 
+					"and dd_no=?\r\n" + 
+					"order by dd_endmoney-mj_money\r\n" + 
+					"limit 0,1";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanMjMethod p=new BeanMjMethod();
+		        p.setmjno(rs.getInt(1));
+		        p.setmjmoney(rs.getFloat(2));
+		        p.setmjyh(rs.getFloat(3));
+		        p.setdj(rs.getBoolean(4));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
 	}
 }

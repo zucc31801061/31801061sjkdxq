@@ -2,10 +2,13 @@ package takeaway.itf;
 
 import java.util.List;
 
+import takeaway.model.BeanAddress;
+import takeaway.model.BeanMjMethod;
 import takeaway.model.BeanOrder;
 import takeaway.model.BeanRider;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
+import takeaway.model.BeanYhInfo;
 import takeaway.util.BaseException;
 
 public interface IOrderManager {
@@ -119,4 +122,10 @@ public interface IOrderManager {
 	public void addstore(BeanStore store)throws BaseException;
 	public List<BeanOrder> loadallxfinfo() throws BaseException;
 	public List<BeanOrder> selectxfinfo(BeanUser user) throws BaseException;
+	public float pdxd()throws BaseException;
+	public void csh()throws BaseException;
+	public void addmj(BeanMjMethod mj)throws BaseException;
+	public void addyh(BeanYhInfo yh)throws BaseException;
+	public void addadd(BeanAddress add)throws BaseException;
+	public void order()throws BaseException;
 }

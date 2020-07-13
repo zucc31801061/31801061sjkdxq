@@ -2,6 +2,7 @@ package takeaway.control;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,11 +10,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import takeaway.itf.IOrderManager;
+import takeaway.model.BeanAddress;
+import takeaway.model.BeanMjMethod;
 import takeaway.model.BeanOrder;
 import takeaway.model.BeanRider;
 import takeaway.model.BeanSppj;
 import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
+import takeaway.model.BeanYhInfo;
 import takeaway.util.BaseException;
 import takeaway.util.BusinessException;
 import takeaway.util.DBUtil;
@@ -951,11 +955,73 @@ public class OrderManager implements IOrderManager{
 	@Override
 	public void deleteOrder() throws BaseException {
 		int ddno=BeanOrder.currentLoginOrder.getddno();
+		String userno=BeanUser.currentLoginUser.getUserid();
 		Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
-		    String sql = "delete from dd_info where dd_no=?";
+			String sql = "delete from yh_use where dd_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    pst.execute();
+			pst.close();
+			sql = "select yh_no from sp_dd where dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if(rs.next()) {
+		    	if(rs.getInt(1)!=0) {
+		    		String sql1 = "select yh_no,user_no\r\n" + 
+		    				"from own\r\n" + 
+		    				"where yh_no=? and user_no=?";
+				    java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				    pst1.setInt(1, rs.getInt(1));
+				    pst1.setString(2, userno);
+				    java.sql.ResultSet rs1 = pst1.executeQuery();
+				    if(rs1.next()) {
+				    	String sql2 = "update own\r\n" + 
+				    			"set num=num+1\r\n" + 
+				    			"where yh_no=? and user_no=?";
+				    	java.sql.PreparedStatement pst2 = conn.prepareStatement(sql2);
+				    	pst2.setInt(1, rs1.getInt(1));
+				    	pst2.setString(2, userno);
+				    	pst2.execute();
+				    	pst2.close();
+				    }
+				   	else {
+				   		float money=0;
+				   		Date endate=null;
+				   		String sql2 = "select yh_money,yh_enddate\r\n" + 
+			    				"from yh_info\r\n" + 
+			    				"where yh_no=?";
+			    		java.sql.PreparedStatement pst2 = conn.prepareStatement(sql2);
+			    		pst2.setInt(1, rs.getInt(1));
+			    		java.sql.ResultSet rs2 = pst2.executeQuery();
+				    	if(rs2.next()) {
+				   			money=rs2.getFloat(1);
+				   			endate=rs2.getDate(2);
+				   		}
+				   		pst2.execute();
+			    		rs2.close();
+			    		pst2.close();
+			    		sql2 = "insert into own(yh_no,user_no,money,endtime,num)\r\n" + 
+			    				"values(?,?,?,?,1)";
+				    	pst2 = conn.prepareStatement(sql2);
+				    	pst2.setInt(1, rs.getInt(1));
+				   		pst2.setString(2, userno);
+				   		pst2.setFloat(3, money);
+				   		pst2.setDate(4, endate);
+				   		pst2.execute();
+			    		pst2.close();
+			    	}
+			    	rs1.close();
+			    	pst1.close();
+			    }
+	    	}
+		    pst.execute();
+		    rs.close();
+			pst.close();
+		    sql = "delete from dd_info where dd_no=?";
+		    pst = conn.prepareStatement(sql);
 		    pst.setInt(1, ddno);
 		    pst.execute();
 			pst.close();
@@ -1014,6 +1080,306 @@ public class OrderManager implements IOrderManager{
 		    pst = conn.prepareStatement(sql);
 		    pst.setString(1, store.getsjno());
 		    pst.setInt(2, ddno);
+		    pst.execute();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public float pdxd()throws BaseException{
+		float endmoney=0;
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "select dd_endmoney\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if(rs.next()) {
+		    	endmoney=rs.getFloat(1);
+		    }
+		    rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		return endmoney;
+	}
+	public void csh()throws BaseException{
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		float money=0;
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "select yh_money\r\n" + 
+		    		"from yh_info,sp_dd\r\n" + 
+		    		"where sp_dd.yh_no=yh_info.yh_no\r\n" + 
+		    		"and sp_dd.dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if(rs.next())
+		    	money+=rs.getInt(1);
+		    pst.close();
+		    sql = "select mj_yh\r\n" + 
+		    		"from mj_method,sp_dd\r\n" + 
+		    		"where sp_dd.mj_no=mj_method.mj_no\r\n" + 
+		    		"and sp_dd.dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    rs = pst.executeQuery();
+		    if(rs.next())
+		    	money+=rs.getFloat(1);
+		    pst.close();
+		    sql = "update sp_dd\r\n" + 
+		    		"set dd_endmoney=dd_endmoney+?,mj_no=null,yh_no=null\r\n" + 
+		    		"where dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setFloat(1, money);
+		    pst.setInt(2, ddno);
+		    pst.execute();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void addmj(BeanMjMethod mj)throws BaseException{
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+		    String sql = "select mj_no\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if(rs.next()) {
+		    	if(mj.getmjno()!=rs.getInt(1)) {
+		    		String sql1 = "update sp_dd,mj_method\r\n" + 
+		    				"set dd_endmoney=dd_endmoney+mj_yh\r\n" + 
+		    				"where mj_yh in\r\n" + 
+		    				"(select mj_yh\r\n" + 
+		    				"from mj_method\r\n" + 
+		    				"where mj_no=?)\r\n" + 
+		    				"and dd_no=?";
+				    java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				    pst1.setInt(1, rs.getInt(1));
+				    pst1.setInt(2, ddno);
+				    pst1.execute();
+					pst1.close();
+					sql1 = "update sp_dd\r\n" + 
+		    				"set dd_endmoney=dd_endmoney-?,mj_no=?\r\n" +
+		    				"where dd_no=?";
+				    pst1 = conn.prepareStatement(sql1);
+				    pst1.setFloat(1, mj.getmjyh());
+				    pst1.setInt(2, mj.getmjno());
+				    pst1.setInt(3, ddno);
+				    pst1.execute();
+					pst1.close();
+		    	}
+		    }
+		    rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void addyh(BeanYhInfo yh)throws BaseException{
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		String userno=BeanUser.currentLoginUser.getUserid();
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select mj_dj\r\n" + 
+					"from sp_dd,mj_method\r\n" + 
+					"where dd_no=?\r\n" + 
+					"and sp_dd.mj_no=mj_method.mj_no";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+				if(rs.getBoolean(1)==false) {
+					throw new BusinessException("当前满减无法叠加优惠券");
+				}
+			}
+		    rs.close();
+		    sql = "select yh_no\r\n" + 
+		    		"from sp_dd\r\n" + 
+		    		"where dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    rs = pst.executeQuery();
+		    if(rs.next()) {
+		    	if(yh.getyhno()!=rs.getInt(1)) {
+		    		String sql1 = "update sp_dd,yh_info\r\n" + 
+		    				"set dd_endmoney=dd_endmoney+yh_money\r\n" + 
+		    				"where yh_money in\r\n" + 
+		    				"(select yh_money\r\n" + 
+		    				"from yh_info\r\n" + 
+		    				"where yh_no=?)\r\n" + 
+		    				"and sp_dd.dd_no=?";
+				    java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				    pst1.setInt(1, rs.getInt(1));
+				    pst1.setInt(2, ddno);
+				    pst1.execute();
+					pst1.close();
+					sql1 = "update sp_dd\r\n" + 
+		    				"set dd_endmoney=dd_endmoney-?,yh_no=?\r\n" +
+		    				"where dd_no=?";
+				    pst1 = conn.prepareStatement(sql1);
+				    pst1.setFloat(1, yh.getyhmoney());
+				    pst1.setInt(2, yh.getyhno());
+				    pst1.setInt(3, ddno);
+				    pst1.execute();
+					pst1.close();
+					sql1 = "insert into yh_use(dd_no,yh_no)\r\n" + 
+							"values(?,?)";
+				    pst1 = conn.prepareStatement(sql1);
+				    pst1.setInt(1, ddno);
+				    pst1.setInt(2, yh.getyhno());
+				    pst1.execute();
+					pst1.close();
+					sql1 = "update own\r\n" + 
+		    				"set num=num-1\r\n" + 
+		    				"where yh_no=? and user_no=?";
+				    pst1 = conn.prepareStatement(sql1);
+				    pst1.setInt(1, yh.getyhno());
+				    pst1.setString(2, userno);
+				    pst1.execute();
+					pst1.close();
+					sql1 = "delete from own\r\n" + 
+		    				"where num<=0";
+				    pst1 = conn.prepareStatement(sql1);
+				    pst1.execute();
+					pst1.close();
+		    	}
+		    }
+		    rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void addadd(BeanAddress add)throws BaseException{
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "update sp_dd\r\n" + 
+					"set add_no=?\r\n" + 
+					"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setInt(1, add.getaddno());
+		    pst.setInt(2, ddno);
+		    pst.execute();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void order()throws BaseException{
+		int ddno=BeanOrder.currentLoginOrder.getddno();
+		String userno=BeanUser.currentLoginUser.getUserid();
+		String sjno=null;
+		Connection conn=null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "update sp_dd\r\n" + 
+					"set dd_zt='配送中',dd_starttime=?,dd_endtime=?\r\n" + 
+					"where dd_no=?";
+		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+		    pst.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
+		    pst.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()+30*60*1000));
+		    pst.setInt(3, ddno);
+		    pst.execute();
+			pst.close();
+			sql = "update yh_info,sp_dd\r\n" + 
+					"set already=already+1\r\n" + 
+					"where sp_dd.sj_no=yh_info.sj_no\r\n" + 
+					"and sp_dd.dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    pst.execute();
+			pst.close();
+			sql = "select sj_no\r\n" + 
+					"from sp_dd\r\n" + 
+					"where dd_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    if(rs.next())
+		    	sjno=rs.getString(1);
+		    rs.close();
+			pst.close();
+			sql = "insert into sp_pj(sj_no,user_no,dd) values(?,?,?)";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, sjno);
+		    pst.setString(2, userno);
+		    pst.setInt(3, ddno);
 		    pst.execute();
 			pst.close();
 		} catch (SQLException e) {

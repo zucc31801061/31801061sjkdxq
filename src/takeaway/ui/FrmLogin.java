@@ -92,11 +92,11 @@ public class FrmLogin extends JDialog implements ActionListener {
 			else {
 				try {
 					BeanUser.currentLoginUser= takeawayUtil.userManager.login(userid, pwd);
+					this.setVisible(false);
 				} catch (BaseException e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				this.setVisible(false);
 			}
 			
 		} else if (e.getSource() == this.btnCancel) {

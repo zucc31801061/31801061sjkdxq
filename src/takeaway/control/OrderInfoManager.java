@@ -64,7 +64,7 @@ public class OrderInfoManager implements IOrderInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sp_name,sp_dd.dd_no,num,price,discount,sj_name\r\n" + 
+			String sql = "select sp_name,sp_dd.dd_no,num,price,discount,sj_name,dd_info.sp_no\r\n" + 
 					"from dd_info,sp_info,sj_info,sp_dd\r\n" + 
 					"where sp_dd.dd_no=?\r\n" + 
 					"and sp_dd.sj_no=sj_info.sj_no\r\n" + 
@@ -81,6 +81,7 @@ public class OrderInfoManager implements IOrderInfoManager{
 		        p.setprice(rs.getFloat(4));
 		        p.setdiscount(rs.getFloat(5));
 		        p.setsjname(rs.getString(6));
+		        p.setspno(rs.getInt(7));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -215,6 +216,140 @@ public class OrderInfoManager implements IOrderInfoManager{
 				}
 			}
 			rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void updatenum(BeanOrderInfo orderinfo,int num)throws BaseException{
+		int ddno = orderinfo.getddno();
+		int spno = orderinfo.getspno();
+		int oldnum = orderinfo.getnum();
+		float price = orderinfo.getprice();
+		float discount = orderinfo.getdiscount();
+		
+		float sumprice = (num-oldnum)*price;
+		float sumdiscount = (num-oldnum)*discount;
+		String userno=BeanUser.currentLoginUser.getUserid(); 
+		Connection conn=null;
+		try {
+			conn=DBUtil.getConnection();
+			String sql = "select vip\r\n" + 
+					"from user_info\r\n" + 
+					"where user_no=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, userno);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(rs.next()) {
+				if(rs.getBoolean(1)==true) {
+					String sql1 = "update sp_dd\r\n" + 
+							"set dd_startmoney=dd_startmoney+?,dd_endmoney=dd_endmoney+?\r\n" +
+							"where dd_no=?";
+					java.sql.PreparedStatement pst1=conn.prepareStatement(sql1);
+					pst1.setFloat(1, sumprice);
+					pst1.setFloat(2, sumdiscount);
+					pst1.setInt(3, ddno);
+					pst1.execute();
+					pst1.close();
+				}
+				else {
+					String sql1 = "update sp_dd\r\n" + 
+							"set dd_startmoney=dd_startmoney+?,dd_endmoney=dd_endmoney+?\r\n" +
+							"where dd_no=?";
+					java.sql.PreparedStatement pst1=conn.prepareStatement(sql1);
+					pst1.setFloat(1, sumprice);
+					pst1.setFloat(2, sumprice);
+					pst1.setInt(3, ddno);
+					pst1.execute();
+					pst1.close();
+				}
+			}
+			rs.close();
+			pst.close();
+			sql = "update dd_info\r\n" + 
+					"set num=?\r\n" + 
+					"where dd_no=? and sp_no=?";
+			pst = conn.prepareStatement(sql);
+			pst.setInt(1, num);
+			pst.setInt(2, ddno);
+			pst.setInt(3, spno);
+			pst.execute();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	public void delproduct(BeanOrderInfo orderinfo)throws BaseException{
+		int ddno = orderinfo.getddno();
+		int spno = orderinfo.getspno();
+		int num = orderinfo.getnum();
+		float price = orderinfo.getprice();
+		float discount = orderinfo.getdiscount();
+		
+		float sumprice = num*price;
+		float sumdiscount = num*discount;
+		String userno=BeanUser.currentLoginUser.getUserid(); 
+		Connection conn=null;
+		try {
+			conn=DBUtil.getConnection();
+			String sql = "select vip\r\n" + 
+					"from user_info\r\n" + 
+					"where user_no=?";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setString(1, userno);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(rs.next()) {
+				if(rs.getBoolean(1)==true) {
+					String sql1 = "update sp_dd\r\n" + 
+							"set dd_startmoney=dd_startmoney-?,dd_endmoney=dd_endmoney-?\r\n" +
+							"where dd_no=?";
+					java.sql.PreparedStatement pst1=conn.prepareStatement(sql1);
+					pst1.setFloat(1, sumprice);
+					pst1.setFloat(2, sumdiscount);
+					pst1.setInt(3, ddno);
+					pst1.execute();
+					pst1.close();
+				}
+				else {
+					String sql1 = "update sp_dd\r\n" + 
+							"set dd_startmoney=dd_startmoney-?,dd_endmoney=dd_endmoney-?\r\n" +
+							"where dd_no=?";
+					java.sql.PreparedStatement pst1=conn.prepareStatement(sql1);
+					pst1.setFloat(1, sumprice);
+					pst1.setFloat(2, sumprice);
+					pst1.setInt(3, ddno);
+					pst1.execute();
+					pst1.close();
+				}
+			}
+			rs.close();
+			pst.close();
+			sql = "delete from dd_info\r\n" + 
+					"where dd_no=? and sp_no=?";
+			pst = conn.prepareStatement(sql);
+			pst.setInt(1, ddno);
+			pst.setInt(2, spno);
+			pst.execute();
 			pst.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
