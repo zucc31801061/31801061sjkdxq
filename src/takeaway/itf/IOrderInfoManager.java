@@ -4,6 +4,7 @@ import java.util.List;
 
 import takeaway.model.BeanOrder;
 import takeaway.model.BeanOrderInfo;
+import takeaway.model.BeanProduct;
 import takeaway.util.BaseException;
 
 public interface IOrderInfoManager {
@@ -25,6 +26,6 @@ public interface IOrderInfoManager {
 	 * @param plan
 	 * @throws BaseException
 	 */
-	public void deleteOrderInfo(BeanOrderInfo plan)throws BaseException;
 	public List<BeanOrderInfo> loadretj()throws BaseException;
+	public void addproduct(BeanProduct product,int num)throws BaseException;
 }

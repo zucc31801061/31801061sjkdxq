@@ -30,7 +30,7 @@ import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
 public class FrmGlyMain extends JFrame implements ActionListener {
-	//定义程序序列化ID
+		//定义程序序列化ID
 		private static final long serialVersionUID = 1L;
 		//创建菜单条
 		private JMenuBar menubar=new JMenuBar(); 
@@ -50,7 +50,7 @@ public class FrmGlyMain extends JFrame implements ActionListener {
 		private JMenuItem  menuItem_riderinfo=new JMenuItem("查询骑手");//已完成
 		
 		private JMenuItem  menuItem_updateinfo=new JMenuItem("我的信息");
-		private JMenuItem  menuItem_updatemm=new JMenuItem("修改信息");
+		private JMenuItem  menuItem_updatemm=new JMenuItem("修改密码");
 		
 		private JPanel menuBar = new JPanel();
 		private JLabel userl = new JLabel("骑手：                                                                                                                        ");
@@ -189,6 +189,10 @@ public class FrmGlyMain extends JFrame implements ActionListener {
 			else if(e.getSource()==this.menuItem_seefl) {
 				FrmSearchFl sf=new FrmSearchFl(this,"查看分类",true);
 				sf.setVisible(true);
+			}
+			else if(e.getSource()==this.menuItem_storeinfo) {
+				FrmSelectStore ss=new FrmSelectStore(this,"查询商家",true);
+				ss.setVisible(true);
 			}
 			else if(e.getSource()==this.menuItem_riderrz) {
 				FrmAllQsrz aq=new FrmAllQsrz(this,"骑手入账",true);

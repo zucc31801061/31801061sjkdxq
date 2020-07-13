@@ -48,6 +48,22 @@ public class FrmSelectPro extends JDialog implements ActionListener {
 	private BeanProduct curselpro=null;
 	List<BeanProduct> selpro=null;
 	List<BeanSppj> propj=null;
+	private void reloadselpro(){
+		try {
+			selpro=takeawayUtil.productManager.loadAllbyuser();
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblselproData = new Object[selpro.size()][BeanProduct.tblProductTitle1.length];
+		for(int i=0;i<selpro.size();i++){
+			for(int j=0;j<BeanProduct.tblProductTitle1.length;j++)
+				tblselproData[i][j]=selpro.get(i).getCell1(j);
+		}
+		tabselproModel.setDataVector(tblselproData,tblselproTitle);
+		this.dataTableselpro.validate();
+		this.dataTableselpro.repaint();
+	}
 	private void reloadselpro(String name){
 		try {
 			selpro=takeawayUtil.productManager.selectproduct(name);
@@ -98,6 +114,7 @@ public class FrmSelectPro extends JDialog implements ActionListener {
 		this.getContentPane().add(titleBar, BorderLayout.NORTH);
 		//加入一个显示dataTableselpro的滚动条到页面的左边
 	    this.getContentPane().add(new JScrollPane(this.dataTableselpro), BorderLayout.WEST);
+	    this.reloadselpro();
 	    this.dataTableselpro.addMouseListener(new MouseAdapter (){
 			@Override
 			//在组件上单击鼠标按钮时调用函数

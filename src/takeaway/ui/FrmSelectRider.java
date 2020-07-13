@@ -49,6 +49,22 @@ public class FrmSelectRider extends JDialog implements ActionListener {
 	private BeanRider curselrider=null;
 	List<BeanRider> selrider=null;
 	List<BeanOrder> qsrz=null;
+	private void reloadselrider(){
+		try {
+			selrider=takeawayUtil.riderManager.loadAll();
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblselriderData = new Object[selrider.size()][BeanRider.tableTitles1.length];
+		for(int i=0;i<selrider.size();i++){
+			for(int j=0;j<BeanRider.tableTitles1.length;j++)
+				tblselriderData[i][j]=selrider.get(i).getCell1(j);
+		}
+		tabselriderModel.setDataVector(tblselriderData,tblselriderTitle);
+		this.dataTableselrider.validate();
+		this.dataTableselrider.repaint();
+	}
 	private void reloadselrider(String name){
 		try {
 			selrider=takeawayUtil.riderManager.searchrider(name);
@@ -101,6 +117,7 @@ public class FrmSelectRider extends JDialog implements ActionListener {
 		this.getContentPane().add(titleBar, BorderLayout.NORTH);
 		//加入一个显示dataTableselrider的滚动条到页面的左边
 	    this.getContentPane().add(new JScrollPane(this.dataTableselrider), BorderLayout.CENTER);
+	    this.reloadselrider();
 	    this.dataTableselrider.addMouseListener(new MouseAdapter (){
 			@Override
 			//在组件上单击鼠标按钮时调用函数
@@ -142,7 +159,8 @@ public class FrmSelectRider extends JDialog implements ActionListener {
 			FrmUpdateRiderid ur=new FrmUpdateRiderid(this, "修改骑手称号", true);
 			ur.setVisible(true);
 		}
-		else if(e.getSource()==this.del) {if(this.curselrider==null) {
+		else if(e.getSource()==this.del) {
+			if(this.curselrider==null) {
 				JOptionPane.showMessageDialog(null, "请选择骑手", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}

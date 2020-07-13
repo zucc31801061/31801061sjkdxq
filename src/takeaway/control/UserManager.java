@@ -328,6 +328,7 @@ public class UserManager implements IUserManager {
 			conn = DBUtil.getConnection();
 			String sql = "select user_name,user_sex,user_phnum,user_email,user_city,user_starttime,vip,vip_enddate,user_no\n" + 
 					"from user_info\n" + 
+					"where user_no!=0\n" + 
 					"order by user_starttime DESC";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 			java.sql.ResultSet rs = pst.executeQuery();

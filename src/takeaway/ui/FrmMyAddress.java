@@ -153,7 +153,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadAddTable();
 		}
 		else if(e.getSource()==this.updadd) {
 			if(this.curAdd==null) {
@@ -172,7 +172,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadAddTable();
 		}
 		else if(e.getSource()==this.deladd) {
 			if(this.curAdd==null) {
@@ -185,7 +185,7 @@ public class FrmMyAddress extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadAddTable();
 		}
 	}
 }

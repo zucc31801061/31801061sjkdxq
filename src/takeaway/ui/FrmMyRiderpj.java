@@ -115,7 +115,7 @@ public class FrmMyRiderpj extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadpjTable();
 		}
 		else if(e.getSource()==this.badpj) {
 			if(this.curpj==null) {
@@ -128,7 +128,7 @@ public class FrmMyRiderpj extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadpjTable();
 		}
 		else if(e.getSource()==this.delpj) {
 			if(this.curpj==null) {
@@ -141,7 +141,7 @@ public class FrmMyRiderpj extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadpjTable();
 		}
 	}
 }

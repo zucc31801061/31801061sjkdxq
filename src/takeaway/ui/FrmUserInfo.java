@@ -83,6 +83,7 @@ public class FrmUserInfo extends JDialog implements ActionListener {
 		else if(e.getSource()==this.updateinfo){
 			FrmUpdateInfo uf=new FrmUpdateInfo(this,"ÐÞ¸ÄÐÅÏ¢",true);
 			uf.setVisible(true);
+			this.reloadUserInfoTable();
 		}
 	}
 }

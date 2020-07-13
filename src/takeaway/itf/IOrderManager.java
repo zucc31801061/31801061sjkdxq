@@ -4,6 +4,7 @@ import java.util.List;
 
 import takeaway.model.BeanOrder;
 import takeaway.model.BeanRider;
+import takeaway.model.BeanStore;
 import takeaway.model.BeanUser;
 import takeaway.util.BaseException;
 
@@ -14,7 +15,7 @@ public interface IOrderManager {
 	 * @param name  计划名称
 	 * @throws BaseException
 	 */
-	public BeanOrder addOrder(String name) throws BaseException;
+	public BeanOrder addOrder() throws BaseException;
 	/**
 	 * 提取当前商家所有订单
 	 * @return
@@ -111,10 +112,11 @@ public interface IOrderManager {
 	 * @throws BaseException
 	 */
 	public List<BeanOrder> loaduserxfinfo() throws BaseException;
-	public void deleteOrder(BeanOrder order)throws BaseException;
+	public void deleteOrder()throws BaseException;
 	public void updhppj(BeanOrder order)throws BaseException;
 	public void updcppj(BeanOrder order)throws BaseException;
 	public void delpj(BeanOrder order)throws BaseException;
+	public void addstore(BeanStore store)throws BaseException;
 	public List<BeanOrder> loadallxfinfo() throws BaseException;
 	public List<BeanOrder> selectxfinfo(BeanUser user) throws BaseException;
 }

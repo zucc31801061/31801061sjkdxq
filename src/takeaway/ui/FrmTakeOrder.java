@@ -138,7 +138,7 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadFreeOrder();
 		}
 	}
 }

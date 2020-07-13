@@ -20,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com.sun.source.util.TreePathScanner;
+
 import takeaway.takeawayUtil;
 import takeaway.model.BeanProduct;
 import takeaway.model.BeanStore;
@@ -48,6 +50,22 @@ public class FrmSelectStore extends JDialog implements ActionListener {
 	private BeanStore curselstore=null;
 	List<BeanStore> selstore=null;
 	List<BeanProduct> product=null;
+	private void reloadselstore(){
+		try {
+			selstore=takeawayUtil.storeManager.loadAll();
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblselstoreData = new Object[selstore.size()][BeanStore.tableTitles1.length];
+		for(int i=0;i<selstore.size();i++){
+			for(int j=0;j<BeanStore.tableTitles1.length;j++)
+				tblselstoreData[i][j]=selstore.get(i).getCell1(j);
+		}
+		tabselstoreModel.setDataVector(tblselstoreData,tblselstoreTitle);
+		this.dataTableselstore.validate();
+		this.dataTableselstore.repaint();
+	}
 	private void reloadselstore(String name){
 		try {
 			selstore=takeawayUtil.storeManager.selectstore(name);
@@ -99,6 +117,7 @@ public class FrmSelectStore extends JDialog implements ActionListener {
 		this.getContentPane().add(titleBar, BorderLayout.NORTH);
 		//加入一个显示dataTableselstore的滚动条到页面的左边
 	    this.getContentPane().add(new JScrollPane(this.dataTableselstore), BorderLayout.CENTER);
+	    this.reloadselstore();
 	    this.dataTableselstore.addMouseListener(new MouseAdapter (){
 			@Override
 			//在组件上单击鼠标按钮时调用函数

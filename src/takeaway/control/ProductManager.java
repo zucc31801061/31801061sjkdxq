@@ -126,6 +126,43 @@ public class ProductManager implements IProductManager {
 	    }
 		return result;
 	}
+	public List<BeanProduct> loadAllbyuser()throws BaseException {
+		List<BeanProduct> result = new ArrayList<BeanProduct>();
+		Connection conn = null;
+		try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_no,sj_name\n" + 
+	    			"from sp_info,sp_kind,sj_info\n" + 
+	    			"where sj_info.sj_no=sp_info.sj_no\n" + 
+	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
+	    			"order by sp_money";
+	    	PreparedStatement pst = conn.prepareStatement(sql);
+	    	ResultSet rs = pst.executeQuery();
+	    	while (rs.next()) {
+	    		BeanProduct s = new BeanProduct();
+	    		s.setspname(rs.getString(1));
+	    		s.setflname(rs.getString(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setspno(rs.getInt(5));
+	    		s.setsjname(rs.getString(6));
+	    		result.add(s);
+	    	}
+	    	rs.close();
+	    	pst.close();
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	throw new DbException(e);
+	    } finally {
+	    	if (conn != null)
+	    		try {
+	    			conn.close();
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}
+	    }
+		return result;
+	}
 	public List<BeanProduct> selectproduct(String name)throws BaseException{
 		if(name.isEmpty())
 			throw new BusinessException("商品名为空");
@@ -173,7 +210,7 @@ public class ProductManager implements IProductManager {
 		Connection conn = null;
 	    try {
 	    	conn = DBUtil.getConnection();
-	    	String sql = "select sp_name,fl_name,sp_money,sp_yh from sp_info,sp_kind where sj_no=? and sp_info.fl_no=sp_kind.fl_no";
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_info.sp_no from sp_info,sp_kind where sj_no=? and sp_info.fl_no=sp_kind.fl_no";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.setString(1, store.getsjno());
 	    	ResultSet rs = pst.executeQuery();
@@ -184,6 +221,7 @@ public class ProductManager implements IProductManager {
 	    		s.setspmoney(rs.getFloat(3));
 	    		s.setyhmoney(rs.getFloat(4));
 	    		s.setsjno(store.getsjno());
+	    		s.setspno(rs.getInt(5));
 	    		result.add(s);
 	    	}
 	    	rs.close();
@@ -201,7 +239,47 @@ public class ProductManager implements IProductManager {
 	    }
 	    return result;
 	}
-
+	public List<BeanProduct> loadProductsbyname(BeanStore store,String name)throws BaseException{
+		if(name.isEmpty())
+			throw new BusinessException("商品名为空");
+		List<BeanProduct> result = new ArrayList<BeanProduct>();
+		Connection conn = null;
+	    try {
+	    	conn = DBUtil.getConnection();
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_info.sp_no\n" + 
+	    			"from sp_info,sp_kind\n" + 
+	    			"where sj_no=?\n" + 
+	    			"and sp_name like ?\n" + 
+	    			"and sp_info.fl_no=sp_kind.fl_no";
+	    	PreparedStatement pst = conn.prepareStatement(sql);
+	    	pst.setString(1, store.getsjno());
+	    	pst.setString(2, "%"+name+"%");
+	    	ResultSet rs = pst.executeQuery();
+	    	while (rs.next()) {
+	    		BeanProduct s = new BeanProduct();
+	    		s.setspname(rs.getString(1));
+	    		s.setflname(rs.getString(2));
+	    		s.setspmoney(rs.getFloat(3));
+	    		s.setyhmoney(rs.getFloat(4));
+	    		s.setsjno(store.getsjno());
+	    		s.setspno(rs.getInt(5));
+	    		result.add(s);
+	    	}
+	    	rs.close();
+	    	pst.close();
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	throw new DbException(e);
+	    } finally {
+	    	if (conn != null)
+	    		try {
+	    			conn.close();
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}
+	    }
+	    return result;
+	}
 	@Override
 	public void deleteProduct(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub

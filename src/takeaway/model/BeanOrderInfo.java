@@ -1,7 +1,7 @@
 package takeaway.model;
 
 public class BeanOrderInfo {
-	public static final String[] tblOrderInfoTitle={"商品","商品数量","商品价格","单品优惠"};
+	public static final String[] tblOrderInfoTitle={"商家","商品","商品数量","商品价格","单品优惠"};
 	public static final String[] tblOrderInfoTitle1={"商品","商家","分类","商品价格","单品优惠","总销量"};
 	private int spno;
 	private String spname;
@@ -68,12 +68,14 @@ public class BeanOrderInfo {
 	}
 	public String getCell(int col){
 		if (col == 0)
-			return this.spname;
+			return this.sjname;
 		else if (col == 1)
-			return this.num + "";
+			return this.spname;
 		else if (col == 2)
-		    return this.price + "";
+			return this.num + "";
 		else if (col == 3)
+		    return this.price + "";
+		else if (col == 4)
 		    return this.discount + "";
 		else
 		    return "";

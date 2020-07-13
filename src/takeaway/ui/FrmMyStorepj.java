@@ -130,7 +130,7 @@ public class FrmMyStorepj extends JDialog implements ActionListener {
 			int pjstar=Integer.parseInt(this.pjstar.getText());
 			try {
 				takeawayUtil.sppjManager.addSppj(this.curpj,pjnr, pjstar, photo);
-				this.setVisible(false);
+				this.reloadpjTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -147,7 +147,7 @@ public class FrmMyStorepj extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadpjTable();
 		}
 	}
 }

@@ -49,6 +49,22 @@ public class FrmSelectUser extends JDialog implements ActionListener {
 	private BeanUser curseluser=null;
 	List<BeanUser> seluser=null;
 	List<BeanOrder> userxf=null;
+	private void reloadseluser(){
+		try {
+			seluser=takeawayUtil.userManager.loadAll();
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblseluserData = new Object[seluser.size()][BeanUser.tableTitles2.length];
+		for(int i=0;i<seluser.size();i++){
+			for(int j=0;j<BeanUser.tableTitles2.length;j++)
+				tblseluserData[i][j]=seluser.get(i).getCell2(j);
+		}
+		tabseluserModel.setDataVector(tblseluserData,tblseluserTitle);
+		this.dataTableseluser.validate();
+		this.dataTableseluser.repaint();
+	}
 	private void reloadseluser(String name){
 		try {
 			seluser=takeawayUtil.userManager.searchuser(name);
@@ -99,25 +115,20 @@ public class FrmSelectUser extends JDialog implements ActionListener {
 		titleBar.add(select);
 		titleBar.add(title1);
 		this.getContentPane().add(titleBar, BorderLayout.NORTH);
-		//加入一个显示dataTableseluser的滚动条到页面的左边
 	    this.getContentPane().add(new JScrollPane(this.dataTableseluser), BorderLayout.CENTER);
+	    this.reloadseluser();
 	    this.dataTableseluser.addMouseListener(new MouseAdapter (){
 			@Override
-			//在组件上单击鼠标按钮时调用函数
 			public void mouseClicked(MouseEvent e) {
-				//返回所选第一行的索引
 				int i=FrmSelectUser.this.dataTableseluser.getSelectedRow();
-				//若没有选择行则返回-1
 				if(i<0) {
 					return;
 				}
-				//加载对应商品列表
 				FrmSelectUser.this.reloaduserxfTabel(i);
 			}
 		});
 	    this.getContentPane().add(new JScrollPane(this.dataTableuserxf), BorderLayout.EAST);
 		this.setSize(1100, 300);
-		// 屏幕居中显示
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		this.setLocation((int) (width - this.getWidth()) / 2,

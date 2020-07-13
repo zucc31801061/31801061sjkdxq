@@ -317,4 +317,5 @@ public class BeanOrder {
 		else
 		    return "";
 	}
+	public static BeanOrder currentLoginOrder=null;
 }

@@ -137,14 +137,17 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 			}
 			try {
 				takeawayUtil.yhManager.Addyh(money, num, start, end);
-				this.setVisible(false);
+				this.reloadyhTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
 		}
 		else if(e.getSource()==this.updyh) {
+			if(this.curyh==null) {
+				JOptionPane.showMessageDialog(null, "«Î—°‘Ò”≈ª›»Ø", "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			int money=Integer.valueOf(this.money.getText());
 			int num=Integer.valueOf(this.num.getText());
@@ -164,12 +167,11 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 			}
 			try {
 				takeawayUtil.yhManager.Updyh(this.curyh,money, num, start, end);
-				this.setVisible(false);
+				this.reloadyhTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
 		}
 		else if(e.getSource()==this.delyh) {
 			if(this.curyh==null) {
@@ -182,7 +184,7 @@ public class FrmStoreMyyh extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadyhTable();
 		}
 	}
 }

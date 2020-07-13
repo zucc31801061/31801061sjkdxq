@@ -131,25 +131,27 @@ public class FrmMymj extends JDialog implements ActionListener {
 			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
 			try {
 				takeawayUtil.mjManager.Addmj(money, yh, yhdj);
-				this.setVisible(false);
+				this.reloadMethodTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
 		}
 		else if(e.getSource()==this.updmethod) {
+			if(this.curMethod==null) {
+				JOptionPane.showMessageDialog(null, "«Î—°‘Ò∑Ω∞∏", "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			Float money=Float.parseFloat(this.money.getText());
 			Float yh=Float.parseFloat(this.yh.getText());
 			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
 			try {
 				takeawayUtil.mjManager.Updmj(this.curMethod,money, yh, yhdj);
-				this.setVisible(false);
+				this.reloadMethodTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
 		}
 		else if(e.getSource()==this.delmethod) {
 			if(this.curMethod==null) {
@@ -162,7 +164,7 @@ public class FrmMymj extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "¥ÌŒÛ",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadMethodTable();
 		}
 	}
 }

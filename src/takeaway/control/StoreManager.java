@@ -168,6 +168,53 @@ public class StoreManager implements IStoreManager {
 		}
 		return result;
 	}
+	public List<BeanStore> selectstorebyname(String name)throws BaseException{
+		if(name.isEmpty())
+			throw new BusinessException("商家名为空");
+		List<BeanStore> result=new ArrayList<BeanStore>();
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql="select sj_no from sj_info where sj_name like ?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,"%"+name+"%");
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("商家不存在");
+			rs.close();
+			pst.close();
+			sql = "update sj_info set sj_avgxf=(select avg(dd_endmoney) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_sumxl=(select count(dd_no) from sp_dd where sj_info.sj_no=sp_dd.sj_no) ,sj_star=(select avg(pj_star) from sp_pj where sp_pj.sj_no=sj_info.sj_no)";
+			pst = conn.prepareStatement(sql);
+	    	pst.execute();
+	    	pst.close();
+			sql = "select sj_name,sj_star,sj_avgxf,sj_sumxl,sj_no from sj_info where sj_name like ? order by sj_star DESC,sj_avgxf";
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, "%"+name+"%");
+			rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	BeanStore p=new BeanStore();
+		        p.setsjname(rs.getString(1));
+		        p.setsjstar(rs.getInt(2));
+		        p.setsjavgxf(rs.getFloat(3));
+		        p.setsjsumxl(rs.getFloat(4));
+		        p.setsjno(rs.getString(5));
+		        result.add(p);
+		    }
+		    rs.close();
+		    pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		    throw new DbException(e);
+		} 
+		finally {
+		    if (conn != null)
+		    	try {
+		    		conn.close();
+		        } catch (SQLException e) {
+		        	e.printStackTrace();
+		        }
+		}
+		return result;
+	}
 	@Override
 	public void deleteStore(BeanStore store) throws BaseException {
 		Connection conn=null;

@@ -9,8 +9,10 @@ import takeaway.util.BaseException;
 
 public interface IProductManager {
 	public List<BeanProduct> loadProducts(BeanStore store)throws BaseException;
+	public List<BeanProduct> loadProductsbyname(BeanStore store,String name)throws BaseException;
 	public List<BeanProduct> loadProductbykind(BeanKind kind)throws BaseException;
 	public List<BeanProduct> loadAll()throws BaseException;
+	public List<BeanProduct> loadAllbyuser()throws BaseException;
 	public List<BeanProduct> selectproduct(String name)throws BaseException;
 	/**
 	 * ÃÌº”…Ã∆∑

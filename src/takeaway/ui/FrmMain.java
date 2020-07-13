@@ -256,5 +256,9 @@ public class FrmMain extends JFrame implements ActionListener {
 			FrmModifyPwd mp=new FrmModifyPwd(this,"修改密码",true);
 			mp.setVisible(true);
 		}
+		else if(e.getSource()==this.menuItem_order){
+			FrmOrder fo=new FrmOrder(this,"我要下单",true);
+			fo.setVisible(true);
+		}
 	}
 }

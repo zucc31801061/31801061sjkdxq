@@ -121,12 +121,6 @@ public class FrmMyyh extends JDialog implements ActionListener {
 		this.getContentPane().add(nothavep, BorderLayout.EAST);
 		this.reloadnothave();
 		
-	    /*this.getContentPane().add(new JScrollPane(this.dataTableusedyh), BorderLayout.WEST);
-		this.reloadusedyh();
-		this.getContentPane().add(new JScrollPane(this.dataTablenotused), BorderLayout.WEST);
-		this.reloadnotused();
-		this.getContentPane().add(new JScrollPane(this.dataTablenothave), BorderLayout.WEST);
-		this.reloadnothave();*/
 		this.setSize(1400, 550);
 		// ∆¡ƒªæ”÷–œ‘ æ
 		double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();

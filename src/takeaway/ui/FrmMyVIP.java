@@ -83,7 +83,7 @@ public class FrmMyVIP  extends JDialog implements ActionListener {
 		else if(e.getSource()==this.pay){
 			try {
 				BeanUser user=takeawayUtil.userManager.PayVIP();
-				this.setVisible(false);
+				this.reloadMyVIPTable();
 			}catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(),"´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;

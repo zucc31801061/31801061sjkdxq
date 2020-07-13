@@ -140,7 +140,6 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			conn = DBUtil.getConnection();
 			String sql = "select endtime,own.yh_no\r\n" + 
 					"from own,yh_info\r\n" + 
 					"where user_no=?\r\n" + 
@@ -154,8 +153,6 @@ public class YhInfoManager implements IYhInfoManager{
 		        calendar.setTime(date1);
 		        date=new Date(calendar.getTimeInMillis());
 		        yhno=rs.getInt(2);
-		        System.out.println(date);
-		        System.out.println(now);
 		        if(date.before(now)) {
 		        	String sql1 = "delete from own where yh_no=?";
 		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
@@ -202,14 +199,53 @@ public class YhInfoManager implements IYhInfoManager{
 	}
 	public List<BeanYhInfo> loadbystore()throws BaseException{
 		List<BeanYhInfo> result=new ArrayList<BeanYhInfo>();
+		
+		Calendar calendar = new GregorianCalendar();
+		Date date=new Date(calendar.getTimeInMillis());
+		
+		Calendar calendar1 = Calendar.getInstance();
+        Date now = new Date(calendar1.getTimeInMillis());
+		
 		String sjno=BeanStore.currentLoginstore.getsjno();
+		int yhno=0;
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select yh_no,jd_num,yh_startdate,yh_enddate,yh_money from yh_info where sj_no=? order by yh_no";
+			String sql = "select yh_enddate,yh_no\r\n" + 
+					"from yh_info\r\n" + 
+					"where sj_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, sjno);
 		    java.sql.ResultSet rs = pst.executeQuery();
+		    while (rs.next()) {
+		    	java.util.Date date1 = rs.getDate(1);
+		        calendar.setTime(date1);
+		        date=new Date(calendar.getTimeInMillis());
+		        yhno=rs.getInt(2);
+		        if(date.before(now)) {
+		        	String sql1 = "delete from yh_use where yh_no=?";
+		        	java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        	sql1 = "delete from own where yh_no=?";
+		        	pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        	sql1 = "delete from yh_info where yh_no=?";
+		        	pst1 = conn.prepareStatement(sql1);
+		        	pst1.setInt(1, yhno);
+		        	pst1.execute();
+		        	pst1.close();
+		        }
+		    }
+		    rs.close();
+		    pst.close();
+			sql = "select yh_no,jd_num,yh_startdate,yh_enddate,yh_money from yh_info where sj_no=? order by yh_no";
+		    pst = conn.prepareStatement(sql);
+		    pst.setString(1, sjno);
+		    rs = pst.executeQuery();
 		    while (rs.next()) {
 		    	BeanYhInfo p=new BeanYhInfo();
 		        p.setyhno(rs.getInt(1));
@@ -257,6 +293,45 @@ public class YhInfoManager implements IYhInfoManager{
 		    }
 		    rs.close();
 			pst.close();
+			sql = "select user_no\r\n" + 
+					"from user_info\r\n" + 
+					"where user_no=0";
+			pst = conn.prepareStatement(sql);
+			rs=pst.executeQuery();
+			if(!rs.next()) {
+				String sql1 = "insert into user_info(user_no) values(0)";
+				java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				pst1.execute();
+				pst1.close();
+			}
+			pst.execute();
+			pst.close();
+			sql = "select qs_no\r\n" + 
+					"from qs_info\r\n" + 
+					"where qs_no=0";
+			pst = conn.prepareStatement(sql);
+			rs=pst.executeQuery();
+			if(!rs.next()) {
+				String sql1 = "insert into qs_info(qs_no,qs_name) values(0,'µ»¥˝≈‰ÀÕ')";
+				java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				pst1.execute();
+				pst1.close();
+			}
+			pst.execute();
+			pst.close();
+			sql = "select dd_no\r\n" + 
+					"from sp_dd\r\n" + 
+					"where dd_no=0";
+			pst = conn.prepareStatement(sql);
+			rs=pst.executeQuery();
+			if(!rs.next()) {
+				String sql1 = "insert into sp_dd(qs_no,dd_no,user_no) values(0,0,0)";
+				java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+				pst1.execute();
+				pst1.close();
+			}
+			pst.execute();
+			pst.close();
 		    sql = "insert into yh_info(yh_no,sj_no,jd_num,yh_startdate,yh_enddate,yh_money,dd_no) values(?,?,?,?,?,?,0)";
 		    pst = conn.prepareStatement(sql);
 		    pst.setInt(1, yhno);
@@ -284,11 +359,20 @@ public class YhInfoManager implements IYhInfoManager{
 		Connection conn=null;
 		try {
 			conn = DBUtil.getConnection();
-		    String sql = "delete from yh_info where sj_no=? and yh_no=?";
+			String sql = "delete from yh_use where yh_no=?";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-		    pst.setString(1, BeanStore.currentLoginstore.getsjno());
-		    pst.setInt(2, yh.getyhno());
-		    pst.executeUpdate();
+		    pst.setInt(1, yh.getyhno());
+		    pst.execute();
+		    pst.close();
+		    sql = "delete from own where yh_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, yh.getyhno());
+		    pst.execute();
+		    pst.close();
+		    sql = "delete from yh_info where yh_no=?";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, yh.getyhno());
+		    pst.execute();
 		    pst.close();
 		} catch (SQLException e) {
 		    e.printStackTrace();

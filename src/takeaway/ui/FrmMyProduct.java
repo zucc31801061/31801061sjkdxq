@@ -139,7 +139,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 			Float end=Float.parseFloat(this.end.getText());
 			try {
 				takeawayUtil.productManager.addproduct(name,kind,start,end);
-				this.setVisible(false);
+				this.reloadProTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -153,7 +153,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 			Float end=Float.parseFloat(this.end.getText());
 			try {
 				takeawayUtil.productManager.updateProduct(this.curPro,name,kind,start,end);
-				this.setVisible(false);
+				this.reloadProTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -171,7 +171,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadProTable();
 		}
 	}
 }
