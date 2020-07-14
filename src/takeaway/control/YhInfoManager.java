@@ -310,7 +310,7 @@ public class YhInfoManager implements IYhInfoManager{
 			pst.close();
 			sql = "select qs_no\r\n" + 
 					"from qs_info\r\n" + 
-					"where qs_no=0";
+					"where qs_no='0'";
 			pst = conn.prepareStatement(sql);
 			rs=pst.executeQuery();
 			if(!rs.next()) {
