@@ -25,7 +25,7 @@ public class ControlManager implements IControlManager{
 			conn=DBUtil.getConnection();
 			String sql = "select * from gly_info where yg_no = ?";
 			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setString(1,control.getygno());
+			pst.setString(1,userid);
 			java.sql.ResultSet rs=pst.executeQuery();
 			if(rs.next()) throw new BusinessException("用户已存在");
 			rs.close();

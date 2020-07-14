@@ -144,7 +144,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadProTable();
 		}
 		else if(e.getSource()==this.updpro) {
 			String name=this.name.getText();
@@ -158,7 +158,7 @@ public class FrmMyProduct extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadProTable();
 		}
 		else if(e.getSource()==this.delpro) {
 			if(this.curPro==null) {

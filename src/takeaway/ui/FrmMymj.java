@@ -128,7 +128,7 @@ public class FrmMymj extends JDialog implements ActionListener {
 		else if(e.getSource()==this.addmethod) {
 			Float money=Float.parseFloat(this.money.getText());
 			Float yh=Float.parseFloat(this.yh.getText());
-			Boolean yhdj=Boolean.getBoolean(this.yhdj.getText());
+			Boolean yhdj=Boolean.parseBoolean(this.yhdj.getText());
 			try {
 				takeawayUtil.mjManager.Addmj(money, yh, yhdj);
 				this.reloadMethodTable();

@@ -421,9 +421,9 @@ public class OrderManager implements IOrderManager{
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select sj_name,user_name,dd_zt,dd_starttime,dd_endtime,dd_no\r\n" + 
+			String sql = "select sj_name,user_name,dd_zt,dd_starttime,dd_endtime,dd_no,sp_dd.add_no\r\n" + 
 					"from sp_dd,sj_info,add_info\r\n" + 
-					"where qs_no=0\r\n" + 
+					"where qs_no='0'\r\n" + 
 					"and sj_info.sj_no=sp_dd.sj_no\r\n" + 
 					"and add_info.add_no=sp_dd.add_no";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
@@ -436,6 +436,7 @@ public class OrderManager implements IOrderManager{
 		        p.setddstarttime(rs.getTimestamp(4));
 		        p.setddendtime(rs.getTimestamp(5));
 		        p.setddno(rs.getInt(6));
+		        p.setaddno(rs.getInt(7));
 		        result.add(p);
 		    }
 		    rs.close();
@@ -724,6 +725,7 @@ public class OrderManager implements IOrderManager{
 			String sql = "select count(dd_no),sum(dd_endmoney),sum(dd_startmoney-dd_endmoney),sp_dd.user_no,user_name\r\n" + 
 					"from sp_dd,user_info\r\n" + 
 					"where sp_dd.user_no=user_info.user_no\r\n" + 
+					"and user_info.user_no!='0'\r\n" + 
 					"group by sp_dd.user_no";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -768,7 +770,10 @@ public class OrderManager implements IOrderManager{
 				pj=rs.getString(1);
 			rs.close();
 			pst.close();
-			if(pj.equals("∫√∆¿"))
+			System.out.print(pj);
+			if(pj==null)
+				money=0.5f;
+			else if(pj.equals("∫√∆¿"))
 				money=0;
 			else if(pj.equals("≤Ó∆¿"))
 				money=20.5f;
@@ -811,7 +816,9 @@ public class OrderManager implements IOrderManager{
 				pj=rs.getString(1);
 			rs.close();
 			pst.close();
-			if(pj.equals("∫√∆¿"))
+			if(pj==null)
+				money=-20;
+			else if(pj.equals("∫√∆¿"))
 				money=-20.5f;
 			else if(pj.equals("≤Ó∆¿"))
 				money=0;
@@ -1344,6 +1351,10 @@ public class OrderManager implements IOrderManager{
 	public void order()throws BaseException{
 		int ddno=BeanOrder.currentLoginOrder.getddno();
 		String userno=BeanUser.currentLoginUser.getUserid();
+		Calendar calendar1 = new GregorianCalendar();
+		Date date2=new Date(calendar1.getTimeInMillis());
+		Calendar calendar2 = Calendar.getInstance();
+        Date now = new Date(calendar2.getTimeInMillis());
 		String sjno=null;
 		Connection conn=null;
 		try {
@@ -1365,12 +1376,56 @@ public class OrderManager implements IOrderManager{
 		    pst.setInt(1, ddno);
 		    pst.execute();
 			pst.close();
+			sql = "select yh_no,yh_money,yh_enddate,yh_startdate\r\n" + 
+					"from yh_info\r\n" + 
+					"where sj_no in(\r\n" + 
+					"select sj_no\r\n" + 
+					"from sp_dd\r\n" + 
+					"where dd_no=?)";
+		    pst = conn.prepareStatement(sql);
+		    pst.setInt(1, ddno);
+		    java.sql.ResultSet rs = pst.executeQuery();
+		    while(rs.next()) {
+		    	java.util.Date date1 = rs.getDate(4);
+	    		calendar1.setTime(date1);
+	    		date2=new Date(calendar1.getTimeInMillis());
+	    		if(date2.before(now)) {
+	    			int a=0;
+	    			a=rs.getInt(1);
+	    			float b=0;
+	    			b=rs.getFloat(2);
+	    			Date c=null;
+	    			c=rs.getDate(3);
+	    			String sql1 = "select yh_no,user_no\r\n" + 
+	    					"from own\r\n" + 
+	    					"where yh_no=? and user_no=?";
+	    			java.sql.PreparedStatement pst1 = conn.prepareStatement(sql1);
+	    			pst1.setInt(1, a);
+	    			pst1.setString(2, userno);
+	    			java.sql.ResultSet rs1 = pst1.executeQuery();
+	    			if(!rs1.next()) {
+	    				String sql2 = "insert into own(yh_no,user_no,num,money,endtime)\r\n" + 
+	    						"values(?,?,1,?,?)";
+	    				java.sql.PreparedStatement pst2 = conn.prepareStatement(sql2);
+	    				pst2.setInt(1, a);
+	    				pst2.setString(2, userno);
+	    				pst2.setFloat(3, b);
+	    				pst2.setDate(4, c);
+	    				pst2.execute();
+	    				pst2.close();
+	    			}
+	    			rs1.close();
+	    			pst1.close();
+	    		}
+		    }
+		    rs.close();
+			pst.close();
 			sql = "select sj_no\r\n" + 
 					"from sp_dd\r\n" + 
 					"where dd_no=?";
 		    pst = conn.prepareStatement(sql);
 		    pst.setInt(1, ddno);
-		    java.sql.ResultSet rs = pst.executeQuery();
+		    rs = pst.executeQuery();
 		    if(rs.next())
 		    	sjno=rs.getString(1);
 		    rs.close();

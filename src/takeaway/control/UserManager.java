@@ -34,7 +34,7 @@ public class UserManager implements IUserManager {
 			if(rs.next()) throw new BusinessException("用户已存在");
 			rs.close();
 			pst.close();
-			sql="insert into user_info(user_no,user_mm,user_starttime,vip) values(?,?,?)";
+			sql="insert into user_info(user_no,user_mm,user_starttime,vip) values(?,?,?,?)";
 			pst=conn.prepareStatement(sql);
 			pst.setString(1,userid);
 			pst.setString(2,pwd);
@@ -206,8 +206,8 @@ public class UserManager implements IUserManager {
 	@Override
 	public BeanUser SearchVIP() throws BaseException{
 		String userno = BeanUser.currentLoginUser.getUserid();
-    	BeanUser p=new BeanUser();
-    	
+		BeanUser p=new BeanUser();
+		
     	Calendar calendar1 = new GregorianCalendar();
 		Date date=new Date(calendar1.getTimeInMillis());
     	
@@ -223,9 +223,11 @@ public class UserManager implements IUserManager {
 			pst.setString(1, userno);
 			java.sql.ResultSet rs = pst.executeQuery();
 		    if (rs.next()) {
-		        java.util.Date date1 = rs.getDate(1);
-		        calendar1.setTime(date1);
-		        date=new Date(calendar1.getTimeInMillis());
+		    	if(rs.getDate(1)!=null) {
+		    		java.util.Date date1 = rs.getDate(1);
+		    		calendar1.setTime(date1);
+		    		date=new Date(calendar1.getTimeInMillis());
+		    	}
 		    }
 		    rs.close();
 		    pst.close();
@@ -288,9 +290,11 @@ public class UserManager implements IUserManager {
 			pst.setString(1, userno);
 			java.sql.ResultSet rs = pst.executeQuery();
 		    if (rs.next()) {
-		        java.util.Date date1 = rs.getDate(1);
-		        calendar1.setTime(date1);
-		        date2=new Date(calendar1.getTimeInMillis());
+		    	if(rs.getDate(1)!=null) {
+		    		java.util.Date date1 = rs.getDate(1);
+		    		calendar1.setTime(date1);
+		    		date2=new Date(calendar1.getTimeInMillis());
+		    	}
 		    }
 		    rs.close();
 		    pst.close();
@@ -328,7 +332,7 @@ public class UserManager implements IUserManager {
 			conn = DBUtil.getConnection();
 			String sql = "select user_name,user_sex,user_phnum,user_email,user_city,user_starttime,vip,vip_enddate,user_no\n" + 
 					"from user_info\n" + 
-					"where user_no!=0\n" + 
+					"where user_no!='0'\n" + 
 					"order by user_starttime DESC";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 			java.sql.ResultSet rs = pst.executeQuery();

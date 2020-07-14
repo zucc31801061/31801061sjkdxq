@@ -303,17 +303,17 @@ public class BeanOrder {
 		else if (col == 1)
 			return this.qsname;
 		else if (col == 2)
-			return this.summoney+"";
-		else if (col == 3)
 			return this.ddcount+"";
+		else if (col == 3)
+			return this.summoney+"";
 		else
 		    return "";
 	}
 	public String getCell9(int col){
 		if (col == 0)
-			return this.summoney+"";
-		else if (col == 1)
 			return this.ddcount+"";
+		else if (col == 1)
+			return this.summoney+"";
 		else
 		    return "";
 	}

@@ -193,7 +193,7 @@ public class RiderManager implements IRiderManager {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select qs_date,qs_no from qs_info where qs_no!=0 group by qs_no";
+			String sql = "select qs_date,qs_no from qs_info where qs_no!='0' group by qs_no";
 			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 			java.sql.ResultSet rs=pst.executeQuery();
 			while (rs.next()) {
@@ -212,7 +212,7 @@ public class RiderManager implements IRiderManager {
 		    }
 			rs.close();
 		    pst.close();
-		    sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no!=0 order by qs_date desc";
+		    sql = "select qs_no,qs_name,qs_date,qs_id from qs_info where qs_no!='0' order by qs_date desc";
 			pst = conn.prepareStatement(sql);
 			rs = pst.executeQuery();
 		    while (rs.next()) {

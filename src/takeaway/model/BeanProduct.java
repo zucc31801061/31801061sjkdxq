@@ -1,7 +1,7 @@
 package takeaway.model;
 
 public class BeanProduct {
-	public static final String[] tblProductTitle={"商品","分类","原价","优惠价","销量"};
+	public static final String[] tblProductTitle={"商品","分类","原价","优惠价"};
 	public static final String[] tblProductTitle1={"商家","商品","分类","原价","优惠价"};
 	/**
 	 * 请自行根据javabean的设计修改本函数代码，col表示界面表格中的列序号，0开始
@@ -14,13 +14,6 @@ public class BeanProduct {
 	private String spname;
 	private Float spmoney;
 	private Float yhmoney;
-	private int xl;
-	public int getxl() {
-		return xl;
-	}
-	public void setxl(int xl) {
-	    this.xl = xl;
-	}
 	public int getspno() {
 		return spno;
 	}
@@ -78,8 +71,6 @@ public class BeanProduct {
 		    return this.spmoney+"";
 		else if (col == 3)
 		    return this.yhmoney+"";
-		else if (col == 4)
-		    return this.xl+"";
 		else
 		    return "";
 	}

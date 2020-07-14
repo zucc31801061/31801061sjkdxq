@@ -105,7 +105,6 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 				if(i<0) {
 					return;
 				}
-				curOrder=FreeOrder.get(i);
 				FrmTakeOrder.this.reloadUserAddressTabel(i);
 			}
 	    });
@@ -134,11 +133,11 @@ public class FrmTakeOrder extends JDialog implements ActionListener {
 			}
 			try {
 				takeawayUtil.orderManager.takeOrder(this.curOrder);
+				this.reloadFreeOrder();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.reloadFreeOrder();
 		}
 	}
 }

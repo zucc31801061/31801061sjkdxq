@@ -92,11 +92,10 @@ public class ProductManager implements IProductManager {
 		Connection conn = null;
 		try {
 	    	conn = DBUtil.getConnection();
-	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_info.sp_no,sum(dd_info.num)\n" + 
-	    			"from sp_info,sp_kind,dd_info\n" + 
+	    	String sql = "select sp_name,fl_name,sp_money,sp_yh,sp_info.sp_no\n" + 
+	    			"from sp_info,sp_kind\n" + 
 	    			"where sj_no=?\n" + 
 	    			"and sp_info.fl_no=sp_kind.fl_no\n" + 
-	    			"and sp_info.sp_no=dd_info.sp_no\n" + 
 	    			"group by sp_info.sp_no";
 	    	PreparedStatement pst = conn.prepareStatement(sql);
 	    	pst.setString(1, store);
@@ -108,7 +107,6 @@ public class ProductManager implements IProductManager {
 	    		s.setspmoney(rs.getFloat(3));
 	    		s.setyhmoney(rs.getFloat(4));
 	    		s.setspno(rs.getInt(5));
-	    		s.setxl(rs.getInt(6));
 	    		result.add(s);
 	    	}
 	    	rs.close();

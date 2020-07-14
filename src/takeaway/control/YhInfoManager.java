@@ -297,7 +297,7 @@ public class YhInfoManager implements IYhInfoManager{
 			pst.close();
 			sql = "select user_no\r\n" + 
 					"from user_info\r\n" + 
-					"where user_no=0";
+					"where user_no='0'";
 			pst = conn.prepareStatement(sql);
 			rs=pst.executeQuery();
 			if(!rs.next()) {
@@ -334,7 +334,7 @@ public class YhInfoManager implements IYhInfoManager{
 			}
 			pst.execute();
 			pst.close();
-		    sql = "insert into yh_info(yh_no,sj_no,jd_num,yh_startdate,yh_enddate,yh_money,dd_no) values(?,?,?,?,?,?,0)";
+		    sql = "insert into yh_info(yh_no,sj_no,jd_num,yh_startdate,yh_enddate,yh_money,dd_no,already) values(?,?,?,?,?,?,0,0)";
 		    pst = conn.prepareStatement(sql);
 		    pst.setInt(1, yhno);
 		    pst.setString(2, sjno);
@@ -436,7 +436,7 @@ public class YhInfoManager implements IYhInfoManager{
 					"from own,yh_info\r\n" + 
 					"where user_no=?\r\n" + 
 					"and yh_info.yh_no=own.yh_no\r\n" + 
-					"and jd_num=already";
+					"and jd_num<=already";
 		    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
 		    pst.setString(1, userno);
 		    java.sql.ResultSet rs = pst.executeQuery();
@@ -460,7 +460,6 @@ public class YhInfoManager implements IYhInfoManager{
 					"where already=jd_num\r\n" + 
 					"and own.yh_no=yh_info.yh_no\r\n" + 
 					"and own.user_no=?\r\n" + 
-					"and yh_info.sj_no\r\n" + 
 					"and sp_dd.sj_no=yh_info.sj_no\r\n" + 
 					"and sp_dd.sj_no=sj_info.sj_no\r\n" + 
 					"and sp_dd.dd_no=?";

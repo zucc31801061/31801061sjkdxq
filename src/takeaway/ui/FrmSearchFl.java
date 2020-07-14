@@ -140,7 +140,7 @@ public class FrmSearchFl extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadkindTable();
 		}
 		else if(e.getSource()==this.updkind) {
 			String name = this.kindt.getText();
@@ -151,7 +151,7 @@ public class FrmSearchFl extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadkindTable();
 		}
 		else if(e.getSource()==this.delkind) {
 			if(this.curkind==null) {
@@ -164,7 +164,7 @@ public class FrmSearchFl extends JDialog implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			this.setVisible(false);
+			this.reloadkindTable();
 		}
 	}
 }
